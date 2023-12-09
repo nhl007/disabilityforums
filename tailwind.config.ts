@@ -9,8 +9,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        "bg-banner": "#d9ddf6",
+        "bg-banner": "rgb(240, 240, 249)",
         "bg-main": "#fffefb",
+        "btn-main": "rgb(217, 221, 246)",
         "btn-orange": "#ff9152",
         "txt-blue": "#141361",
       },
