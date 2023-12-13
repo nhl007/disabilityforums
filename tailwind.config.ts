@@ -11,8 +11,9 @@ const config: Config = {
       colors: {
         "bg-banner": "rgb(240, 240, 249)",
         "bg-main": "#fffefb",
-        "btn-main": "rgb(217, 221, 246)",
+        "btn-main": "#d9ddf6",
         "btn-orange": "#ff9152",
+        "yellow-light": "#FDF9EE",
         "txt-blue": "#141361",
       },
     },

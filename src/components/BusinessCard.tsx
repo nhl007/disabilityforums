@@ -1,11 +1,13 @@
 import Image from "next/image";
-import React from "react";
-import { BusinessMock } from "@/constants/constants";
 
-type Businessdata = (typeof BusinessMock)[0];
+type BusinessData = {
+  name: string;
+  description: string;
+  verification: string;
+  services: string[];
+};
 
-const BusinessCard = (data: Businessdata) => {
-  BusinessMock;
+const BusinessCard = (data: BusinessData) => {
   return (
     <div className="flex gap-6 p-[20px] border-gray-200 border-[1.5px] rounded-lg max-w-[100%]">
       <Image src="/image.jpg" alt="business" width={284} height={150} />
@@ -17,11 +19,11 @@ const BusinessCard = (data: Businessdata) => {
         <p className="break-words w-fit h-[82px] text-sm font-medium overflow-hidden">
           {data.description}
         </p>
-        <p className="flex flex-wrap gap-x-4 text-ellipsis text-sm justify-start items-center ">
+        <div className="flex flex-wrap gap-x-4 text-ellipsis text-sm justify-start items-center ">
           {data.services.map((s) => (
             <li key={s}>{s}</li>
           ))}
-        </p>
+        </div>
       </div>
     </div>
   );

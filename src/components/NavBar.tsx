@@ -2,7 +2,6 @@ import { PhoneCall, User, UserPlus } from "lucide-react";
 import Link from "next/link";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import ProfileMenu from "./ProfileMenu";
-// import Image from "next/image";
 
 const NavBar = () => {
   return (
@@ -28,7 +27,7 @@ const NavBar = () => {
           <Link href="/">Logo</Link>
           <Link href="/">Get Started</Link>
           <Link href="/">About</Link>
-          <Link href="/business">Directory</Link>
+          <Link href="/directory">Directory</Link>
         </div>
       </nav>
     </MaxWidthWrapper>

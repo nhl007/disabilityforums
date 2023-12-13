@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { searchValidABN } from "@/actions/abrApi";
 import { AbnLookupResult } from "@/types/business";
-import CustomButton from "./CustomButton";
+import CustomButton from "./ui/CustomButton";
 import { X } from "lucide-react";
 import { postBusinessData } from "@/actions/businessData";
 

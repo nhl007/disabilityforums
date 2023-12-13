@@ -1,9 +1,8 @@
 import User from "@/models/User";
 import { connectToDB } from "./connectToDb";
-
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
-import { AuthOptions } from "next-auth";
+import { AuthOptions, getServerSession } from "next-auth";
 
 export const authOptions: AuthOptions = {
   pages: {
@@ -56,6 +55,9 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async session({ session }) {
       //! store the user id from MongoDB to session
+
+      console.log("I ran in session");
+      await connectToDB();
       const sessionUser = await User.findOne({ email: session.user?.email });
       session.user.id = sessionUser._id;
       session.user.discourse_id = sessionUser.discourseId;
@@ -65,4 +67,8 @@ export const authOptions: AuthOptions = {
     },
   },
   secret: process.env.JWT_SECRET,
+};
+
+export const getAuthSession = async () => {
+  return await getServerSession(authOptions);
 };

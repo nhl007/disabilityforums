@@ -1,6 +1,41 @@
 import { Document, Schema, model, models } from "mongoose";
 
-interface Business {
+type serviceAgeNames =
+  | "Early Childhood (0-7 years)"
+  | "Children (7-17 years)"
+  | "Young People (18-21 years)"
+  | "Adults (22-59 years)"
+  | "Mature Age (60+ years)";
+
+interface BusinessPersonalInfo {
+  contact: {
+    email: string;
+    website: string;
+    phone: string;
+  };
+  serviceLocations: { state: string; suburbs: string[] }[];
+  deliveryOptions: string[];
+  paymentTypes: string[];
+  agesSupported: Array<serviceAgeNames>;
+  about: string;
+  providerSpecialSkills: string[];
+  disabilitySpecialities: string[];
+  languages: string[];
+  genderOfAttendants: string[];
+  services: string[];
+}
+
+type BusinessReviews = {
+  tag: string;
+  description: string;
+  rating: number;
+  date: string;
+  user: {
+    id: Schema.Types.ObjectId | string;
+  };
+}[];
+
+interface Business extends BusinessPersonalInfo {
   discourseId: number;
   Abn: string;
   AbnStatus?: string;
@@ -20,6 +55,8 @@ interface Business {
   };
   created_at?: Date;
   user: Schema.Types.ObjectId | string;
+  reviews: BusinessReviews;
+  rank: number;
 }
 
 interface BusinessDocument extends Business, Document {}
@@ -80,13 +117,86 @@ const BusinessSchema = new Schema<BusinessDocument>({
   },
   created_at: {
     type: Date,
-    default: Date.now,
+    default: Date.now(),
   },
   user: {
     type: Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
+  contact: {
+    email: {
+      type: String,
+    },
+    website: {
+      type: String,
+    },
+    phone: {
+      type: String,
+    },
+  },
+  serviceLocations: [
+    {
+      state: {
+        type: String,
+      },
+      suburbs: {
+        type: [String],
+      },
+    },
+  ],
+  deliveryOptions: {
+    type: [String],
+  },
+  paymentTypes: {
+    type: [String],
+  },
+  agesSupported: {
+    type: [String],
+  },
+  about: {
+    type: String,
+  },
+  services: {
+    type: [String],
+  },
+  providerSpecialSkills: {
+    type: [String],
+  },
+  disabilitySpecialities: {
+    type: [String],
+  },
+  languages: {
+    type: [String],
+  },
+  genderOfAttendants: {
+    type: [String],
+  },
+  reviews: [
+    {
+      tag: {
+        type: String,
+      },
+      description: {
+        type: String,
+      },
+      rating: {
+        type: String,
+      },
+      date: {
+        type: Date,
+        default: Date.now(),
+      },
+      user: {
+        name: {
+          type: String,
+        },
+      },
+      rank: {
+        type: Number,
+      },
+    },
+  ],
 });
 
 BusinessSchema.index({ location: "2dsphere" });

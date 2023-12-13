@@ -1,19 +1,21 @@
 "use server";
 
-import { authOptions } from "@/libs/auth";
+import { stringifyResponse } from "./../utils/utils";
+import { getAuthSession } from "@/libs/auth";
+import { connectToDB } from "@/libs/connectToDb";
 import Business from "@/models/Business";
-import { AbnLookupResult } from "@/types/business";
+import { BusinessDatabaseModel } from "@/types/business";
 import { getLatLngByPostalCode } from "@/utils/postalCodeSearch";
-import { getServerSession } from "next-auth";
 
-export async function postBusinessData(data: Partial<AbnLookupResult>) {
-  const session = await getServerSession(authOptions);
-
+export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
+  const session = await getAuthSession();
   const id = session?.user.id;
 
-  if (!id) return "Permission denied!";
+  if (!id)
+    return stringifyResponse({ data: null, message: "permission denied" });
 
   try {
+    await connectToDB();
     const docId = await Business.findOne({ user: id }).select("_id").exec();
 
     if (!docId) {
@@ -22,16 +24,19 @@ export async function postBusinessData(data: Partial<AbnLookupResult>) {
         discourseId: session.user.discourse_id,
         data,
       });
-      return resp;
+      return "saved successfully";
     } else {
       const resp = await Business.findByIdAndUpdate(docId._id, data, {
         new: true,
-      });
-      return resp;
+      }).select("-_id -user -serviceLocations");
+      // console.log(resp);
+      // return "saved successfully";
+      return JSON.stringify(resp);
     }
   } catch (err) {
-    console.log(err);
-    return null;
+    console.log("err here", err);
+    if (err instanceof Error) return { data: null, message: err.message };
+    return { data: null, message: "Error Ocurred" };
   }
 }
 
@@ -39,10 +44,11 @@ export async function searchBusinesses(
   postalCode: string = "",
   searchTerm: string = "",
   category: string = "",
-  radius: number = 15
+  radius: string | number = 15
 ) {
   try {
     const query: Record<string, any> = {};
+
     if (postalCode && postalCode.length > 2) {
       const postalCoordinates = await getLatLngByPostalCode(postalCode);
 
@@ -53,7 +59,7 @@ export async function searchBusinesses(
               type: "Point",
               coordinates: [postalCoordinates[0], postalCoordinates[1]],
             },
-            $maxDistance: radius * 1000,
+            $maxDistance: Number(radius) * 1000,
           },
         };
       }
@@ -66,15 +72,68 @@ export async function searchBusinesses(
     }
 
     if (category) {
-      // If name, category is provided
-      query.EntityName = { $regex: new RegExp(category, "i") };
+      // If category is provided
+      query.services = {
+        $in: [new RegExp(category, "i")],
+      };
     }
-
-    const businesses = await Business.find(query);
-
-    return businesses;
+    await connectToDB();
+    const doc = await Business.find(query)
+      .select("_id services about BusinessName")
+      .limit(10);
+    if (doc.length > 0) return stringifyResponse(doc);
+    else return null;
   } catch (error) {
     console.error("Error searching businesses:", error);
-    throw error;
+    return null;
+  }
+}
+
+type DBKeys = keyof BusinessDatabaseModel;
+
+export async function getBusiness(fields: Partial<DBKeys>[]) {
+  const session = await getAuthSession();
+
+  const id = session?.user.id;
+
+  if (!id) return stringifyResponse({ data: null, message: "no permission" });
+
+  try {
+    await connectToDB();
+
+    const doc = await Business.findOne({ user: id }).select(fields.join(" "));
+    return JSON.stringify(doc);
+  } catch (err) {
+    console.log(err);
+    return stringifyResponse({ data: null, message: "error" });
+  }
+}
+
+export async function getBusinessByStates(state: string) {
+  try {
+    await connectToDB();
+    const doc = await Business.find({ AddressState: state })
+      .select("_id BusinessName about services")
+      .limit(10);
+    if (doc.length > 0) {
+      return stringifyResponse(doc);
+    } else return null;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+}
+
+export async function getBusinessById(id: string): Promise<string | null> {
+  try {
+    if (!id) return null;
+    await connectToDB();
+    const doc = await Business.findById(id).lean();
+    if (doc) {
+      return stringifyResponse(doc);
+    } else return null;
+  } catch (error) {
+    console.log(error);
+    return null;
   }
 }

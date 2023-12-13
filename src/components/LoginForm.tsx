@@ -2,7 +2,7 @@
 
 import { signIn, useSession } from "next-auth/react";
 import { FormEvent, useState } from "react";
-import CustomButton from "./CustomButton";
+import CustomButton from "./ui/CustomButton";
 
 const LoginForm = () => {
   const { status, data } = useSession();

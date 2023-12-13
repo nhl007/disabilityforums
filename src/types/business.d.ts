@@ -11,29 +11,45 @@ export type AbnLookupResult = {
   EntityTypeCode: string;
   EntityTypeName: string;
   Gst: string;
-  Message: string;
   location: { coordinates: number[] };
 };
 
-type serviceAgeNames =
-  | "Mature Age (60+ years)"
+export type serviceAgeNames =
+  | "Early Childhood (0-7 years)"
+  | "Children (7-17 years)"
+  | "Young People (18-21 years)"
   | "Adults (22-59 years)"
-  | "Young People (18-21 years)";
+  | "Mature Age (60+ years)";
+
+export type serviceLocationsType = { state: string; suburbs: string[] }[];
 
 export type BusinessPersonalInfo = {
+  about: string;
+  services: string[];
+  deliveryOptions: string[];
+  paymentTypes: string[];
+  languages: string[];
+  genderOfAttendants: string[];
+  agesSupported: Array<serviceAgeNames>;
+  disabilitySpecialities: string[];
+  providerSpecialSkills: string[];
   contact: {
     email: string;
     website: string;
     phone: string;
   };
-  serviceLocations: string[];
-  agesSupported: Array<serviceAgeNames>;
-  about: string;
-  services: {
-    name: string;
-    description: string[];
-  }[];
-  disabilitySpecialities: string[];
-  languages: string[];
-  genderOfAttendants: string[];
+  serviceLocations: serviceLocationsType;
 };
+
+export type BusinessReviews = {
+  tag: string;
+  description: string;
+  rating: number;
+  date: string;
+  user: {
+    name: string;
+  };
+}[];
+
+export type BusinessDatabaseModel = AbnLookupResult &
+  BusinessPersonalInfo & { _id: string };

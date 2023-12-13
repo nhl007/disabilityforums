@@ -1,6 +1,6 @@
 "use client";
 
-import { postBusinessData, searchBusinesses } from "@/actions/businessData";
+import { searchBusinesses } from "@/actions/businessData";
 import { BusinessPersonalInfo } from "@/types/business";
 import { PictureInPictureIcon } from "lucide-react";
 import { useState } from "react";
@@ -16,23 +16,7 @@ const BusinessForm = () => {
     disabilitySpecialities: ["autisom"],
     genderOfAttendants: ["male", "female"],
     languages: ["english", "deutsch", "hindi"],
-    serviceLocations: ["sydney", "new York"],
-    services: [
-      {
-        name: "The nihal service",
-        description: [
-          "the nihal service description",
-          "the nihal service description 2",
-        ],
-      },
-      {
-        name: "The Asif service",
-        description: [
-          "the Asif service description",
-          "the Asif service description 2",
-        ],
-      },
-    ],
+    services: ["The nihal service", "The Asif service"],
     agesSupported: ["Mature Age (60+ years)", "Young People (18-21 years)"],
   };
 
@@ -42,13 +26,11 @@ const BusinessForm = () => {
   const handleSubmit = async () => {
     // const data = await postBusinessData();
     const data = await searchBusinesses(
-      "22222222",
+      "4505",
       "CHERISHER",
       "CHERISHER DISABILITY SERVICES PTY LTD",
       100
     );
-
-    console.log(data);
   };
 
   return (

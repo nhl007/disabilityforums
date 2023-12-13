@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 const ProfileMenu = () => {
   const { data } = useSession();
@@ -15,9 +15,9 @@ const ProfileMenu = () => {
       <button onClick={() => setMenu((prev) => !prev)}>
         <Image
           id="avatarButton"
-          height={40}
-          width={40}
-          className="w-10 h-10 rounded-full"
+          height={32}
+          width={32}
+          className="w-8 h-8 rounded-full"
           src="https://disabilityforums.com.au/user_avatar/disabilityforums.com.au/nihal/96/13_2.png"
           alt="User dropdown"
         />
@@ -49,12 +49,12 @@ const ProfileMenu = () => {
             </li>
           </ul>
           <div className="py-1">
-            <a
-              href="#"
+            <button
+              onClick={() => signOut({ redirect: false })}
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 "
             >
               Sign out
-            </a>
+            </button>
           </div>
         </div>
       )}
