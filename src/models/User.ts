@@ -1,10 +1,11 @@
 import { Schema, model, models } from "mongoose";
+import isEmail from "validator/lib/isEmail";
 
 // const sample = {
 //   id: 4,
 //   username: "nihal",
 //   name: "Asif Nihal",
-//   // ? 2 sizes for avatar img {96} or {288}
+//   ? 2 sizes for avatar img {96} or {288}
 //   avatar_template: "/letter_avatar_proxy/v4/letter/n/8797f3/{size}.png",
 //   active: true,
 //   admin: true,
@@ -31,9 +32,10 @@ const UserSchema = new Schema({
     type: String,
     unique: [true, "Email already exists!"],
     required: [true, "Email is required!"],
+    validate: [isEmail, "Please enter a valid email address"],
   },
   discourseId: {
-    type: String,
+    type: Number,
   },
   avatar: {
     type: String,
@@ -43,11 +45,13 @@ const UserSchema = new Schema({
   },
   username: {
     type: String,
+    unique: [true, "Username already exists!"],
+    required: [true, "Please enter your username!"],
   },
   password: {
     type: String,
-    required: false,
-    minLength: [8, "Password must be at least 8 characters long"],
+    required: [true, "Please enter your password"],
+    minLength: [8, "Password must be at least 8 characters long!"],
     select: false,
   },
   created_at: {
