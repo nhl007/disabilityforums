@@ -1,6 +1,6 @@
 import Image from "next/image";
 import BorderBox from "./ui/BorderBox";
-import { CheckCircle, Map } from "lucide-react";
+import { CheckCircle, MapPin } from "lucide-react";
 import SmallVerificationBox from "./ui/SmallVerificationBox";
 import { getBusinessByStates } from "@/actions/businessData";
 import { BusinessDatabaseModel } from "@/types/business";
@@ -55,7 +55,7 @@ const FeaturedBusinessCard = ({
   services,
 }: FeaturedBusinessCardProps) => {
   return (
-    <BorderBox className="min-w-[377px] min-h-[530px]">
+    <BorderBox className="w-[377px] h-[530px]">
       <div className="flex flex-col gap-4 items-start h-full w-full">
         <div className="h-auto self-center justify-self-center place-self-center">
           <Image src="/image.jpg" alt="business" width={300} height={200} />
@@ -66,17 +66,20 @@ const FeaturedBusinessCard = ({
             <CheckCircle size={16} /> Verified
           </SmallVerificationBox>
         </div>
-        <p>{about}</p>
+        <p className="w-sm line-clamp-3 text-sm break-words overflow-ellipsis">
+          {about}
+        </p>
         <div className="mt-auto flex flex-col gap-1">
-          <span>
-            <Map /> WA
+          <span className="flex gap-1 items-center font-semibold">
+            <MapPin size={16} /> WA
           </span>
-          <div className="flex gap-1 flex-row">
+          <div className="flex gap-2 flex-wrap">
             {services.map((s, i) => {
               return (
-                <span className=" text-sm" key={i}>
-                  {s}
-                </span>
+                <div className="flex gap-1 items-center" key={i}>
+                  <div className="rounded-full w-1 h-1 bg-txt-blue"></div>
+                  <span className="text-sm">{s}</span>
+                </div>
               );
             })}
           </div>

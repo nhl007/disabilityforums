@@ -4,39 +4,65 @@ import { stringifyResponse } from "./../utils/utils";
 import { getAuthSession } from "@/libs/auth";
 import { connectToDB } from "@/libs/connectToDb";
 import Business from "@/models/Business";
-import { BusinessDatabaseModel } from "@/types/business";
+import {
+  BusinessDatabaseModel,
+  BusinessReviewData,
+  BusinessReviews,
+} from "@/types/business";
 import { getLatLngByPostalCode } from "@/utils/postalCodeSearch";
+import { Session } from "next-auth";
 
 export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
-  const session = await getAuthSession();
-  const id = session?.user.id;
+  const session: Session | null = await getAuthSession();
+  if (!session || !session.user)
+    return { success: false, message: "Permission denied" };
 
-  if (!id)
-    return stringifyResponse({ data: null, message: "permission denied" });
+  const id = session?.user.id;
 
   try {
     await connectToDB();
-    const docId = await Business.findOne({ user: id }).select("_id").exec();
+    const docId = await Business.findOne({ user: id }).select("_id");
 
     if (!docId) {
-      const resp = await Business.create({
+      await Business.create({
         user: id,
         discourseId: session.user.discourse_id,
-        data,
+        ...data,
       });
-      return "saved successfully";
+      return { success: true, message: "Created Successfully !" };
     } else {
-      const resp = await Business.findByIdAndUpdate(docId._id, data, {
+      await Business.findByIdAndUpdate(docId._id, data, {
         new: true,
-      }).select("-_id -user -serviceLocations");
-      // console.log(resp);
-      // return "saved successfully";
-      return JSON.stringify(resp);
+      }).select("_id");
+
+      return { success: true, message: "Saved Successfully !" };
     }
   } catch (err) {
-    console.log("err here", err);
-    if (err instanceof Error) return { data: null, message: err.message };
-    return { data: null, message: "Error Ocurred" };
+    if (err instanceof Error) return { success: false, message: err.message };
+    return { success: false, message: "Error Ocurred" };
+  }
+}
+
+export async function updateBusinessData(data: Partial<BusinessDatabaseModel>) {
+  const session: Session | null = await getAuthSession();
+  const id = session?.user.id;
+
+  if (!id) return { success: false, message: "Permission denied" };
+
+  try {
+    await connectToDB();
+    const docId = await Business.findOne({ user: id }).select("_id");
+
+    if (!docId || !docId._id) {
+      return { success: false, message: "Permission denied" };
+    }
+    await Business.findByIdAndUpdate(docId._id, data, {
+      new: true,
+    }).select("_id");
+    return { success: true, message: "Saved Successfully !" };
+  } catch (err) {
+    if (err instanceof Error) return { success: false, message: err.message };
+    return { success: false, message: "Error Ocurred" };
   }
 }
 
@@ -102,6 +128,7 @@ export async function getBusiness(fields: Partial<DBKeys>[]) {
     await connectToDB();
 
     const doc = await Business.findOne({ user: id }).select(fields.join(" "));
+
     return JSON.stringify(doc);
   } catch (err) {
     console.log(err);
@@ -128,12 +155,79 @@ export async function getBusinessById(id: string): Promise<string | null> {
   try {
     if (!id) return null;
     await connectToDB();
-    const doc = await Business.findById(id).lean();
+    const doc = await Business.findById(id)
+      .populate("reviews.user", "username")
+      .lean();
     if (doc) {
       return stringifyResponse(doc);
     } else return null;
   } catch (error) {
     console.log(error);
     return null;
+  }
+}
+
+//! product review
+
+export async function postBusinessReview(
+  data: Omit<BusinessReviewData, "date">
+) {
+  try {
+    const { rating, description, caption, user, _id } = data;
+
+    // console.log("r---" + rating);
+
+    const review = {
+      user: user._id,
+      caption: caption,
+      rating: Number(rating),
+      description: description,
+    };
+
+    const business = await Business.findById(_id).select(
+      "reviews totalReviews rating"
+    );
+
+    const hasReviewed = business.reviews.find(
+      (r: any) => r.user.toString() === user.toString()
+    );
+
+    // console.log("hasReviewed", hasReviewed);
+
+    if (hasReviewed) {
+      business.reviews.forEach((review: any) => {
+        if (review.user.toString() === user.toString()) {
+          review.caption = caption;
+          review.description = description;
+          review.rating = rating;
+        }
+      });
+    } else {
+      business.reviews.push(review);
+      business.totalReviews = business.reviews.length;
+    }
+
+    business.rating =
+      business.reviews.reduce((acc: Number, item: any) => {
+        return item.rating + acc;
+      }, 0) / business.reviews.length;
+
+    // console.log("before update->", business);
+
+    await Business.findByIdAndUpdate(_id, business, {
+      new: true,
+    });
+
+    return {
+      success: true,
+      message: hasReviewed
+        ? "Review updated successfully"
+        : "Successfully submitted your review",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Error Occurred! Please try again",
+    };
   }
 }

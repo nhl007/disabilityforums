@@ -1,15 +1,24 @@
-import React from "react";
+import { cn } from "@/utils/utils";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean;
   children: React.ReactNode;
+  className?: string;
 }
 
-const CustomButton = ({ isLoading, children, ...props }: ButtonProps) => {
+const CustomButton = ({
+  isLoading,
+  className,
+  children,
+  ...props
+}: ButtonProps) => {
   return (
     <button
       {...props}
-      className="py-2.5 px-5 me-2 text-md font-medium text-white bg-gray-900 rounded-md hover:bg-gray-600 focus:z-10 focus:outline-none flex items-center justify-center"
+      className={cn(
+        "py-2 px-4 font-medium text-white bg-gray-900 rounded-md hover:bg-gray-600 focus:outline-none flex items-center justify-center",
+        className
+      )}
     >
       {children}
       {isLoading && (

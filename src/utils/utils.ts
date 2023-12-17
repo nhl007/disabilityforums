@@ -10,7 +10,7 @@ export const stringifyResponse = (data: any) => {
 };
 
 export const generateSelectDefault = (data: string[]) => {
-  if (data) {
+  if (data && data[0]) {
     const r = data.map((v) => {
       return { value: v, label: v };
     });

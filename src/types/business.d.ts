@@ -42,14 +42,28 @@ export type BusinessPersonalInfo = {
 };
 
 export type BusinessReviews = {
-  tag: string;
+  caption: string;
+  description: string;
+  rating: number;
+  date: string;
+  user: string;
+}[];
+
+export type BusinessDatabaseModel = AbnLookupResult &
+  BusinessPersonalInfo & { _id: string } & {
+    reviews: BusinessReviewData[];
+    rating: number;
+    totalReviews: number;
+  };
+
+type BusinessReviewData = {
+  caption: string;
   description: string;
   rating: number;
   date: string;
   user: {
-    name: string;
+    username: string;
+    _id: string;
   };
-}[];
-
-export type BusinessDatabaseModel = AbnLookupResult &
-  BusinessPersonalInfo & { _id: string };
+  _id: string;
+};

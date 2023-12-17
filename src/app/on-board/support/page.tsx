@@ -1,18 +1,25 @@
 "use client";
 
-import { getBusiness, postBusinessData } from "@/actions/businessData";
+import { getBusiness, updateBusinessData } from "@/actions/businessData";
 import DynamicInput from "@/components/DynamicInput";
+import CustomButton from "@/components/ui/CustomButton";
 import {
   agesSupportedOptions,
   genderOfAttendanceOptions,
   selectLanguages,
 } from "@/constants/constants";
+import { useFeatureContext } from "@/context/feature/FeatureContext";
 import { BusinessPersonalInfo, serviceAgeNames } from "@/types/business";
 import { generateSelectDefault } from "@/utils/utils";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Select from "react-select";
 
 const Support = () => {
+  const router = useRouter();
+  const { displayAlert } = useFeatureContext();
+  const [loading, setLoading] = useState<boolean>(false);
+
   const [disabilitySpecialities, setDisabilitySpecialities] = useState<
     string[]
   >([]);
@@ -21,11 +28,11 @@ const Support = () => {
   );
 
   const [genderOfAttendants, setGenderOfAttendants] = useState<string[]>([]);
-
   const [languages, setLanguages] = useState<string[]>([]);
   const [agesSupported, setAgesSupported] = useState<serviceAgeNames[]>([]);
 
   const handleSubmit = async () => {
+    setLoading(true);
     const infos = {
       languages,
       agesSupported,
@@ -33,8 +40,14 @@ const Support = () => {
       providerSpecialSkills,
       disabilitySpecialities,
     };
-    const data = await postBusinessData(infos);
-    console.log(JSON.parse(data as string));
+    const data = await updateBusinessData(infos!);
+    if (data.success) {
+      displayAlert(data.message, true);
+      router.push("/on-board/contacts");
+    } else {
+      displayAlert(data.message, false);
+    }
+    setLoading(false);
   };
 
   const setInitialData = async () => {
@@ -69,8 +82,8 @@ const Support = () => {
   }, []);
 
   return (
-    <div className="space-y-12">
-      <div className="border-b border-gray-900/10 pb-12">
+    <div className="space-y-6 md:space-y-12 mb-8">
+      <div className="border-b border-gray-900/10 pb-4 md:pb-12">
         <h2 className="text-base font-semibold leading-7 text-gray-900">
           Business Support
         </h2>
@@ -79,7 +92,7 @@ const Support = () => {
         </p>
       </div>
       <div>
-        <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+        <div className="mt-4 md:mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
           <div className="col-span-3">
             <label
               htmlFor="gender"
@@ -129,7 +142,7 @@ const Support = () => {
             />
           </div>
 
-          <div className="col-span-full">
+          <div className="col-span-3 md:col-span-full">
             <label
               htmlFor="ages_supported"
               className="block text-sm font-medium leading-6 mb-2 text-gray-900"
@@ -153,14 +166,14 @@ const Support = () => {
               classNamePrefix="select"
             />
           </div>
-          <div className="col-span-full">
+          <div className="col-span-3 md:col-span-full">
             <DynamicInput
               name="Disability Specialities"
               data={disabilitySpecialities}
               setData={setDisabilitySpecialities}
             />
           </div>
-          <div className="col-span-full">
+          <div className="col-span-3 md:col-span-full">
             <DynamicInput
               name="Provider Special Skills"
               data={providerSpecialSkills}
@@ -171,20 +184,10 @@ const Support = () => {
       </div>
 
       {/* //! Submit buttons */}
-      <div className="my-6 flex items-center justify-end gap-x-6">
-        <button
-          type="button"
-          className="text-sm font-semibold leading-6 text-gray-900"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={handleSubmit}
-          type="submit"
-          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
+      <div className="my-6">
+        <CustomButton isLoading={loading} onClick={handleSubmit} type="submit">
           Save
-        </button>
+        </CustomButton>
       </div>
     </div>
   );

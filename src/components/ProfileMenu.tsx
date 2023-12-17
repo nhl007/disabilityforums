@@ -6,27 +6,34 @@ import { signOut, useSession } from "next-auth/react";
 
 const ProfileMenu = () => {
   const { data } = useSession();
-  const [menu, setMenu] = useState(false);
 
-  if (!data?.user) return null;
+  const [menu, setMenu] = useState(false);
 
   return (
     <div>
       <button onClick={() => setMenu((prev) => !prev)}>
-        <Image
-          id="avatarButton"
-          height={32}
-          width={32}
-          className="w-8 h-8 rounded-full"
-          src="https://disabilityforums.com.au/user_avatar/disabilityforums.com.au/nihal/96/13_2.png"
-          alt="User dropdown"
-        />
+        {data?.user.image ? (
+          <Image
+            id="avatarButton"
+            height={32}
+            width={32}
+            className="w-8 h-8 rounded-full"
+            src={data.user.image}
+            alt="User dropdown"
+          />
+        ) : (
+          <div className="w-8 h-8 rounded-full flex justify-center items-center bg-slate-400">
+            <span> {data?.user.name?.charAt(0).toUpperCase()}</span>
+          </div>
+        )}
       </button>
       {menu && (
         <div className="z-10 absolute right-0 bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
-          <div className="px-4 py-3 text-sm text-gray-900 ">
-            <div>Bonnie Green</div>
-            <div className="font-medium truncate">name@flowbite.com</div>
+          <div className="flex flex-col px-4 py-3 text-sm text-gray-900 ">
+            <span className=" text-lg font-bold">
+              {data?.user.name?.toLocaleUpperCase()}
+            </span>
+            <span className="font-medium truncate">{data?.user.email}</span>
           </div>
           <ul
             className="py-2 text-sm text-gray-700"

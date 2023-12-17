@@ -1,23 +1,56 @@
 "use client";
 
-import { postBusinessData } from "@/actions/businessData";
+import { getBusiness, updateBusinessData } from "@/actions/businessData";
+import CustomButton from "@/components/ui/CustomButton";
 import {
   selectDeliveryOptions,
   selectOptions,
   selectPaymentOptions,
 } from "@/constants/constants";
+import { useFeatureContext } from "@/context/feature/FeatureContext";
 import { BusinessPersonalInfo } from "@/types/business";
-import { useState } from "react";
-import Select, { MultiValue } from "react-select";
+import { generateSelectDefault } from "@/utils/utils";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import Select from "react-select";
 
 const About = () => {
+  const router = useRouter();
   const [about, setAbout] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [paymentTypes, setPaymentTypes] = useState<string[]>([]);
   const [services, setServices] = useState<string[]>([]);
   const [deliveryOptions, setDeliveryOptions] = useState<string[]>([]);
 
+  const { displayAlert } = useFeatureContext();
+
+  const setInitialData = async () => {
+    const resp = await getBusiness([
+      "about",
+      "paymentTypes",
+      "services",
+      "deliveryOptions",
+    ]);
+
+    const data: Pick<
+      BusinessPersonalInfo,
+      "about" | "paymentTypes" | "services" | "deliveryOptions"
+    > = JSON.parse(resp);
+
+    if (data) {
+      setAbout(data.about);
+      setPaymentTypes(data.paymentTypes);
+      setServices(data.services);
+      setDeliveryOptions(data.deliveryOptions);
+    }
+  };
+
+  useEffect(() => {
+    setInitialData();
+  }, []);
+
   const handleSubmit = async () => {
+    setLoading(true);
     const infos = {
       about,
       paymentTypes,
@@ -25,13 +58,18 @@ const About = () => {
       deliveryOptions,
     };
 
-    const data = await postBusinessData(infos);
-
-    console.log(data);
+    const data = await updateBusinessData(infos!);
+    if (data.success) {
+      displayAlert(data.message, true);
+      router.push("/on-board/support");
+    } else {
+      displayAlert(data.message, false);
+    }
+    setLoading(false);
   };
   return (
-    <div className="space-y-12">
-      <div className="border-b border-gray-900/10 pb-12">
+    <div className="space-y-6 md:space-y-12 mb-8">
+      <div className="border-b border-gray-900/10 md:pb-12 pb-4">
         <h2 className="text-base font-semibold leading-7 text-gray-900">
           About Business
         </h2>
@@ -40,8 +78,8 @@ const About = () => {
         </p>
       </div>
       <div>
-        <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-          <div className="col-span-full">
+        <div className=" mt-4 md:mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+          <div className="md:col-span-full col-span-3">
             <label
               htmlFor="services"
               className="block text-sm font-medium leading-6 mb-2 text-gray-900"
@@ -50,7 +88,7 @@ const About = () => {
             </label>
             <Select
               id="services"
-              defaultValue={null}
+              value={generateSelectDefault(services)}
               isMulti
               instanceId="services"
               name="services"
@@ -74,7 +112,7 @@ const About = () => {
             </label>
             <Select
               id="delivery_options"
-              defaultValue={null}
+              value={generateSelectDefault(deliveryOptions)}
               isMulti
               instanceId="delivery"
               name="delivery"
@@ -98,7 +136,7 @@ const About = () => {
             </label>
             <Select
               id="payment_types"
-              defaultValue={null}
+              value={generateSelectDefault(paymentTypes)}
               isMulti
               instanceId="payment"
               name="payment"
@@ -113,7 +151,7 @@ const About = () => {
               classNamePrefix="select"
             />
           </div>
-          <div className="col-span-full">
+          <div className="md:col-span-full col-span-3">
             <label
               htmlFor="about"
               className="block text-sm font-medium leading-6 text-gray-900"
@@ -125,8 +163,8 @@ const About = () => {
                 id="about"
                 name="about"
                 rows={3}
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                defaultValue={""}
+                className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400  text-sm md:text-base sm:leading-6"
+                value={about}
                 onChange={(e) => setAbout(e.target.value)}
               />
             </div>
@@ -138,53 +176,13 @@ const About = () => {
       </div>
 
       {/* //! Submit buttons */}
-      <div className="my-6 flex items-center justify-end gap-x-6">
-        <button
-          type="button"
-          className="text-sm font-semibold leading-6 text-gray-900"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={handleSubmit}
-          type="submit"
-          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
+      <div className="my-6">
+        <CustomButton isLoading={loading} onClick={handleSubmit} type="submit">
           Save
-        </button>
+        </CustomButton>
       </div>
     </div>
   );
 };
 
 export default About;
-
-//   <optgroup label="Home Maintenance">
-//     <option value="6642">Cleaning</option>
-//     <option value="12179">Gardening</option>
-//     <option value="13209">Yard Maintenance</option>
-//     <option value="9533">Handyperson &amp; Repairs</option>
-//   </optgroup>
-//   <optgroup label="Housing">
-//     <option value="9388">ILO</option>
-//     <option value="9387">Specialist Disability Accommodation (SDA)</option>
-//     <option value="12540">Medium Term Accommodation</option>
-//     <option value="4922">Respite/Short Term Accommodation</option>
-//     <option value="8934">Supported Independent Living (SIL)</option>
-//   </optgroup>
-//   <optgroup label="Social, Health &amp; Wellbeing">
-//     <option value="268">Social Programs &amp; Activities</option>
-//     <option value="9157">Personal Training</option>
-//     <option value="11264">Family and Peer Support Groups</option>
-//   </optgroup>
-//   <optgroup label="Children">
-//     <option value="290">Early Intervention &amp; Children</option>
-//   </optgroup>
-//   <optgroup label="Employment">
-//     <option value="13215">Finding and Keeping a Job</option>
-//     <option value="13216">SLES</option>
-//   </optgroup>
-//   <optgroup label="Equipment">
-//     <option value="6561">Disability Aids</option>
-//   </optgroup>
-// </select>;

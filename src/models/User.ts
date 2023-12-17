@@ -1,6 +1,42 @@
 import { Schema, model, models } from "mongoose";
 import isEmail from "validator/lib/isEmail";
 
+const UserSchema = new Schema({
+  email: {
+    type: String,
+    unique: [true, "Email already exists!"],
+    required: [true, "Email is required!"],
+    validate: [isEmail, "Please enter a valid email address"],
+  },
+  discourseId: {
+    type: Number,
+  },
+  avatar: {
+    type: String,
+  },
+  name: {
+    type: String,
+  },
+  username: {
+    type: String,
+    unique: [true, "Username already exists!"],
+    required: [true, "Please enter your username!"],
+  },
+  password: {
+    type: String,
+    required: [true, "Please enter your password"],
+    select: false,
+  },
+  created_at: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const User = models.User || model("User", UserSchema);
+
+export default User;
+
 // const sample = {
 //   id: 4,
 //   username: "nihal",
@@ -26,40 +62,3 @@ import isEmail from "validator/lib/isEmail";
 //   topics_entered: 0,
 //   post_count: 0,
 // };
-
-const UserSchema = new Schema({
-  email: {
-    type: String,
-    unique: [true, "Email already exists!"],
-    required: [true, "Email is required!"],
-    validate: [isEmail, "Please enter a valid email address"],
-  },
-  discourseId: {
-    type: Number,
-  },
-  avatar: {
-    type: String,
-  },
-  name: {
-    type: String,
-  },
-  username: {
-    type: String,
-    unique: [true, "Username already exists!"],
-    required: [true, "Please enter your username!"],
-  },
-  password: {
-    type: String,
-    required: [true, "Please enter your password"],
-    minLength: [8, "Password must be at least 8 characters long!"],
-    select: false,
-  },
-  created_at: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-const User = models.User || model("User", UserSchema);
-
-export default User;

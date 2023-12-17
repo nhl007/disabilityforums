@@ -1,6 +1,7 @@
 import { searchBusinesses } from "@/actions/businessData";
 import BusinessCard from "@/components/BusinessCard";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
+import RefineResults from "@/components/RefineResults";
 import { BusinessDatabaseModel } from "@/types/business";
 import Link from "next/link";
 
@@ -31,9 +32,14 @@ const page = async ({ searchParams }: BusinessSearchParams) => {
   return (
     <div className="py-10">
       <MaxWidthWrapper>
-        <div className="grid grid-flow-col">
-          <div className="col-span-1 min-w-[300px]">
-            <h1 className="text-xl font-semibold">Refine Results</h1>
+        <div className="grid grid-flow-col gap-x-2">
+          <div className="col-span-1 w-[300px] pr-8">
+            <h1 className="text-xl font-semibold  border-b-2 pb-3">
+              Refine Results
+            </h1>
+            <div>
+              <RefineResults />
+            </div>
           </div>
           <div className="col-span-3">
             <p className=" mb-4">Total 290 results</p>

@@ -25,7 +25,7 @@ const LocationDropdown = ({ state, suburbs, classNames }: Props) => {
           showSuburbs ? "" : "rounded-b-lg"
         } border-b-yellow-300 bg-yellow-light rounded-t-lg px-5 py-3`}
       >
-        <span>{state}</span>
+        <span className="line-clamp-1">{state}</span>
         <button onClick={() => setShowSuburbs((prev) => !prev)}>
           {showSuburbs ? <ChevronUp /> : <ChevronDown />}
         </button>

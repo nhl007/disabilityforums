@@ -15,9 +15,9 @@ export async function POST(request: Request) {
   try {
     const body: body = await request.json();
 
-    const { email, password } = body;
+    const { name, email, password } = body;
 
-    if (!email || !password) {
+    if (!name || !email || !password) {
       throw new Error("Missing fields!");
     }
 
@@ -50,6 +50,7 @@ export async function POST(request: Request) {
       user = await User.create({
         email: email,
         password: hashedPassword,
+        username: name,
       });
     }
 

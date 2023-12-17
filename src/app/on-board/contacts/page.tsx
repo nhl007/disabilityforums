@@ -1,18 +1,49 @@
 "use client";
 
-import { postBusinessData } from "@/actions/businessData";
+import { getBusiness, updateBusinessData } from "@/actions/businessData";
 import ServiceLocationInput from "@/components/ServiceLocationInput";
-import { serviceLocationsType } from "@/types/business";
-import { useState } from "react";
+import CustomButton from "@/components/ui/CustomButton";
+import CustomInput from "@/components/ui/CustomInput";
+import { useFeatureContext } from "@/context/feature/FeatureContext";
+import { BusinessPersonalInfo, serviceLocationsType } from "@/types/business";
+// import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const Contact = () => {
+  // const router = useRouter();
+  const { displayAlert } = useFeatureContext();
+
+  const [loading, setLoading] = useState<boolean>(false);
   const [serviceLocations, setServiceLocations] =
     useState<serviceLocationsType>([]);
   const [email, setEmail] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [website, setWebsite] = useState<string>("");
 
+  const setInitialData = async () => {
+    const resp = await getBusiness(["contact", "serviceLocations"]);
+
+    const data: Pick<BusinessPersonalInfo, "contact" | "serviceLocations"> =
+      JSON.parse(resp);
+
+    console.log(data);
+
+    if (data) {
+      setServiceLocations(data.serviceLocations);
+      if (data.contact) {
+        setEmail(data.contact.email);
+        setPhone(data.contact.phone);
+        setWebsite(data.contact.website);
+      }
+    }
+  };
+
+  useEffect(() => {
+    setInitialData();
+  }, []);
+
   const handleSubmit = async () => {
+    setLoading(true);
     const infos = {
       serviceLocations,
       contact: {
@@ -21,12 +52,19 @@ const Contact = () => {
         website,
       },
     };
-    const data = await postBusinessData(infos);
-    console.log(JSON.parse(data as string));
+    const data = await updateBusinessData(infos!);
+    if (data.success) {
+      displayAlert(data.message, true);
+      // router.push("/on-board/support");
+    } else {
+      displayAlert(data.message, false);
+    }
+    setLoading(false);
   };
+
   return (
-    <div className="space-y-12">
-      <div className="border-b border-gray-900/10 pb-12">
+    <div className="space-y-6 md:space-y-12 mb-8">
+      <div className="border-b border-gray-900/10 md:pb-12 pb-4">
         <h2 className="text-base font-semibold leading-7 text-gray-900">
           Contact Information
         </h2>
@@ -35,7 +73,7 @@ const Contact = () => {
         </p>
       </div>
       <div>
-        <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+        <div className="mt-4 md:mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
           <div className="sm:col-span-2 sm:col-start-1">
             <label
               htmlFor="phone"
@@ -44,13 +82,13 @@ const Contact = () => {
               Phone
             </label>
             <div className="mt-2">
-              <input
+              <CustomInput
                 onChange={(e) => setPhone(e.target.value)}
+                value={phone}
                 type="text"
                 name="phone"
                 id="phone"
                 autoComplete="phone"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
           </div>
@@ -63,14 +101,14 @@ const Contact = () => {
               Email
             </label>
             <div className="mt-2">
-              <input
+              <CustomInput
                 onChange={(e) => setEmail(e.target.value)}
+                value={email}
                 type="text"
                 name="email"
                 id="email"
                 autoComplete="email"
                 // autoComplete="address-level1"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
           </div>
@@ -83,13 +121,13 @@ const Contact = () => {
               website
             </label>
             <div className="mt-2">
-              <input
+              <CustomInput
                 onChange={(e) => setWebsite(e.target.value)}
+                value={website}
                 type="text"
                 name="website"
                 id="website"
                 autoComplete="website"
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
           </div>
@@ -109,20 +147,10 @@ const Contact = () => {
       </div>
 
       {/* //! Submit buttons */}
-      <div className="my-6 flex items-center justify-end gap-x-6">
-        <button
-          type="button"
-          className="text-sm font-semibold leading-6 text-gray-900"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={handleSubmit}
-          type="submit"
-          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
+      <div className="my-6 ">
+        <CustomButton isLoading={loading} onClick={handleSubmit} type="submit">
           Save
-        </button>
+        </CustomButton>
       </div>
     </div>
   );

@@ -61,14 +61,14 @@ interface Business extends BusinessPersonalInfo {
 
 interface BusinessDocument extends Business, Document {}
 
-const BusinessSchema = new Schema<BusinessDocument>({
+const BusinessSchema = new Schema({
   discourseId: {
     type: Number,
     required: [true, "The discourse id is required!"],
   },
   Abn: {
     type: String,
-    required: [true, "The abn is required!"],
+    required: [true, "The abn number is required!"],
   },
   AbnStatus: {
     type: String,
@@ -156,6 +156,7 @@ const BusinessSchema = new Schema<BusinessDocument>({
   },
   about: {
     type: String,
+    default: "",
   },
   services: {
     type: [String],
@@ -174,34 +175,41 @@ const BusinessSchema = new Schema<BusinessDocument>({
   },
   reviews: [
     {
-      tag: {
+      caption: {
         type: String,
       },
       description: {
         type: String,
       },
       rating: {
-        type: String,
+        type: Number,
       },
       date: {
         type: Date,
         default: Date.now(),
       },
       user: {
-        name: {
-          type: String,
-        },
-      },
-      rank: {
-        type: Number,
+        type: Schema.Types.ObjectId,
+        ref: "User",
       },
     },
   ],
+  rank: {
+    type: Number,
+    default: 0,
+  },
+  totalReviews: {
+    type: Number,
+    default: 0,
+  },
+  rating: {
+    type: Number,
+    default: 0,
+  },
 });
 
 BusinessSchema.index({ location: "2dsphere" });
 
-const Business =
-  models.Business || model<BusinessDocument>("Business", BusinessSchema);
+const Business = models.Business || model("Business", BusinessSchema);
 
 export default Business;

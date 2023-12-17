@@ -3,6 +3,8 @@ import { Check, X } from "lucide-react";
 import { SetStateAction, useState } from "react";
 import DynamicInput from "./DynamicInput";
 import LocationDropdown from "./LocationDropdown";
+import CustomInput from "./ui/CustomInput";
+import { useFeatureContext } from "@/context/feature/FeatureContext";
 
 interface LocationProps {
   data: serviceLocationsType;
@@ -12,8 +14,12 @@ interface LocationProps {
 const ServiceLocationInput = ({ data, setData }: LocationProps) => {
   const [suburbs, setSuburbs] = useState<string[]>([]);
   const [curr, setCurr] = useState<string>("");
+  const { displayAlert } = useFeatureContext();
 
   const addToList = () => {
+    if (!suburbs.length || curr.length < 2) {
+      return displayAlert("State or suburbs missing!", false);
+    }
     setData([
       ...data,
       {
@@ -35,35 +41,40 @@ const ServiceLocationInput = ({ data, setData }: LocationProps) => {
       <div className="flex flex-col mt-2 col-span-2 gap-2">
         <div>
           <label
-            htmlFor="phone"
+            htmlFor="state"
             className="block text-sm font-medium leading-6 text-gray-900"
           >
             State
           </label>
-          <input
+          <CustomInput
+            id="state"
             type="text"
             value={curr}
             onChange={(e) => setCurr(e.target.value)}
-            className="block w-[50%] pl-4 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            className="w-[200px]"
           />
         </div>
         <DynamicInput name="Suburbs" data={suburbs} setData={setSuburbs} />
         <button
-          className=" w-fit bg-green-600 text-white px-5 py-2 rounded-md mb-4 flex"
+          className=" w-fit bg-green-600 text-white px-5 py-2 rounded-md mb-4 flex mt-2"
           onClick={addToList}
         >
-          Add Location Details
+          Confirm Location Details
           <Check />
         </button>
       </div>
-      <div className="flex gap-4">
+      <h2 className=" text-xl font-bold my-2">
+        Inserted Service Location Records
+      </h2>
+      <div className="flex flex-wrap gap-4">
         {data.length
           ? data.map((loc, i) => {
               return (
-                <div className="relative" key={loc.state}>
+                <div className="relative" key={loc.state + i}>
                   <LocationDropdown state={loc.state} suburbs={loc.suburbs} />
                   <X
-                    className=" absolute top-[-4px] right-[-4px] text-red-400 cursor-pointer"
+                    size={16}
+                    className=" absolute top-[2px] right-[2px] text-red-400 cursor-pointer"
                     onClick={() => removeItem(i)}
                   />
                 </div>

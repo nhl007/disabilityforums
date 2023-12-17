@@ -68,6 +68,7 @@ export async function getDiscourseCategories() {
 
 export async function rankBusiness(username: string) {
   const data = await discourseSearchPosts(username);
+  console.log(data);
   let rank = 0;
   const count = data.length;
   data.map((post: any) => {

@@ -10,7 +10,7 @@ const BorderBox = ({ children, className, ...props }: BorderBoxProps) => {
     <div
       {...props}
       className={cn(
-        "p-[20px] rounded-xl border-[1px] border-gray-500",
+        "p-[20px] rounded-xl border-[0.5px] border-gray-500",
         className
       )}
     >

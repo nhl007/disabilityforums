@@ -1,14 +1,11 @@
-import LoginForm from "@/components/LoginForm";
+import SignIn from "@/components/SignIn";
 
-import React from "react";
-
-const SignIn = () => {
+const Login = () => {
   return (
-    <div>
-      <h1 className="text-center text-2xl">Sign In</h1>
-      <LoginForm />
+    <div className="w-full h-full">
+      <SignIn />
     </div>
   );
 };
 
-export default SignIn;
+export default Login;

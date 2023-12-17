@@ -3,10 +3,11 @@
 import { popularServices, selectOptions } from "@/constants/constants";
 import { LucideWorkflow, MapPin, Search } from "lucide-react";
 import MaxWidthWrapper from "./MaxWidthWrapper";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
-import { useRef, useState } from "react";
+import { FormEvent, useState } from "react";
 import Select from "react-select";
+import { generateSelectDefault } from "@/utils/utils";
 
 const SearchBar = () => {
   const customStyles: any = {
@@ -14,81 +15,94 @@ const SearchBar = () => {
       ...base,
       height: 71,
       minHeight: 30,
+      boxShadow: "none",
       borderColor: "#e5e7eb",
       borderWidth: 1,
       borderRadius: 0,
+      "&:hover": {
+        outline: "none",
+      },
     }),
   };
 
-  const [keyWord, setKeyWord] = useState("");
+  const [keyword, setKeyword] = useState("");
   const [postCode, setPostCode] = useState("");
-  const [radius, setRadius] = useState("");
   const [category, setCategory] = useState("");
-  const selectRef = useRef<HTMLSelectElement>(null);
-
-  const selectCategory = (category: string) => {
-    setCategory(() => category);
-    if (selectRef.current) {
-      selectRef.current.selectedIndex = 1;
-    }
-  };
+  const [radius, setRadius] = useState("15");
 
   const path = usePathname();
+  const router = useRouter();
+
+  const onSearchSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    const url = `/directory/s?keyword=${keyword}&category=${category}&postalCode=${postCode}&radius=${radius}`;
+    router.push(url);
+  };
 
   return (
     <section className=" bg-bg-banner py-12">
       <MaxWidthWrapper>
         <div className="flex flex-col rounded-2xl p-6 bg-bg-main">
-          <h1 className=" text-2xl ">
+          <h1 className=" text-xl md:text-2xl font-bold tracking-normal md:tracking-wide">
             Connecting you with local NDIS providers that have immediate
             availability
           </h1>
-          <form className="flex mt-4" action="/directory/s">
-            <div className="relative w-[270px]">
+          <form
+            className="flex flex-col md:flex-row mt-4"
+            onSubmit={onSearchSubmit}
+          >
+            <div className="relative">
               <Search className="absolute left-2 h-full flex justify-center items-center" />
               <input
-                onChange={(e) => setKeyWord(e.target.value)}
+                onChange={(e) => setKeyword(e.target.value)}
+                value={keyword}
                 placeholder="Keyword or Business Name"
                 name="keyword"
                 type="text"
-                className="rounded-l-[6px] py-3 text-base pl-[44px] pr-[16px] border w-[270px] h-[71px] focus:outline-none"
+                className="rounded-t-[6px] md:rounded-l-[6px] py-3 text-base pl-[44px] pr-[16px] border w-full md:w-[270px] h-[71px] focus:outline-none"
               />
             </div>
-            <div className=" w-[270px]">
+            <div>
               <Select
                 id="category"
-                defaultValue=""
+                value={generateSelectDefault(
+                  [category] ?? [
+                    {
+                      label: "Category",
+                      value: "",
+                    },
+                  ]
+                )}
                 instanceId="gender"
                 name="category"
-                // @ts-expect-error
                 options={selectOptions}
-                className="w-[270px] h-auto text-base"
-                // onChange={(val) => {
-                //   const data = val.map((d: any) => d.value);
-                //   setGenderOfAttendants(data);
-                // }}
+                className="w-full md:w-[270px] h-auto text-base"
+                onChange={(val) => {
+                  setCategory(val?.value ?? "");
+                }}
                 styles={customStyles}
                 isSearchable={true}
                 placeholder="Any Category"
               />
             </div>
 
-            <div className="relative w-[270px]">
+            <div className="relative">
               <MapPin className=" absolute left-2 h-full flex justify-center items-center" />
               <input
                 placeholder="Suburb or Post Code"
                 onChange={(e) => setPostCode(e.target.value)}
+                value={postCode}
                 name="postalCode"
                 type="text"
-                className=" py-3 text-base pl-[44px] pr-[16px] border w-[270px] h-[71px] focus:outline-none"
+                className=" py-3 text-base pl-[44px] pr-[16px] border w-full md:w-[270px] h-[71px] focus:outline-none"
               />
             </div>
-            <div className="relative w-[270px]">
+            <div className="relative">
               <select
                 onChange={(e) => setRadius(e.target.value)}
-                defaultValue={15}
+                value={radius}
                 name="radius"
-                className="rounded-r-[6px] py-3 text-base px-4 border w-[270px] h-[71px] focus:outline-none"
+                className="rounded-r-[6px] py-3 text-base px-4 border w-full md:w-[270px] h-[71px] focus:outline-none"
               >
                 <option value="1">Add radius of xx km</option>
                 <option value="2">2km</option>
@@ -104,23 +118,19 @@ const SearchBar = () => {
             </div>
             <button
               type="submit"
-              className="ml-2 bg-btn-orange px-4 w-full rounded-md"
+              className="mt-4 md:mt-0 md:ml-2 bg-btn-orange px-4 h-[71px] w-full rounded-md"
             >
               Search
             </button>
           </form>
-          <div className="flex flex-row gap-4 mt-4">
-            <div>
-              <label htmlFor="edit-ndis">
-                <input type="checkbox" id="edit-ndis" name="ndis" value="1" />
-                NDIS Registered only
-              </label>
+          <div className="flex flex-row gap-4 mt-4 font-semibold">
+            <div className="flex gap-2">
+              <input type="checkbox" id="edit-ndis" name="ndis" value="1" />
+              <label htmlFor="edit-ndis">NDIS Registered only</label>
             </div>
-            <div>
-              <label htmlFor="edit-ndis">
-                <input type="checkbox" id="edit-ndis" name="ndis" value="1" />
-                NDIS Registered only
-              </label>
+            <div className=" flex gap-2">
+              <input type="checkbox" id="edit-ndis" name="ndis" value="1" />
+              <label htmlFor="edit-ndis">Verified Only</label>
             </div>
           </div>
         </div>
@@ -134,9 +144,9 @@ const SearchBar = () => {
               {popularServices.map((service, index) => {
                 return (
                   <button
-                    onClick={() => selectCategory(service)}
+                    onClick={() => setCategory(service)}
                     key={index}
-                    className=" flex gap-2 bg-btn-main rounded-md text-[18px] leading-[27px] text-center py-3 px-3"
+                    className=" flex gap-2 bg-btn-main rounded-md text-[16px] font-medium leading-[27px] text-center py-3 px-3"
                   >
                     <LucideWorkflow />
                     {service}

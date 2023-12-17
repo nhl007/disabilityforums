@@ -1,31 +1,77 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { searchValidABN } from "@/actions/abrApi";
 import { AbnLookupResult } from "@/types/business";
 import CustomButton from "./ui/CustomButton";
-import { X } from "lucide-react";
-import { postBusinessData } from "@/actions/businessData";
+import { Search, X } from "lucide-react";
+import { getBusiness, postBusinessData } from "@/actions/businessData";
+import { useFeatureContext } from "@/context/feature/FeatureContext";
+import CustomInput from "./ui/CustomInput";
+import { useRouter } from "next/navigation";
 
 const AbnLookupForm = () => {
+  const router = useRouter();
   const [abnDetails, setAbnDetails] = useState<Partial<AbnLookupResult> | null>(
     null
   );
   const [abn, setAbn] = useState<string>("");
   const [loading, setIsLoading] = useState<boolean>(false);
 
+  const { displayAlert } = useFeatureContext();
+
   const searchAbn = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
+    setIsLoading(true);
     const data = await searchValidABN(abn);
-    console.log(data);
-    setAbnDetails(() => data);
+    if (data) {
+      setAbnDetails(() => data);
+    } else {
+      displayAlert("Please enter a valid ABN!", false);
+    }
+    setIsLoading(false);
   };
 
   const confirmAbnDetails = async () => {
+    setIsLoading(true);
     const data = await postBusinessData(abnDetails!);
-    console.log(data);
+    if (data.success) {
+      displayAlert(data.message, true);
+      router.push("/on-board/about");
+    } else {
+      displayAlert(data.message, false);
+    }
+    setIsLoading(false);
   };
+
+  const setInitialData = async () => {
+    const resp = await getBusiness([
+      "Abn",
+      "AbnStatus",
+      "AbnStatusEffectiveFrom",
+      "Acn",
+      "AddressDate",
+      "AddressPostcode",
+      "AddressState",
+      "BusinessName",
+      "EntityName",
+      "EntityTypeCode",
+      "EntityTypeName",
+      "Gst",
+    ]);
+
+    const data: AbnLookupResult = JSON.parse(resp);
+
+    if (data) {
+      setAbn(data.Abn);
+      setAbnDetails(data);
+    }
+  };
+
+  useEffect(() => {
+    setInitialData();
+  }, []);
 
   return (
     <div>
@@ -37,8 +83,8 @@ const AbnLookupForm = () => {
           Registered ABN Number <span className=" text-red-600">*</span>
         </label>
         <div className="mt-2">
-          <div className="flex gap-4 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-            <input
+          <div className="flex gap-4 rounded-md shadow-sm sm:max-w-md">
+            <CustomInput
               onChange={(e) => {
                 setAbn(e.target.value);
               }}
@@ -47,10 +93,9 @@ const AbnLookupForm = () => {
               name="abn"
               id="abn"
               pattern="^[0-9\s]*$"
-              className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
               placeholder="abn number"
             />
-            {abnDetails && (
+            {abnDetails ? (
               <button
                 onClick={() => {
                   setAbn("");
@@ -59,6 +104,16 @@ const AbnLookupForm = () => {
               >
                 <X />
               </button>
+            ) : (
+              <CustomButton
+                disabled={abn.length <= 7}
+                // disabled
+                onClick={searchAbn}
+                type="button"
+                isLoading={loading}
+              >
+                <Search />
+              </CustomButton>
             )}
           </div>
         </div>
@@ -81,12 +136,11 @@ const AbnLookupForm = () => {
                 Abn Status
               </label>
               <div className="mt-2">
-                <input
+                <CustomInput
                   disabled
                   type="text"
                   name="status"
                   value={abnDetails.Acn}
-                  className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -99,12 +153,11 @@ const AbnLookupForm = () => {
                 ACN
               </label>
               <div className="mt-2">
-                <input
+                <CustomInput
                   disabled
                   type="text"
                   name="ACN"
                   value={abnDetails.Acn}
-                  className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -117,12 +170,11 @@ const AbnLookupForm = () => {
                 ABN Active From
               </label>
               <div className="mt-2">
-                <input
+                <CustomInput
                   disabled
                   type="text"
                   name="activeFrom"
                   value={abnDetails.AbnStatusEffectiveFrom}
-                  className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -135,7 +187,7 @@ const AbnLookupForm = () => {
                 Business Name
               </label>
               <div className="mt-2">
-                <input
+                <CustomInput
                   disabled
                   type="text"
                   name="businessName"
@@ -144,7 +196,6 @@ const AbnLookupForm = () => {
                       ? abnDetails.BusinessName[0]
                       : "No name found"
                   }
-                  className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -157,12 +208,11 @@ const AbnLookupForm = () => {
                 GST
               </label>
               <div className="mt-2">
-                <input
+                <CustomInput
                   disabled
                   type="text"
                   name="gst"
                   value={abnDetails.Gst}
-                  className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -175,12 +225,11 @@ const AbnLookupForm = () => {
                 Entity Type Code
               </label>
               <div className="mt-2">
-                <input
+                <CustomInput
                   disabled
                   type="text"
                   name="entityTypeCode"
                   value={abnDetails.EntityTypeCode}
-                  className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -193,11 +242,10 @@ const AbnLookupForm = () => {
                 Entity Name
               </label>
               <div className="mt-2">
-                <input
+                <CustomInput
                   disabled
                   type="text"
                   value={abnDetails.EntityName}
-                  className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -209,11 +257,10 @@ const AbnLookupForm = () => {
                 Entity Type Name
               </label>
               <div className="mt-2">
-                <input
+                <CustomInput
                   disabled
                   type="text"
                   value={abnDetails.EntityTypeName}
-                  className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -226,13 +273,12 @@ const AbnLookupForm = () => {
                 Post Code
               </label>
               <div className="mt-2">
-                <input
+                <CustomInput
                   disabled
                   type="text"
                   name="postCode"
                   id="postCode"
                   value={abnDetails.AddressPostcode}
-                  className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -245,13 +291,12 @@ const AbnLookupForm = () => {
                 AddressState
               </label>
               <div className="mt-2">
-                <input
+                <CustomInput
                   disabled
                   type="text"
                   name="addressState"
                   id="addressState"
                   value={abnDetails.AddressState}
-                  className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -264,23 +309,22 @@ const AbnLookupForm = () => {
                 Address Date
               </label>
               <div className="mt-2">
-                <input
+                <CustomInput
                   type="text"
                   name="address_date"
                   id="address_date"
                   value={abnDetails.AddressDate}
                   disabled
-                  className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
           </div>
         </div>
       ) : (
-        <div>No Details Available</div>
+        <div className="mt-2">No Details Available</div>
       )}
 
-      <div className="my-6 flex items-center justify-end gap-x-6">
+      <div className="my-6">
         {abn && abnDetails ? (
           <CustomButton
             onClick={confirmAbnDetails}
@@ -289,17 +333,7 @@ const AbnLookupForm = () => {
           >
             Confirm
           </CustomButton>
-        ) : (
-          <CustomButton
-            disabled={abn.length <= 7}
-            // disabled
-            onClick={searchAbn}
-            type="button"
-            isLoading={loading}
-          >
-            Search
-          </CustomButton>
-        )}
+        ) : null}
       </div>
     </div>
   );

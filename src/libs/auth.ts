@@ -8,7 +8,7 @@ export const authOptions: AuthOptions = {
   pages: {
     newUser: "/directory",
     signIn: "/sign-in",
-    signOut: "/",
+    signOut: "/sign-in",
   },
   providers: [
     CredentialsProvider({
@@ -26,8 +26,6 @@ export const authOptions: AuthOptions = {
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Please enter an email and password");
         }
-
-        console.log("error here", credentials);
 
         await connectToDB();
 
@@ -55,14 +53,16 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async session({ session }) {
       //! store the user id from MongoDB to session
-
-      console.log("I ran in session");
       await connectToDB();
-      const sessionUser = await User.findOne({ email: session.user?.email });
-      session.user.id = sessionUser._id;
-      session.user.discourse_id = sessionUser.discourseId;
-      session.user.name = sessionUser.name;
-      session.user.image = sessionUser.avatar;
+      const sessionUser: UserType | null = await User.findOne({
+        email: session.user?.email,
+      }).lean();
+      if (sessionUser) {
+        session.user.id = sessionUser._id;
+        session.user.discourse_id = sessionUser.discourseId;
+        session.user.name = sessionUser.username;
+        session.user.image = sessionUser.avatar;
+      }
       return session;
     },
   },

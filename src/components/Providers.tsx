@@ -1,5 +1,6 @@
 "use client";
 
+import FeatureProvider from "@/context/feature/FeatureContext";
 import { SessionProvider } from "next-auth/react";
 
 export default function AppProvider({
@@ -9,7 +10,9 @@ export default function AppProvider({
 }) {
   return (
     <>
-      <SessionProvider>{children}</SessionProvider>
+      <SessionProvider>
+        <FeatureProvider>{children}</FeatureProvider>
+      </SessionProvider>
     </>
   );
 }
