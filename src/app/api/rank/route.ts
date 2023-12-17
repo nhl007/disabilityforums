@@ -1,9 +1,19 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse } from "next/server";
+type body = {
+  userId: string;
+  postId: string;
+};
 
-export async function GET(req: NextApiRequest, res: NextApiResponse) {
-  const query = req.query;
+export async function POST(req: Request) {
+  const body: body = await req.json();
 
-  res.json({
-    query: query,
-  });
+  const { userId, postId } = body;
+
+  return NextResponse.json(
+    {
+      user: userId,
+      post: postId,
+    },
+    { status: 200 }
+  );
 }
