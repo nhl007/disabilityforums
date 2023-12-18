@@ -2,14 +2,10 @@ import mongoose from "mongoose";
 
 const environment = process.env.NODE_ENV;
 
-console.log(environment);
-
-// const uri: string =
-//   environment === "production"
-//     ? (process.env.DB_PRODUCTION_URI as string)
-//     : (process.env.DB_LOCAl_URI as string);
-
-const uri: string = process.env.DB_PRODUCTION_URI as string;
+const uri: string =
+  environment === "production"
+    ? (process.env.DB_PRODUCTION_URI as string)
+    : (process.env.DB_LOCAl_URI as string);
 
 let isConnected = false;
 

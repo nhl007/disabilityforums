@@ -6,7 +6,9 @@ const page = () => {
   return (
     <div>
       <MaxWidthWrapper>
-        <FeaturedBusiness AddressState="QLD" />
+        {topStates.map((state) => {
+          return <FeaturedBusiness key={state} AddressState={state} />;
+        })}
       </MaxWidthWrapper>
     </div>
   );

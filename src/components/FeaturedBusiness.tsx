@@ -32,6 +32,7 @@ const FeaturedBusiness = async ({ AddressState }: FeaturedBusinessProps) => {
                 about={b.about}
                 name={b.BusinessName.join(" ")}
                 services={b.services}
+                state={AddressState}
               />
             </Link>
           );
@@ -47,33 +48,35 @@ interface FeaturedBusinessCardProps {
   name: string;
   services: BusinessDatabaseModel["services"];
   about: string;
+  state: string;
 }
 
 const FeaturedBusinessCard = ({
   name,
   about,
   services,
+  state,
 }: FeaturedBusinessCardProps) => {
   return (
     <BorderBox className="w-[377px] h-[530px]">
-      <div className="flex flex-col gap-4 items-start h-full w-full">
+      <div className="flex flex-col gap-3 items-start h-full w-full">
         <div className="h-auto self-center justify-self-center place-self-center">
           <Image src="/image.jpg" alt="business" width={300} height={200} />
         </div>
         <h2 className=" text-lg font-medium">{name}</h2>
         <div className="flex gap-2">
-          <SmallVerificationBox>
+          <SmallVerificationBox className="py-1.5 px-3">
             <CheckCircle size={16} /> Verified
           </SmallVerificationBox>
         </div>
         <p className="w-sm line-clamp-3 text-sm break-words overflow-ellipsis">
           {about}
         </p>
-        <div className="mt-auto flex flex-col gap-1">
-          <span className="flex gap-1 items-center font-semibold">
-            <MapPin size={16} /> WA
+        <div className="mt-auto flex flex-col gap-1 h-[70px] overflow-hidden">
+          <span className="flex items-center font-semibold">
+            <MapPin size={16} /> {state}
           </span>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-y-0 gap-x-2 flex-wrap">
             {services.map((s, i) => {
               return (
                 <div className="flex gap-1 items-center" key={i}>

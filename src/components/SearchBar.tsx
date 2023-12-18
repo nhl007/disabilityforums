@@ -118,7 +118,7 @@ const SearchBar = () => {
             </div>
             <button
               type="submit"
-              className="mt-4 md:mt-0 md:ml-2 bg-btn-orange px-4 h-[71px] w-full rounded-md"
+              className="mt-4 md:mt-0 md:ml-2 bg-btn-orange md:text-lg text-txt-blue px-4 h-[71px] w-full rounded-md"
             >
               Search
             </button>
