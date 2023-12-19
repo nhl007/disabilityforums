@@ -5,7 +5,6 @@ const apiUrl = process.env.DISCOURSE_API_URL;
 const authHeaders = new Headers();
 
 authHeaders.append("api-key", process.env.DISCOURSE_API_KEY!);
-// authHeaders.append("api-username", process.env.DISCOURSE_API_USER_NAME!);
 authHeaders.append("Accept", "application/json");
 
 export async function getDiscourseUserById(id: number) {
@@ -18,7 +17,6 @@ export async function getDiscourseUserById(id: number) {
 
     return data;
   } catch (error) {
-    console.log(error);
     return null;
   }
 }
@@ -68,7 +66,7 @@ export async function getDiscourseCategories() {
 
 export async function rankBusiness(username: string) {
   const data = await discourseSearchPosts(username);
-  console.log(data);
+
   let rank = 0;
   const count = data.length;
   data.map((post: any) => {
