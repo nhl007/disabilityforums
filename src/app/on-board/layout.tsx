@@ -1,7 +1,7 @@
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import OnBoardingTabs from "@/components/OnBoardingTabs";
 
-const layout = ({ children }: { children: React.ReactNode }) => {
+const layout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <MaxWidthWrapper>
       <div className="border-b border-gray-900/10 pb-4 md:pb-6">

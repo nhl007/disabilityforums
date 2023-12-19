@@ -4,11 +4,8 @@ import { stringifyResponse } from "./../utils/utils";
 import { getAuthSession } from "@/libs/auth";
 import { connectToDB } from "@/libs/connectToDb";
 import Business from "@/models/Business";
-import {
-  BusinessDatabaseModel,
-  BusinessReviewData,
-  BusinessReviews,
-} from "@/types/business";
+import { BusinessDatabaseModel, BusinessReviewData } from "@/types/business";
+import { SearchParamsActions } from "@/types/common";
 import { getLatLngByPostalCode } from "@/utils/postalCodeSearch";
 import { Session } from "next-auth";
 
@@ -66,46 +63,87 @@ export async function updateBusinessData(data: Partial<BusinessDatabaseModel>) {
   }
 }
 
-export async function searchBusinesses(
-  postalCode: string = "",
-  searchTerm: string = "",
-  category: string = "",
-  radius: string | number = 15
-) {
+export async function searchBusinesses(searchParams: SearchParamsActions) {
   try {
     const query: Record<string, any> = {};
 
-    if (postalCode && postalCode.length > 2) {
-      const postalCoordinates = await getLatLngByPostalCode(postalCode);
+    const radius = searchParams.radius ? searchParams.radius : 15;
 
-      if (postalCoordinates) {
-        query.location = {
-          $near: {
-            $geometry: {
-              type: "Point",
-              coordinates: [postalCoordinates[0], postalCoordinates[1]],
-            },
-            $maxDistance: Number(radius) * 1000,
-          },
-        };
+    for (const [key, value] of Object.entries(searchParams)) {
+      // console.log(key, ":", value);
+      if (value) {
+        if (key === "postalCode" && value.length > 2) {
+          const postalCoordinates = await getLatLngByPostalCode(value);
+
+          if (postalCoordinates) {
+            query.location = {
+              $near: {
+                $geometry: {
+                  type: "Point",
+                  coordinates: [postalCoordinates[0], postalCoordinates[1]],
+                },
+                $maxDistance: Number(radius) * 1000,
+              },
+            };
+          }
+        }
+
+        if (key === "keyword") {
+          query.BusinessName = {
+            $in: [new RegExp(value, "i")],
+          };
+        }
+
+        if (key === "category") {
+          // If category is provided
+          query.services = {
+            $in: [new RegExp(value, "i")],
+          };
+        }
+        if (key === "disabilityExp") {
+          query.disabilitySpecialities = {
+            $in: value.split(","),
+          };
+        }
+        if (key === "delivery") {
+          query.deliveryOptions = {
+            $in: value.split(","),
+          };
+        }
+        if (key === "payment") {
+          query.paymentTypes = {
+            $in: value.split(","),
+          };
+        }
+        if (key === "age") {
+          query.agesSupported = {
+            $in: value.split(","),
+          };
+        }
+        if (key === "languages") {
+          query.languages = {
+            $in: value.split(","),
+          };
+        }
+        if (key === "other") {
+          query.providerSpecialSkills = {
+            $in: value.split(","),
+          };
+        }
+        if (key === "complexNeeds") {
+          query.complexNeedsSupported = {
+            $in: value.split(","),
+          };
+        }
+
+        //ndis
+        // autism: string;
       }
     }
 
-    if (searchTerm) {
-      query.BusinessName = {
-        $in: [new RegExp(searchTerm, "i")],
-      };
-    }
-
-    if (category) {
-      // If category is provided
-      query.services = {
-        $in: [new RegExp(category, "i")],
-      };
-    }
     await connectToDB();
     const doc = await Business.find(query)
-      .select("_id services about BusinessName")
+      .select("_id services about BusinessName rating")
       .limit(10);
     if (doc.length > 0) return stringifyResponse(doc);
     else return null;
@@ -127,9 +165,11 @@ export async function getBusiness(fields: Partial<DBKeys>[]) {
   try {
     await connectToDB();
 
-    const doc = await Business.findOne({ user: id }).select(fields.join(" "));
+    const doc = await Business.findOne({ user: id }).select(
+      "-_id " + fields.join(" ")
+    );
 
-    return JSON.stringify(doc);
+    return stringifyResponse({ data: doc, message: "success" });
   } catch (err) {
     console.log(err);
     return stringifyResponse({ data: null, message: "error" });

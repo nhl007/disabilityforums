@@ -5,7 +5,7 @@ import ServiceLocationInput from "@/components/ServiceLocationInput";
 import CustomButton from "@/components/ui/CustomButton";
 import CustomInput from "@/components/ui/CustomInput";
 import { useFeatureContext } from "@/context/feature/FeatureContext";
-import { BusinessPersonalInfo, serviceLocationsType } from "@/types/business";
+import { serviceLocationsType } from "@/types/business";
 // import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -23,18 +23,14 @@ const Contact = () => {
   const setInitialData = async () => {
     const resp = await getBusiness(["contact", "serviceLocations"]);
 
-    const data: Pick<BusinessPersonalInfo, "contact" | "serviceLocations"> =
-      JSON.parse(resp);
+    const data = JSON.parse(resp);
 
     console.log(data);
-
-    if (data) {
-      setServiceLocations(data.serviceLocations);
-      if (data.contact) {
-        setEmail(data.contact.email);
-        setPhone(data.contact.phone);
-        setWebsite(data.contact.website);
-      }
+    if (data.data) {
+      setServiceLocations(data.data.serviceLocations);
+      setEmail(data.data.contact.email);
+      setPhone(data.data.contact.phone);
+      setWebsite(data.data.contact.website);
     }
   };
 

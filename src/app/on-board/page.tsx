@@ -1,6 +1,6 @@
 import AbnLookupForm from "@/components/AbnLookupForm";
 
-const OnBoarding = () => {
+const OnBoarding = async () => {
   return (
     <div>
       <AbnLookupForm />

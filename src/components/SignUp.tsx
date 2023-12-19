@@ -7,6 +7,7 @@ import { signIn } from "next-auth/react";
 import { useFeatureContext } from "@/context/feature/FeatureContext";
 import Alert from "./Alert";
 import validator from "validator";
+import Link from "next/link";
 
 const SignUp = () => {
   const [email, setEmail] = useState<string | null>(null);
@@ -102,6 +103,12 @@ const SignUp = () => {
       <CustomButton className=" py-2" type="submit" isLoading={loading}>
         Register
       </CustomButton>
+      <p className="mt-2 ">
+        Already have an account?
+        <Link className="text-blue-400 border-b-2 ml-1" href="/sign-in">
+          Sign-in
+        </Link>
+      </p>
     </form>
   );
 };

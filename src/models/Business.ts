@@ -167,6 +167,9 @@ const BusinessSchema = new Schema({
   disabilitySpecialities: {
     type: [String],
   },
+  complexNeedsSupported: {
+    type: [String],
+  },
   languages: {
     type: [String],
   },

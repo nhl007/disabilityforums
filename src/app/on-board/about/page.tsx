@@ -32,16 +32,13 @@ const About = () => {
       "deliveryOptions",
     ]);
 
-    const data: Pick<
-      BusinessPersonalInfo,
-      "about" | "paymentTypes" | "services" | "deliveryOptions"
-    > = JSON.parse(resp);
+    const data = JSON.parse(resp);
 
-    if (data) {
-      setAbout(data.about);
-      setPaymentTypes(data.paymentTypes);
-      setServices(data.services);
-      setDeliveryOptions(data.deliveryOptions);
+    if (data.data) {
+      setAbout(data.data.about);
+      setPaymentTypes(data.data.paymentTypes);
+      setServices(data.data.services);
+      setDeliveryOptions(data.data.deliveryOptions);
     }
   };
 

@@ -1,15 +1,18 @@
 "use client";
 
 import { getBusiness, updateBusinessData } from "@/actions/businessData";
-import DynamicInput from "@/components/DynamicInput";
+// import DynamicInput from "@/components/DynamicInput";
 import CustomButton from "@/components/ui/CustomButton";
 import {
   agesSupportedOptions,
+  complexNeedsSupportedOptions,
+  disabilitiesExperienceOptions,
   genderOfAttendanceOptions,
+  otherProviderSkillsOptions,
   selectLanguages,
 } from "@/constants/constants";
 import { useFeatureContext } from "@/context/feature/FeatureContext";
-import { BusinessPersonalInfo, serviceAgeNames } from "@/types/business";
+import { serviceAgeNames } from "@/types/business";
 import { generateSelectDefault } from "@/utils/utils";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -27,6 +30,10 @@ const Support = () => {
     []
   );
 
+  const [complexNeedsSupported, setComplexNeedsSupported] = useState<string[]>(
+    []
+  );
+
   const [genderOfAttendants, setGenderOfAttendants] = useState<string[]>([]);
   const [languages, setLanguages] = useState<string[]>([]);
   const [agesSupported, setAgesSupported] = useState<serviceAgeNames[]>([]);
@@ -39,6 +46,7 @@ const Support = () => {
       genderOfAttendants,
       providerSpecialSkills,
       disabilitySpecialities,
+      complexNeedsSupported,
     };
     const data = await updateBusinessData(infos!);
     if (data.success) {
@@ -57,23 +65,27 @@ const Support = () => {
       "genderOfAttendants",
       "providerSpecialSkills",
       "disabilitySpecialities",
+      "complexNeedsSupported",
     ]);
 
-    const data: Pick<
-      BusinessPersonalInfo,
-      | "languages"
-      | "agesSupported"
-      | "genderOfAttendants"
-      | "providerSpecialSkills"
-      | "disabilitySpecialities"
-    > = JSON.parse(resp);
+    // const data: Pick<
+    //   BusinessPersonalInfo,
+    //   | "languages"
+    //   | "agesSupported"
+    //   | "genderOfAttendants"
+    //   | "providerSpecialSkills"
+    //   | "disabilitySpecialities"
+    // > = JSON.parse(resp);
 
-    if (data) {
-      setAgesSupported(data.agesSupported);
-      setLanguages(data.languages);
-      setGenderOfAttendants(data.genderOfAttendants);
-      setProviderSpecialSkills(data.providerSpecialSkills);
-      setDisabilitySpecialities(data.disabilitySpecialities);
+    const data = JSON.parse(resp);
+
+    if (data.data) {
+      setAgesSupported(data.data.agesSupported);
+      setLanguages(data.data.languages);
+      setGenderOfAttendants(data.data.genderOfAttendants);
+      setProviderSpecialSkills(data.data.providerSpecialSkills);
+      setDisabilitySpecialities(data.data.disabilitySpecialities);
+      setComplexNeedsSupported(data.data.complexNeedsSupported);
     }
   };
 
@@ -167,6 +179,78 @@ const Support = () => {
             />
           </div>
           <div className="col-span-3 md:col-span-full">
+            <label
+              htmlFor="disability_specialities"
+              className="block text-sm font-medium leading-6 mb-2 text-gray-900"
+            >
+              Disability Specialities
+            </label>
+            <Select
+              id="disability_specialities"
+              value={generateSelectDefault(disabilitySpecialities)}
+              isMulti
+              instanceId="disability_specialities"
+              name="disability_specialities"
+              options={disabilitiesExperienceOptions}
+              className="basic-multi-select"
+              onChange={(val) => {
+                const data = val.map((d: any) => d.value);
+                setDisabilitySpecialities(data);
+              }}
+              isSearchable={true}
+              placeholder=""
+              classNamePrefix="select"
+            />
+          </div>
+          <div className="col-span-3 md:col-span-full">
+            <label
+              htmlFor="special_skills"
+              className="block text-sm font-medium leading-6 mb-2 text-gray-900"
+            >
+              Provider Special Skills
+            </label>
+            <Select
+              id="special_skills"
+              value={generateSelectDefault(providerSpecialSkills)}
+              isMulti
+              instanceId="special_skills"
+              name="special_skills"
+              options={otherProviderSkillsOptions}
+              className="basic-multi-select"
+              onChange={(val) => {
+                const data = val.map((d: any) => d.value);
+                setProviderSpecialSkills(data);
+              }}
+              isSearchable={true}
+              placeholder=""
+              classNamePrefix="select"
+            />
+          </div>
+          <div className="col-span-3 md:col-span-full">
+            <label
+              htmlFor="complex_needs"
+              className="block text-sm font-medium leading-6 mb-2 text-gray-900"
+            >
+              Complex Needs Supported
+            </label>
+            <Select
+              id="complex_needs"
+              value={generateSelectDefault(complexNeedsSupported)}
+              isMulti
+              instanceId="complex_needs"
+              name="complex_needs"
+              options={complexNeedsSupportedOptions}
+              className="basic-multi-select"
+              onChange={(val) => {
+                const data = val.map((d: any) => d.value);
+                setComplexNeedsSupported(data);
+              }}
+              isSearchable={true}
+              placeholder=""
+              classNamePrefix="select"
+            />
+          </div>
+          {/* <div className="col-span-3 md:col-span-full">
             <DynamicInput
               name="Disability Specialities"
               data={disabilitySpecialities}
@@ -179,7 +263,7 @@ const Support = () => {
               data={providerSpecialSkills}
               setData={setProviderSpecialSkills}
             />
-          </div>
+          </div> */}
         </div>
       </div>
 

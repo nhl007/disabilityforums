@@ -33,6 +33,7 @@ export type BusinessPersonalInfo = {
   agesSupported: Array<serviceAgeNames>;
   disabilitySpecialities: string[];
   providerSpecialSkills: string[];
+  complexNeedsSupported: string[];
   contact: {
     email: string;
     website: string;

@@ -1,6 +1,6 @@
 "use client";
 
-import { popularServices, selectOptions } from "@/constants/constants";
+import { popularServicesOptions, selectOptions } from "@/constants/constants";
 import { LucideWorkflow, MapPin, Search } from "lucide-react";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import { usePathname, useRouter } from "next/navigation";
@@ -123,14 +123,19 @@ const SearchBar = () => {
               Search
             </button>
           </form>
-          <div className="flex flex-row gap-4 mt-4 font-semibold">
+          <div className="flex flex-col md:flex-row gap-2 md:gap-4 mt-4 font-semibold">
             <div className="flex gap-2">
               <input type="checkbox" id="edit-ndis" name="ndis" value="1" />
               <label htmlFor="edit-ndis">NDIS Registered only</label>
             </div>
             <div className=" flex gap-2">
-              <input type="checkbox" id="edit-ndis" name="ndis" value="1" />
-              <label htmlFor="edit-ndis">Verified Only</label>
+              <input
+                type="checkbox"
+                id="edit-verified"
+                name="verified"
+                value="1"
+              />
+              <label htmlFor="edit-verified">Verified Only</label>
             </div>
           </div>
         </div>
@@ -141,7 +146,7 @@ const SearchBar = () => {
               Popular Services
             </h2>
             <div className="flex flex-wrap w-full gap-2 justify-center items-center">
-              {popularServices.map((service, index) => {
+              {popularServicesOptions.map((service, index) => {
                 return (
                   <button
                     onClick={() => setCategory(service)}

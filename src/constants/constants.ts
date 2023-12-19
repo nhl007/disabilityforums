@@ -136,6 +136,83 @@ export const selectOptions = [
     ],
   },
   {
+    label: "Home Maintenance",
+    options: [
+      { label: "Cleaning", value: "Cleaning" },
+      { label: "Gardening", value: "Gardening" },
+      { label: "Yard Maintenance", value: "Yard Maintenance" },
+      {
+        label: "Handyperson and Repairs",
+        value: "Handyperson and Repairs",
+      },
+    ],
+  },
+
+  {
+    label: "Housing",
+    options: [
+      { label: "ILO", value: "ILO" },
+      {
+        label: "Specialist Disability Accommodation (SDA)",
+        value: "Specialist Disability Accommodation (SDA)",
+      },
+      {
+        label: "Medium Term Accommodation",
+        value: "Medium Term Accommodation",
+      },
+      {
+        label: "Respite/Short Term Accommodation",
+        value: "Respite/Short Term Accommodation",
+      },
+      {
+        label: "Supported Independent Living (SIL)",
+        value: "Supported Independent Living (SIL)",
+      },
+    ],
+  },
+
+  {
+    label: "Social, Health and Wellbeing",
+    options: [
+      {
+        label: "Social Programs and Activities",
+        value: "Social Programs and Activities",
+      },
+      { label: "Personal Training", value: "Personal Training" },
+      {
+        label: "Family and Peer Support Groups",
+        value: "Family and Peer Support Groups",
+      },
+    ],
+  },
+
+  {
+    label: "Children",
+    options: [
+      {
+        label: "Early Intervention and Children",
+        value: "Early Intervention and Children",
+      },
+    ],
+  },
+
+  {
+    label: "Employment",
+    options: [
+      {
+        label: "Finding and Keeping a Job",
+        value: "Finding and Keeping a Job",
+      },
+      { label: "SLES", value: "SLES" },
+    ],
+  },
+
+  {
+    label: "Equipment",
+    options: [{ label: "Disability Aids", value: "Disability Aids" }],
+  },
+
+  {
     label: "Equipment",
     options: [
       {
@@ -147,6 +224,7 @@ export const selectOptions = [
 ];
 
 export const selectLanguages = [
+  { label: "AusLan", value: "AusLan" },
   { label: "English", value: "English" },
   { label: "Mandarin Chinese", value: "Mandarin Chinese" },
   { label: "Hindi", value: "Hindi" },
@@ -173,7 +251,6 @@ export const selectLanguages = [
   { label: "Persian", value: "Persian" },
   { label: "Malayalam", value: "Malayalam" },
   { label: "Hausa", value: "Hausa" },
-  { label: "Kannada", value: "Kannada" },
   { label: "Ukrainian", value: "Ukrainian" },
   { label: "Amharic", value: "Amharic" },
   { label: "Farsi", value: "Farsi" },
@@ -189,6 +266,7 @@ export const selectLanguages = [
 export const selectDeliveryOptions = [
   { label: "Mobile", value: "Mobile" },
   { label: "Online", value: "Online" },
+  { label: "In Clinic", value: "In Clinic" },
 ];
 
 export const genderOfAttendanceOptions = [
@@ -205,15 +283,42 @@ export const agesSupportedOptions = [
   { label: "Children (7-17 years)", value: "Children (7-17 years)" },
   { label: "Young People (18-21 years)", value: "Young People (18-21 years)" },
   { label: "Adults (22-59 years)", value: "Adults (22-59 years)" },
-  { label: "Mature Age (60+ years)", value: "Mature Age (60+ years)" },
+  { label: "Mature Age (60+ years)", value: "Mature Age (60 years)" },
 ];
 
 export const selectPaymentOptions = [
   { label: "NDIS", value: "NDIS" },
   { label: "Private (non-NDIS)", value: "Private (non-NDIS)" },
+  { label: "Medicare", value: "Medicare" },
+  { label: "Age care", value: "Age Care" },
 ];
 
-export const popularServices = [
+export const disabilitiesExperienceOptions = [
+  { label: "Behavioral", value: "Behavioral" },
+  { label: "DD", value: "DD" },
+  { label: "OCD", value: "OCD" },
+  { label: "ADHD", value: "ADHD" },
+  { label: "Early Intervention", value: "Early Intervention" },
+  { label: "Chronic Medical Conditions", value: "Chronic Medical Conditions" },
+  { label: "divHearing Loss", value: "divHearing Loss" },
+  { label: "Intellectual/Developmental", value: "Intellectual/Developmental" },
+  { label: "Intellectual", value: "Intellectual" },
+  { label: "Down Syndrome", value: "Down Syndrome" },
+  { label: "Developmental Delay", value: "Developmental Delay" },
+  { label: "Neurological", value: "Neurological" },
+  { label: "Stroke", value: "Stroke" },
+  { label: "divNeurological/Epilepsy", value: "divNeurological/Epilepsy" },
+  { label: "MS", value: "MS" },
+  { label: "ABI", value: "ABI" },
+  { label: "Physical", value: "Physical" },
+  { label: "divSpinal Cord Injury", value: "divSpinal Cord Injury" },
+  { label: "divMuscular Dystrophy", value: "divMuscular Dystrophy" },
+  { label: "Cerebral Palsy", value: "Cerebral Palsy" },
+  { label: "Psychosocial/Mental Health", value: "Psychosocial/Mental Health" },
+  { label: "Vision Impairment", value: "Vision Impairment" },
+];
+
+export const popularServicesOptions = [
   "Plan Manager",
   "Support Coordinator",
   "Support Worker",
@@ -229,100 +334,40 @@ export const popularServices = [
   // "Art Therapy",
 ];
 
-export const BusinessMock = [
-  {
-    name: "Monarch Community Health Service",
-    description:
-      "We are a family run business who are extremely passionate about extending the best quality support and services that has been personalised according to client unique needs.personalised according to client unique needs.personalised according to client unique needs.personalised according to client unique needs.personalised according to client unique needs.personalised according to client unique needs.personalised according to client unique needs.personalised according to client unique needs.personalised according to client unique needs.personalised according to client unique needs.personalised according to client unique needs.personalised according to client unique needs.personalised according to client unique needs.personalised according to client unique needs.personalised according to client unique needs.personalised according to client unique needs.",
-    verification: "verified",
-    services: [
-      "Support Worker",
-      "Accessing the Community",
-      "Life Skills",
-      "Cleaning",
-      "Social Programs & Activities",
-    ],
-  },
-  {
-    name: "Monarch Community Health Service",
-    description:
-      "We are a family run business who are extremely passionate about extending the best quality support and services that has been personalised according to client unique needs.",
-    verification: "verified",
-    services: [
-      "Support Worker",
-      "Accessing the Community",
-      "Life Skills",
-      "Cleaning",
-      "Social Programs & Activities",
-    ],
-  },
-  {
-    name: "Monarch Community Health Service",
-    description:
-      "We are a family run business who are extremely passionate about extending the best quality support and services that has been personalised according to client unique needs.",
-    verification: "verified",
-    services: [
-      "Support Worker",
-      "Accessing the Community",
-      "Life Skills",
-      "Cleaning",
-      "Social Programs & Activities",
-    ],
-  },
-  {
-    name: "Monarch Community Health Service",
-    description:
-      "We are a family run business who are extremely passionate about extending the best quality support and services that has been personalised according to client unique needs.",
-    verification: "verified",
-    services: [
-      "Support Worker",
-      "Accessing the Community",
-      "Life Skills",
-      "Cleaning",
-      "Social Programs & Activities",
-    ],
-  },
-  {
-    name: "Monarch Community Health Service",
-    description:
-      "We are a family run business who are extremely passionate about extending the best quality support and services that has been personalised according to client unique needs.",
-    verification: "verified",
-    services: [
-      "Support Worker",
-      "Accessing the Community",
-      "Life Skills",
-      "Cleaning",
-      "Social Programs & Activities",
-    ],
-  },
+export const complexNeedsSupportedOptions = [
+  { label: "24hr Care", value: "24hr Care" },
+  { label: "2:1 Support", value: "21 Support" },
+  { label: "Behaviors of concern", value: "Behaviors of concern" },
+  { label: "Catheter", value: "Catheter" },
+  { label: "Colostomy bag", value: "Colostomy bag" },
+  { label: "Diabetes", value: "Diabetes" },
+  { label: "Medical administration", value: "Medical administration" },
+  { label: "PEG feeding", value: "PEG feeding" },
+  { label: "Registered nurse", value: "Registered nurse" },
+  { label: "Trachea care", value: "Trachea care" },
+  { label: "Wound care", value: "Wound care" },
 ];
 
-//   <optgroup label="Home Maintenance">
-//     <option value="6642">Cleaning</option>
-//     <option value="12179">Gardening</option>
-//     <option value="13209">Yard Maintenance</option>
-//     <option value="9533">Handyperson &amp; Repairs</option>
-//   </optgroup>
-//   <optgroup label="Housing">
-//     <option value="9388">ILO</option>
-//     <option value="9387">Specialist Disability Accommodation (SDA)</option>
-//     <option value="12540">Medium Term Accommodation</option>
-//     <option value="4922">Respite/Short Term Accommodation</option>
-//     <option value="8934">Supported Independent Living (SIL)</option>
-//   </optgroup>
-//   <optgroup label="Social, Health &amp; Wellbeing">
-//     <option value="268">Social Programs &amp; Activities</option>
-//     <option value="9157">Personal Training</option>
-//     <option value="11264">Family and Peer Support Groups</option>
-//   </optgroup>
-//   <optgroup label="Children">
-//     <option value="290">Early Intervention &amp; Children</option>
-//   </optgroup>
-//   <optgroup label="Employment">
-//     <option value="13215">Finding and Keeping a Job</option>
-//     <option value="13216">SLES</option>
-//   </optgroup>
-//   <optgroup label="Equipment">
-//     <option value="6561">Disability Aids</option>
-//   </optgroup>
-// </select>;
+export const otherProviderSkillsOptions = [
+  { label: "Absconding", value: "Absconding" },
+  { label: "Advocacy", value: "Advocacy" },
+  { label: "After School Support", value: "After School Support" },
+  { label: "Age Care", value: "Age Care" },
+  { label: "Build Technology Skills", value: "Build Technology Skills" },
+  { label: "CALD Support", value: "CALD Support" },
+  { label: "Challenging Behaviors", value: "Challenging Behaviors" },
+  { label: "Crisis Accommodation", value: "Crisis Accommodation" },
+  { label: "Crisis Management", value: "Crisis Management" },
+  { label: "Domestic Violence", value: "Domestic Violence" },
+  { label: "Drug and Alcohol", value: "Drug and Alcohol" },
+  { label: "Hospital Transition", value: "Hospital Transition" },
+  { label: "Justice", value: "Justice" },
+  { label: "Learn to Drive", value: "Learn to Drive" },
+  { label: "LGBTQIA+", value: "LGBTQIA" },
+  { label: "Mental Health", value: "Mental Health" },
+  { label: "NDIS Applications", value: "NDIS Applications" },
+  { label: "NDIS Plan Reassessments", value: "NDIS Plan Reassessments" },
+  { label: "Palliative Care", value: "Palliative Care" },
+  { label: "Public Guardian", value: "Public Guardian" },
+  { label: "Youth Mentoring", value: "Youth Mentoring" },
+];

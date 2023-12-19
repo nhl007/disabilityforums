@@ -61,11 +61,13 @@ const AbnLookupForm = () => {
       "Gst",
     ]);
 
-    const data: AbnLookupResult = JSON.parse(resp);
+    const data = JSON.parse(resp);
 
-    if (data) {
-      setAbn(data.Abn);
-      setAbnDetails(data);
+    console.log(data);
+
+    if (data.data) {
+      setAbn(data.data.Abn);
+      setAbnDetails(data.data);
     }
   };
 
@@ -77,7 +79,7 @@ const AbnLookupForm = () => {
     <div>
       <div>
         <label
-          htmlFor="username"
+          htmlFor="abn"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
           Registered ABN Number <span className=" text-red-600">*</span>
@@ -85,14 +87,14 @@ const AbnLookupForm = () => {
         <div className="mt-2">
           <div className="flex gap-4 rounded-md shadow-sm sm:max-w-md">
             <CustomInput
+              value={abn}
               onChange={(e) => {
                 setAbn(e.target.value);
               }}
-              value={abn}
               type="text"
               name="abn"
               id="abn"
-              pattern="^[0-9\s]*$"
+              // pattern="^[0-9\s]*$"
               placeholder="abn number"
             />
             {abnDetails ? (
@@ -137,6 +139,7 @@ const AbnLookupForm = () => {
               </label>
               <div className="mt-2">
                 <CustomInput
+                  id="city"
                   disabled
                   type="text"
                   name="status"
@@ -154,6 +157,7 @@ const AbnLookupForm = () => {
               </label>
               <div className="mt-2">
                 <CustomInput
+                  id="addressState"
                   disabled
                   type="text"
                   name="ACN"
@@ -193,7 +197,7 @@ const AbnLookupForm = () => {
                   name="businessName"
                   value={
                     abnDetails.BusinessName
-                      ? abnDetails.BusinessName[0]
+                      ? abnDetails.BusinessName.join(",")
                       : "No name found"
                   }
                 />

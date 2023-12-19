@@ -6,6 +6,7 @@ import CustomButton from "./ui/CustomButton";
 import { useRouter } from "next/navigation";
 import { useFeatureContext } from "@/context/feature/FeatureContext";
 import Alert from "./Alert";
+import Link from "next/link";
 
 const SignIn = () => {
   const [email, setEmail] = useState<string | null>(null);
@@ -68,6 +69,12 @@ const SignIn = () => {
       <CustomButton className=" py-2" type="submit" isLoading={loading}>
         Sign In
       </CustomButton>
+      <p className="mt-2">
+        Don&#8217;t have an account?
+        <Link className="text-blue-400 border-b-2 ml-1" href="/sign-up">
+          Sign-up
+        </Link>
+      </p>
     </form>
   );
 };

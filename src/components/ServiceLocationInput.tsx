@@ -67,7 +67,7 @@ const ServiceLocationInput = ({ data, setData }: LocationProps) => {
         Inserted Service Location Records
       </h2>
       <div className="flex flex-wrap gap-4">
-        {data.length
+        {data && data.length
           ? data.map((loc, i) => {
               return (
                 <div className="relative" key={loc.state + i}>
