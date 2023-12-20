@@ -8,7 +8,6 @@ import {
   selectPaymentOptions,
 } from "@/constants/constants";
 import { useFeatureContext } from "@/context/feature/FeatureContext";
-import { BusinessPersonalInfo } from "@/types/business";
 import { generateSelectDefault } from "@/utils/utils";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -55,7 +54,7 @@ const About = () => {
       deliveryOptions,
     };
 
-    const data = await updateBusinessData(infos!);
+    const data = await updateBusinessData(infos!, 2);
     if (data.success) {
       displayAlert(data.message, true);
       router.push("/on-board/support");

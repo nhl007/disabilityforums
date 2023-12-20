@@ -1,73 +1,71 @@
-import { Document, Schema, model, models } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
-type serviceAgeNames =
-  | "Early Childhood (0-7 years)"
-  | "Children (7-17 years)"
-  | "Young People (18-21 years)"
-  | "Adults (22-59 years)"
-  | "Mature Age (60+ years)";
+// type serviceAgeNames =
+//   | "Early Childhood (0-7 years)"
+//   | "Children (7-17 years)"
+//   | "Young People (18-21 years)"
+//   | "Adults (22-59 years)"
+//   | "Mature Age (60+ years)";
 
-interface BusinessPersonalInfo {
-  contact: {
-    email: string;
-    website: string;
-    phone: string;
-  };
-  serviceLocations: { state: string; suburbs: string[] }[];
-  deliveryOptions: string[];
-  paymentTypes: string[];
-  agesSupported: Array<serviceAgeNames>;
-  about: string;
-  providerSpecialSkills: string[];
-  disabilitySpecialities: string[];
-  languages: string[];
-  genderOfAttendants: string[];
-  services: string[];
-}
+// interface BusinessPersonalInfo {
+//   contact: {
+//     email: string;
+//     website: string;
+//     phone: string;
+//   };
+//   serviceLocations: { state: string; suburbs: string[] }[];
+//   deliveryOptions: string[];
+//   paymentTypes: string[];
+//   agesSupported: Array<serviceAgeNames>;
+//   about: string;
+//   providerSpecialSkills: string[];
+//   disabilitySpecialities: string[];
+//   languages: string[];
+//   genderOfAttendants: string[];
+//   services: string[];
+// }
 
-type BusinessReviews = {
-  tag: string;
-  description: string;
-  rating: number;
-  date: string;
-  user: {
-    id: Schema.Types.ObjectId | string;
-  };
-}[];
+// type BusinessReviews = {
+//   tag: string;
+//   description: string;
+//   rating: number;
+//   date: string;
+//   user: {
+//     id: Schema.Types.ObjectId | string;
+//   };
+// }[];
 
-interface Business extends BusinessPersonalInfo {
-  discourseId: number;
-  Abn: string;
-  AbnStatus?: string;
-  AbnStatusEffectiveFrom?: string;
-  Acn?: string;
-  AddressDate?: string;
-  AddressPostcode?: string;
-  AddressState?: string;
-  BusinessName: string[];
-  EntityName?: string;
-  EntityTypeCode?: string;
-  EntityTypeName?: string;
-  Gst?: string;
-  location: {
-    type: string;
-    coordinates: number[];
-  };
-  created_at?: Date;
-  user: Schema.Types.ObjectId | string;
-  reviews: BusinessReviews;
-  rank: number;
-}
-
-interface BusinessDocument extends Business, Document {}
+// interface Business extends BusinessPersonalInfo {
+//   discourseId: number;
+//   Abn: string;
+//   AbnStatus?: string;
+//   AbnStatusEffectiveFrom?: string;
+//   Acn?: string;
+//   AddressDate?: string;
+//   AddressPostcode?: string;
+//   AddressState?: string;
+//   BusinessName: string[];
+//   EntityName?: string;
+//   EntityTypeCode?: string;
+//   EntityTypeName?: string;
+//   Gst?: string;
+//   location: {
+//     type: string;
+//     coordinates: number[];
+//   };
+//   created_at?: Date;
+//   user: Schema.Types.ObjectId | string;
+//   reviews: BusinessReviews;
+//   rank: number;
+// }
 
 const BusinessSchema = new Schema({
   discourseId: {
     type: Number,
-    required: [true, "The discourse id is required!"],
   },
   Abn: {
     type: String,
+    unique: [true, "Already business registered with this Abn number!"],
     required: [true, "The abn number is required!"],
   },
   AbnStatus: {

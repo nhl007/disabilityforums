@@ -4,6 +4,7 @@ import { stringifyResponse } from "./../utils/utils";
 import { getAuthSession } from "@/libs/auth";
 import { connectToDB } from "@/libs/connectToDb";
 import Business from "@/models/Business";
+import User from "@/models/User";
 import { BusinessDatabaseModel, BusinessReviewData } from "@/types/business";
 import { SearchParamsActions } from "@/types/common";
 import { getLatLngByPostalCode } from "@/utils/postalCodeSearch";
@@ -26,6 +27,7 @@ export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
         discourseId: session.user.discourse_id,
         ...data,
       });
+      await User.findByIdAndUpdate(id, { progress: 1 });
       return { success: true, message: "Created Successfully !" };
     } else {
       await Business.findByIdAndUpdate(docId._id, data, {
@@ -40,7 +42,10 @@ export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
   }
 }
 
-export async function updateBusinessData(data: Partial<BusinessDatabaseModel>) {
+export async function updateBusinessData(
+  data: Partial<BusinessDatabaseModel>,
+  progress: number
+) {
   const session: Session | null = await getAuthSession();
   const id = session?.user.id;
 
@@ -56,6 +61,7 @@ export async function updateBusinessData(data: Partial<BusinessDatabaseModel>) {
     await Business.findByIdAndUpdate(docId._id, data, {
       new: true,
     }).select("_id");
+    await User.findByIdAndUpdate(id, { progress: progress });
     return { success: true, message: "Saved Successfully !" };
   } catch (err) {
     if (err instanceof Error) return { success: false, message: err.message };
@@ -177,10 +183,10 @@ export async function getBusiness(fields: Partial<DBKeys>[]) {
   }
 }
 
-export async function getBusinessByStates(state: string) {
+export async function getFeaturedBusiness() {
   try {
     await connectToDB();
-    const doc = await Business.find({ AddressState: state })
+    const doc = await Business.find({})
       .select("_id BusinessName about services")
       .limit(10)
       .sort({ rank: "desc" });

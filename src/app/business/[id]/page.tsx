@@ -17,7 +17,7 @@ import { BusinessDatabaseModel } from "@/types/business";
 import SmallVerificationBox from "@/components/ui/SmallVerificationBox";
 import Link from "next/link";
 import LocationDropdown from "@/components/LocationDropdown";
-import Reviews from "@/components/Reviews";
+// import Reviews from "@/components/Reviews";
 
 interface PageProps {
   params: {
@@ -28,7 +28,7 @@ interface PageProps {
 const page = async ({ params }: PageProps) => {
   const resp = await getBusinessById(params.id);
   if (resp === null) return <p>not found</p>;
-  const data = JSON.parse(resp) as BusinessDatabaseModel;
+  const data = JSON.parse(resp) as Partial<BusinessDatabaseModel>;
   // console.log(data);
 
   return (
@@ -39,7 +39,7 @@ const page = async ({ params }: PageProps) => {
             <Image width={220} height={120} src="/image.jpg" alt="name" />
             <div className="flex flex-col gap-2 md:gap-10">
               <h1 className="text-2xl md:text-4xl font-semibold w-fit truncate">
-                {data.BusinessName[0]}
+                {data.BusinessName?.length ? data.BusinessName.join(" ") : ""}
               </h1>
               <div className="flex flex-wrap gap-3 md:gap-4 items-center">
                 <span className="flex gap-2">
@@ -51,9 +51,9 @@ const page = async ({ params }: PageProps) => {
                 <span className="flex gap-2">
                   <Printer /> Print Page
                 </span>
-                <span className="px-3 py-2 md:py-3 md:px-4 border-2 rounded-md border-blue-600">
+                {/* <span className="px-3 py-2 md:py-3 md:px-4 border-2 rounded-md border-blue-600">
                   Write a Review
-                </span>
+                </span> */}
               </div>
             </div>
           </div>
@@ -72,7 +72,7 @@ const page = async ({ params }: PageProps) => {
                 <p>{data.about}</p>
               </BorderBox>
             )}
-            {data.providerSpecialSkills.length ? (
+            {data.providerSpecialSkills?.length ? (
               <BorderBox>
                 <h1 className=" text-2xl font-medium">
                   Provider Special Skills
@@ -91,7 +91,7 @@ const page = async ({ params }: PageProps) => {
                 </div>
               </BorderBox>
             ) : null}
-            {data.services.length ? (
+            {data.services?.length ? (
               <BorderBox>
                 <h1 className=" text-2xl font-medium">Services</h1>
                 <ul className="list-disc mx-5">
@@ -109,7 +109,7 @@ const page = async ({ params }: PageProps) => {
                 Additional Information
               </h1>
 
-              {data.genderOfAttendants.length ? (
+              {data.genderOfAttendants?.length ? (
                 <>
                   <h1 className=" text-2xl font-medium mb-2">
                     Gender of attendants
@@ -122,7 +122,7 @@ const page = async ({ params }: PageProps) => {
                 </>
               ) : null}
 
-              {data.genderOfAttendants.length ? (
+              {data.languages?.length ? (
                 <>
                   <h1 className=" text-2xl font-medium mb-2">Languages</h1>
                   <ul className="list-disc mx-5 mb-4">
@@ -133,13 +133,13 @@ const page = async ({ params }: PageProps) => {
                 </>
               ) : null}
             </BorderBox>
-            {data.disabilitySpecialities.length ? (
+            {data.disabilitySpecialities?.length ? (
               <BorderBox>
                 <h1 className=" text-2xl font-medium">
                   Disability Specialities
                 </h1>
                 <div className="flex gap-3 flex-wrap mt-4">
-                  {data.disabilitySpecialities.map((specialty) => {
+                  {data.disabilitySpecialities?.map((specialty) => {
                     return (
                       <SmallVerificationBox
                         // className="bg-bg"
@@ -159,7 +159,7 @@ const page = async ({ params }: PageProps) => {
             <BorderBox>
               <h1 className=" text-2xl font-medium">Contacts</h1>
               <div className="flex gap-2 mt-2 items-center">
-                {data.contact.website ? (
+                {data.contact?.website ? (
                   <>
                     <MousePointerClick size={16} />
                     <Link
@@ -175,7 +175,7 @@ const page = async ({ params }: PageProps) => {
                   </>
                 ) : null}
 
-                {data.contact.phone ? (
+                {data.contact?.phone ? (
                   <>
                     <Phone size={16} />
                     <Link href={`tel:${data.contact.phone}`}>
@@ -185,7 +185,7 @@ const page = async ({ params }: PageProps) => {
                 ) : null}
               </div>
             </BorderBox>
-            {data.deliveryOptions.length ? (
+            {data.deliveryOptions?.length ? (
               <BorderBox>
                 <h1 className=" text-2xl font-medium">Delivery Options</h1>
                 <div className="flex flex-col">
@@ -206,7 +206,7 @@ const page = async ({ params }: PageProps) => {
                 </div>
               </BorderBox>
             ) : null}
-            {data.paymentTypes.length ? (
+            {data.paymentTypes?.length ? (
               <BorderBox>
                 <h1 className=" text-2xl font-medium">Payment Types</h1>
                 <div className="flex flex-col">
@@ -222,7 +222,7 @@ const page = async ({ params }: PageProps) => {
                 </div>
               </BorderBox>
             ) : null}
-            {data.serviceLocations.length ? (
+            {data.serviceLocations?.length ? (
               <BorderBox>
                 <h1 className=" text-2xl font-medium">Service Locations</h1>
                 {data.serviceLocations.map((loc) => {
@@ -237,7 +237,7 @@ const page = async ({ params }: PageProps) => {
                 })}
               </BorderBox>
             ) : null}
-            {data.agesSupported.length ? (
+            {data.agesSupported?.length ? (
               <BorderBox>
                 <h1 className=" text-2xl font-medium">Ages Supported</h1>
                 <ul className="list-disc ml-5 mt-2">
@@ -249,12 +249,12 @@ const page = async ({ params }: PageProps) => {
             ) : null}
           </div>
         </div>
-        <Reviews
-          total={data.totalReviews}
+        {/* <Reviews
+          total={data.totalReviews ? data.totalReviews}
           rating={data.rating}
           _id={params.id}
           reviewsData={data.reviews}
-        />
+        /> */}
       </MaxWidthWrapper>
     </div>
   );

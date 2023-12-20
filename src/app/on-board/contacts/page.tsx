@@ -25,13 +25,13 @@ const Contact = () => {
 
     const data = JSON.parse(resp);
 
-    console.log(data);
-    if (data.data) {
-      setServiceLocations(data.data.serviceLocations);
-      setEmail(data.data.contact.email);
-      setPhone(data.data.contact.phone);
-      setWebsite(data.data.contact.website);
-    }
+    setServiceLocations(
+      data.data?.serviceLocations.length ? data.data.serviceLocations : []
+    );
+
+    setEmail(data.data?.contact?.email ? data.data.contact.email : "");
+    setPhone(data.data?.contact?.phone ? data.data.contact.phone : "");
+    setWebsite(data.data?.contact?.website ? data.data.contact.website : "");
   };
 
   useEffect(() => {
@@ -48,7 +48,7 @@ const Contact = () => {
         website,
       },
     };
-    const data = await updateBusinessData(infos!);
+    const data = await updateBusinessData(infos!, 4);
     if (data.success) {
       displayAlert(data.message, true);
       // router.push("/on-board/support");
