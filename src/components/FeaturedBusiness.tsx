@@ -58,36 +58,30 @@ const FeaturedBusinessCard = ({
   state,
 }: FeaturedBusinessCardProps) => {
   return (
-    <BorderBox className="w-[377px] h-[530px]">
-      <div className="flex flex-col gap-3 items-start h-full w-full">
-        <div className="h-auto self-center justify-self-center place-self-center">
-          <Image src="/image.jpg" alt="business" width={300} height={200} />
-        </div>
-        <h2 className=" text-lg font-medium">{name}</h2>
-        <div className="flex gap-2">
-          <SmallVerificationBox className="py-1.5 px-3">
-            <CheckCircle size={16} /> Verified
-          </SmallVerificationBox>
-        </div>
-        <p className="w-sm line-clamp-3 text-sm break-words overflow-ellipsis">
-          {about}
-        </p>
-        <div className="mt-auto flex flex-col gap-1 h-[70px] overflow-hidden">
-          <span className="flex items-center font-semibold">
-            <MapPin size={16} /> {state}
-          </span>
-          <div className="flex gap-y-0 gap-x-2 flex-wrap">
-            {services.map((s, i) => {
-              return (
-                <div className="flex gap-1 items-center" key={i}>
-                  <div className="rounded-full w-1 h-1 bg-txt-blue"></div>
-                  <span className="text-sm">{s}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+    <div className="w-[281px] h-[326px] flex flex-col gap-3 items-start">
+      <div className="w-[281px] h-[200px] overflow-hidden">
+        <Image
+          className="rounded-md w-[281px] h-[200px]"
+          src="/image.jpg"
+          alt="business"
+          width={281}
+          height={200}
+        />
       </div>
-    </BorderBox>
+
+      <p className=" text-sm font-semibold">{name}</p>
+      <div className="flex gap-2">
+        <SmallVerificationBox className="py-1.5 px-3 text-sm font-semibold">
+          <CheckCircle size={16} /> Verified
+        </SmallVerificationBox>
+      </div>
+      <p className="w-full h-[55px] line-clamp-3 text-[12px] break-words font-medium leading-4">
+        {about}
+      </p>
+
+      <p className="w-full h-[20px] tracking-tighter line-clamp-1 text-[10px] break-words font-medium">
+        {services.join(" | ")}
+      </p>
+    </div>
   );
 };
