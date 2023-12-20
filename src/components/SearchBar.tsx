@@ -92,10 +92,6 @@ const SearchBar = () => {
     <section className=" bg-bg-banner py-12">
       <MaxWidthWrapper>
         <div className="flex flex-col rounded-2xl p-6 bg-bg-main">
-          <h1 className=" text-xl md:text-2xl font-bold tracking-normal md:tracking-wide">
-            Connecting you with local NDIS providers that have immediate
-            availability
-          </h1>
           <form
             className="flex flex-col md:flex-row mt-4"
             onSubmit={onSearchSubmit}

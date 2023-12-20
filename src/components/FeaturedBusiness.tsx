@@ -21,10 +21,8 @@ const FeaturedBusiness = async ({ AddressState }: FeaturedBusinessProps) => {
 
   return (
     <div className=" my-8">
-      <h1 className=" text-4xl font-semibold mb-4">
-        Featured Providers in {AddressState}
-      </h1>
-      <div className="flex w-full overflow-x-scroll gap-7 scroll-smooth no-scrollbar">
+      <h1 className=" text-4xl font-semibold mb-4">{AddressState}</h1>
+      <div className="flex w-full overflow-x-scroll gap-[25px] scroll-smooth no-scrollbar">
         {data.map((b, i) => {
           return (
             <Link key={i} href={`/business/${b._id}`}>
@@ -69,7 +67,9 @@ const FeaturedBusinessCard = ({
         />
       </div>
 
-      <p className=" text-sm font-semibold">{name}</p>
+      <p className=" text-sm h-5 font-semibold line-clamp-1 overflow-ellipsis">
+        {name}
+      </p>
       <div className="flex gap-2">
         <SmallVerificationBox className="py-1.5 px-3 text-sm font-semibold">
           <CheckCircle size={16} /> Verified
