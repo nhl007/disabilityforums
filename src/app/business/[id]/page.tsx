@@ -66,30 +66,41 @@ const page = async ({ params }: PageProps) => {
         <div className="grid md:grid-flow-col md:gap-x-6">
           {/* //! left side */}
           <div className="col-span-full md:col-span-6 flex flex-col gap-4 md:gap-6">
-            <BorderBox>
-              <h1 className=" text-2xl font-medium">About</h1>
-              <p>{data.about}</p>
-            </BorderBox>
-            <BorderBox>
-              <h1 className=" text-2xl font-medium">Provider Special Skills</h1>
-              <div className="flex gap-3 flex-wrap mt-4">
-                {data.providerSpecialSkills.map((skills) => {
-                  return (
-                    <SmallVerificationBox className="bg-bg-banner" key={skills}>
-                      {skills}
-                    </SmallVerificationBox>
-                  );
-                })}
-              </div>
-            </BorderBox>
-            <BorderBox>
-              <h1 className=" text-2xl font-medium">Services</h1>
-              <ul className="list-disc mx-5">
-                {data.services.map((service) => {
-                  return <li key={service}>{service}</li>;
-                })}
-              </ul>
-            </BorderBox>
+            {data.about && (
+              <BorderBox>
+                <h1 className=" text-2xl font-medium">About</h1>
+                <p>{data.about}</p>
+              </BorderBox>
+            )}
+            {data.providerSpecialSkills.length ? (
+              <BorderBox>
+                <h1 className=" text-2xl font-medium">
+                  Provider Special Skills
+                </h1>
+                <div className="flex gap-3 flex-wrap mt-4">
+                  {data.providerSpecialSkills.map((skills) => {
+                    return (
+                      <SmallVerificationBox
+                        className="bg-bg-banner"
+                        key={skills}
+                      >
+                        {skills}
+                      </SmallVerificationBox>
+                    );
+                  })}
+                </div>
+              </BorderBox>
+            ) : null}
+            {data.services.length ? (
+              <BorderBox>
+                <h1 className=" text-2xl font-medium">Services</h1>
+                <ul className="list-disc mx-5">
+                  {data.services.map((service) => {
+                    return <li key={service}>{service}</li>;
+                  })}
+                </ul>
+              </BorderBox>
+            ) : null}
             {/* <BorderBox>
               <h1 className=" text-2xl font-medium">Services</h1>
             </BorderBox> */}
@@ -98,107 +109,144 @@ const page = async ({ params }: PageProps) => {
                 Additional Information
               </h1>
 
-              <h1 className=" text-2xl font-medium mb-2">
-                Gender of attendants
-              </h1>
-              <ul className="list-disc mx-5 mb-4">
-                {data.genderOfAttendants.map((gen) => {
-                  return <li key={gen}>{gen}</li>;
-                })}
-              </ul>
-              <h1 className=" text-2xl font-medium mb-2">Languages</h1>
-              <ul className="list-disc mx-5 mb-4">
-                {data.languages.map((lan) => {
-                  return <li key={lan}>{lan}</li>;
-                })}
-              </ul>
+              {data.genderOfAttendants.length ? (
+                <>
+                  <h1 className=" text-2xl font-medium mb-2">
+                    Gender of attendants
+                  </h1>
+                  <ul className="list-disc mx-5 mb-4">
+                    {data.genderOfAttendants.map((gen) => {
+                      return <li key={gen}>{gen}</li>;
+                    })}
+                  </ul>
+                </>
+              ) : null}
+
+              {data.genderOfAttendants.length ? (
+                <>
+                  <h1 className=" text-2xl font-medium mb-2">Languages</h1>
+                  <ul className="list-disc mx-5 mb-4">
+                    {data.languages.map((lan) => {
+                      return <li key={lan}>{lan}</li>;
+                    })}
+                  </ul>
+                </>
+              ) : null}
             </BorderBox>
-            <BorderBox>
-              <h1 className=" text-2xl font-medium">Disability Specialities</h1>
-              <div className="flex gap-3 flex-wrap mt-4">
-                {data.disabilitySpecialities.map((specialty) => {
-                  return (
-                    <SmallVerificationBox
-                      // className="bg-bg"
-                      key={specialty}
-                    >
-                      {specialty}
-                    </SmallVerificationBox>
-                  );
-                })}
-              </div>
-            </BorderBox>
+            {data.disabilitySpecialities.length ? (
+              <BorderBox>
+                <h1 className=" text-2xl font-medium">
+                  Disability Specialities
+                </h1>
+                <div className="flex gap-3 flex-wrap mt-4">
+                  {data.disabilitySpecialities.map((specialty) => {
+                    return (
+                      <SmallVerificationBox
+                        // className="bg-bg"
+                        key={specialty}
+                      >
+                        {specialty}
+                      </SmallVerificationBox>
+                    );
+                  })}
+                </div>
+              </BorderBox>
+            ) : null}
           </div>
 
           {/* //! Right side */}
           <div className="mt-4 md:mt-0 col-span-full md:col-span-1 flex flex-col gap-4 md:gap-6">
             <BorderBox>
-              <h1 className=" text-2xl font-medium">Contact</h1>
+              <h1 className=" text-2xl font-medium">Contacts</h1>
               <div className="flex gap-2 mt-2 items-center">
-                <MousePointerClick size={16} />
-                <Link target="_blank" href={`https://${data.contact.website}`}>
-                  Visit Website
-                </Link>
-                <Phone size={16} />
-                <Link href={`tel:${data.contact.phone}`}>
-                  {data.contact.phone}
-                </Link>
+                {data.contact.website ? (
+                  <>
+                    <MousePointerClick size={16} />
+                    <Link
+                      target="_blank"
+                      href={
+                        data.contact.website.startsWith("https://")
+                          ? data.contact.website
+                          : `https://${data.contact.website}`
+                      }
+                    >
+                      Visit Website
+                    </Link>
+                  </>
+                ) : null}
+
+                {data.contact.phone ? (
+                  <>
+                    <Phone size={16} />
+                    <Link href={`tel:${data.contact.phone}`}>
+                      {data.contact.phone}
+                    </Link>
+                  </>
+                ) : null}
               </div>
             </BorderBox>
-            <BorderBox>
-              <h1 className=" text-2xl font-medium">Delivery Options</h1>
-              <div className="flex flex-col">
-                {data.deliveryOptions.map((option) => {
-                  return (
-                    <div key={option}>
-                      <div className="flex gap-2 items-center">
-                        {option === "Online" ? (
-                          <WebhookIcon size={16} />
-                        ) : (
-                          <Car size={16} />
-                        )}
-                        {option}
+            {data.deliveryOptions.length ? (
+              <BorderBox>
+                <h1 className=" text-2xl font-medium">Delivery Options</h1>
+                <div className="flex flex-col">
+                  {data.deliveryOptions.map((option) => {
+                    return (
+                      <div key={option}>
+                        <div className="flex gap-2 items-center">
+                          {option === "Online" ? (
+                            <WebhookIcon size={16} />
+                          ) : (
+                            <Car size={16} />
+                          )}
+                          {option}
+                        </div>
                       </div>
-                    </div>
+                    );
+                  })}
+                </div>
+              </BorderBox>
+            ) : null}
+            {data.paymentTypes.length ? (
+              <BorderBox>
+                <h1 className=" text-2xl font-medium">Payment Types</h1>
+                <div className="flex flex-col">
+                  {data.paymentTypes.map((payment) => {
+                    return (
+                      <div key={payment}>
+                        <div className="flex gap-2 items-center">
+                          <CreditCard size={16} /> {payment}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </BorderBox>
+            ) : null}
+            {data.serviceLocations.length ? (
+              <BorderBox>
+                <h1 className=" text-2xl font-medium">Service Locations</h1>
+                {data.serviceLocations.map((loc) => {
+                  return (
+                    <LocationDropdown
+                      key={loc.state}
+                      state={loc.state}
+                      suburbs={loc.suburbs}
+                      classNames="w-full mt-2"
+                    />
                   );
                 })}
-              </div>
-            </BorderBox>
-            <BorderBox>
-              <h1 className=" text-2xl font-medium">Payment Types</h1>
-              <div className="flex flex-col">
-                {data.paymentTypes.map((payment) => {
-                  return (
-                    <div key={payment}>
-                      <div className="flex gap-2 items-center">
-                        <CreditCard size={16} /> {payment}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </BorderBox>
-            <BorderBox>
-              <h1 className=" text-2xl font-medium">Service Locations</h1>
-              {data.serviceLocations.map((loc) => {
-                return (
-                  <LocationDropdown
-                    key={loc.state}
-                    state={loc.state}
-                    suburbs={loc.suburbs}
-                    classNames="w-full mt-2"
-                  />
-                );
-              })}
-            </BorderBox>
-            <BorderBox>
-              <h1 className=" text-2xl font-medium">Ages Supported</h1>
-              <ul className="list-disc ml-5 mt-2">
-                {data.agesSupported.map((ages) => {
-                  return <li key={ages}>{ages}</li>;
-                })}
-              </ul>
-            </BorderBox>
+              </BorderBox>
+            ) : null}
+            {data.agesSupported.length ? (
+              <BorderBox>
+                <h1 className=" text-2xl font-medium">Ages Supported</h1>
+                <ul className="list-disc ml-5 mt-2">
+                  {data.agesSupported.map((ages) => {
+                    return <li key={ages}>{ages}</li>;
+                  })}
+                </ul>
+              </BorderBox>
+            ) : null}
           </div>
         </div>
         <Reviews

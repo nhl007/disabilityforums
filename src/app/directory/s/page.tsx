@@ -21,15 +21,16 @@ const page = async ({ searchParams }: BusinessSearchParams) => {
   return (
     <div className="py-10">
       <MaxWidthWrapper>
-        <div className="grid grid-flow-row md:grid-flow-col md:gap-x-2">
-          <div className="md:col-span-1 col-span-3 pr-8 w-full md:w-[300px]">
+        <div>
+          {/* <div className="grid grid-flow-row md:grid-flow-col md:gap-x-2"> */}
+          {/* <div className="md:col-span-1 col-span-3 pr-8 w-full md:w-[300px]">
             <h1 className="text-xl font-semibold  border-b-2 pb-3">
               Refine Results
             </h1>
             <div>
               <RefineResults searchParams={searchParams} />
             </div>
-          </div>
+          </div> */}
           {data.length ? (
             <div className="col-span-3">
               <p className=" mt-4 md:mt-0 mb-4">Total 290 results</p>

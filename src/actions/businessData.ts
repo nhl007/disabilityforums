@@ -125,8 +125,8 @@ export async function searchBusinesses(searchParams: SearchParamsActions) {
             $in: value.split(","),
           };
         }
-        if (key === "other") {
-          query.providerSpecialSkills = {
+        if (key === "gender") {
+          query.genderOfAttendance = {
             $in: value.split(","),
           };
         }
@@ -144,7 +144,8 @@ export async function searchBusinesses(searchParams: SearchParamsActions) {
     await connectToDB();
     const doc = await Business.find(query)
       .select("_id services about BusinessName rating")
-      .limit(10);
+      .limit(10)
+      .sort({ rank: "desc" });
     if (doc.length > 0) return stringifyResponse(doc);
     else return null;
   } catch (error) {
@@ -181,7 +182,8 @@ export async function getBusinessByStates(state: string) {
     await connectToDB();
     const doc = await Business.find({ AddressState: state })
       .select("_id BusinessName about services")
-      .limit(10);
+      .limit(10)
+      .sort({ rank: "desc" });
     if (doc.length > 0) {
       return stringifyResponse(doc);
     } else return null;

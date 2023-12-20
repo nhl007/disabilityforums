@@ -22,11 +22,11 @@ const BusinessCard = (data: BusinessData) => {
       <div className="flex flex-col gap-4">
         <div className="flex justify-between items-center">
           <h1 className=" text-xl font-semibold">{data.name}</h1>
-          {data.rating && (
-            <span className="flex gap-1 font-medium items-center">
-              {data.rating} <Star size={14} />
+          {data.rating ? (
+            <span className="flex gap-1 font-semibold items-center">
+              {data.rating} <Star size={16} />
             </span>
-          )}
+          ) : null}
         </div>
         <p className="mb-4 py-2 px-2.5 bg-red-200 w-fit rounded-md">
           {data.verification}

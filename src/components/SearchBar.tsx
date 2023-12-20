@@ -1,15 +1,24 @@
 "use client";
 
-import { popularServicesOptions, selectOptions } from "@/constants/constants";
-import { LucideWorkflow, MapPin, Search } from "lucide-react";
+import {
+  agesSupportedOptions,
+  complexNeedsSupportedOptions,
+  genderOfAttendanceOptions,
+  selectDeliveryOptions,
+  selectLanguages,
+  selectOptions,
+} from "@/constants/constants";
+import { ChevronDown, MapPin, Search } from "lucide-react";
 import MaxWidthWrapper from "./MaxWidthWrapper";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, SetStateAction, useState } from "react";
 import Select from "react-select";
 import { generateSelectDefault } from "@/utils/utils";
 
 const SearchBar = () => {
+  // const params = useSearchParams();
+
   const customStyles: any = {
     control: (base: any) => ({
       ...base,
@@ -25,18 +34,58 @@ const SearchBar = () => {
     }),
   };
 
+  const [moreOptions, setMoreOptions] = useState(false);
+
   const [keyword, setKeyword] = useState("");
   const [postCode, setPostCode] = useState("");
   const [category, setCategory] = useState("");
   const [radius, setRadius] = useState("15");
 
-  const path = usePathname();
+  const [delivery, setDelivery] = useState<string[]>([]);
+  const [age, setAge] = useState<string[]>([]);
+  const [gender, setGender] = useState<string[]>([]);
+  const [languages, setLanguages] = useState("AusLan");
+  const [complexNeeds, setComplexNeeds] = useState("");
+
+  const [ndis, setNdis] = useState(false);
+  const [companiesOnly, setCompaniesOnly] = useState(false);
+  const [tradersOnly, setTradersOnly] = useState(false);
+
   const router = useRouter();
+
+  const handleCheckboxChange = (
+    value: string,
+    prev: string[],
+    setData: React.Dispatch<SetStateAction<string[]>>
+  ) => {
+    if (prev.includes(value)) {
+      setData(prev.filter((item) => item !== value));
+    } else {
+      setData([...prev, value]);
+    }
+  };
 
   const onSearchSubmit = (e: FormEvent) => {
     e.preventDefault();
-    const url = `/directory/s?keyword=${keyword}&category=${category}&postalCode=${postCode}&radius=${radius}`;
-    router.push(url);
+    setMoreOptions(false);
+    const urlObj = {
+      keyword: keyword,
+      postCode: postCode,
+      category: category,
+      radius: radius,
+      delivery: delivery,
+      gender: gender,
+      age: age,
+      languages: languages,
+      complexNeeds: complexNeeds,
+    };
+
+    let url = "/directory/s?";
+
+    for (const [key, value] of Object.entries(urlObj)) {
+      url = url + key + "=" + value + "&";
+    }
+    router.replace(url);
   };
 
   return (
@@ -125,42 +174,181 @@ const SearchBar = () => {
           </form>
           <div className="flex flex-col md:flex-row gap-2 md:gap-4 mt-4 font-semibold">
             <div className="flex gap-2">
-              <input type="checkbox" id="edit-ndis" name="ndis" value="1" />
+              <input
+                type="checkbox"
+                onChange={(e) => setNdis((prev) => !prev)}
+                id="edit-ndis"
+                name="ndis"
+                checked={ndis}
+              />
               <label htmlFor="edit-ndis">NDIS Registered only</label>
             </div>
             <div className=" flex gap-2">
               <input
                 type="checkbox"
-                id="edit-verified"
-                name="verified"
-                value="1"
+                id="edit-companies"
+                name="companies"
+                onChange={() => {
+                  setCompaniesOnly((prev) => !prev);
+                  setTradersOnly(false);
+                }}
+                checked={companiesOnly}
               />
-              <label htmlFor="edit-verified">Verified Only</label>
+              <label htmlFor="edit-companies">Companies Only</label>
             </div>
+            <div className=" flex gap-2">
+              <input
+                type="checkbox"
+                onChange={() => {
+                  setTradersOnly((prev) => !prev);
+                  setCompaniesOnly(false);
+                }}
+                id="edit-sole_traders"
+                name="sole_traders"
+                checked={tradersOnly}
+              />
+              <label htmlFor="edit-sole_traders">Sole Traders Only</label>
+            </div>
+            <button
+              onClick={() => setMoreOptions((prev) => !prev)}
+              className="flex gap-1 items-center font-medium"
+            >
+              More Search Options <ChevronDown size={16} />
+            </button>
           </div>
-        </div>
-
-        {path !== "/directory/s" ? (
-          <>
-            <h2 className=" mt-8 mb-3 text-xl font-bold text-center">
-              Popular Services
-            </h2>
-            <div className="flex flex-wrap w-full gap-2 justify-center items-center">
-              {popularServicesOptions.map((service, index) => {
-                return (
-                  <button
-                    onClick={() => setCategory(service)}
-                    key={index}
-                    className=" flex gap-2 bg-btn-main rounded-md text-[16px] font-medium leading-[27px] text-center py-3 px-3"
-                  >
-                    <LucideWorkflow />
-                    {service}
-                  </button>
-                );
-              })}
+          {moreOptions ? (
+            <div className="flex flex-col md:gap-6">
+              <div className="flex md:gap-20 md:py-6">
+                <div className="">
+                  <h2 className="font-semibold text-lg">Service Delivery</h2>
+                  {selectDeliveryOptions.map((value, index) => {
+                    return (
+                      <div className="flex gap-2 mt-1 " key={index}>
+                        <input
+                          id={value.value}
+                          onChange={(e) =>
+                            handleCheckboxChange(
+                              e.target.value,
+                              delivery,
+                              setDelivery
+                            )
+                          }
+                          type="checkbox"
+                          checked={delivery.includes(value.value)}
+                          value={value.value}
+                        />
+                        <label htmlFor={value.value} className="font-medium">
+                          {value.label}
+                        </label>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div>
+                  <h2 className="font-semibold text-lg">
+                    Gender of Attendants
+                  </h2>
+                  {genderOfAttendanceOptions.map((value, index) => {
+                    return (
+                      <div className="flex gap-2 mt-1" key={index}>
+                        <input
+                          id={value.value}
+                          onChange={(e) =>
+                            handleCheckboxChange(
+                              e.target.value,
+                              gender,
+                              setGender
+                            )
+                          }
+                          type="checkbox"
+                          checked={gender.includes(value.value)}
+                          value={value.value}
+                        />
+                        <label htmlFor={value.value} className=" font-medium">
+                          {value.label}
+                        </label>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div>
+                  <h2 className="font-semibold text-lg">Ages Supported</h2>
+                  {agesSupportedOptions.map((value, index) => {
+                    return (
+                      <div className="flex gap-2 mt-1" key={index}>
+                        <input
+                          id={value.value}
+                          onChange={(e) =>
+                            handleCheckboxChange(e.target.value, age, setAge)
+                          }
+                          type="checkbox"
+                          checked={age.includes(value.value)}
+                          value={value.value}
+                        />
+                        <label htmlFor={value.value} className="font-medium">
+                          {value.label}
+                        </label>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="flex md:gap-20">
+                <div className="flex flex-col gap-1">
+                  <label className="font font-semibold" htmlFor="languages">
+                    Complex Needs Supported
+                  </label>
+                  <Select
+                    id="complexNeeds"
+                    value={generateSelectDefault(
+                      [complexNeeds] ?? [
+                        {
+                          label: "Complex needs Supported",
+                          value: "",
+                        },
+                      ]
+                    )}
+                    instanceId="complexNeeds"
+                    name="complexNeeds"
+                    options={complexNeedsSupportedOptions}
+                    className="w-full md:w-[270px] h-auto text-base"
+                    onChange={(val) => {
+                      setComplexNeeds(val?.value ?? "");
+                    }}
+                    isSearchable={true}
+                    placeholder="Complex Needs Supported"
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="font font-semibold" htmlFor="languages">
+                    Languages Supported
+                  </label>
+                  <Select
+                    id="languages"
+                    value={generateSelectDefault(
+                      [languages] ?? [
+                        {
+                          label: "Language",
+                          value: "",
+                        },
+                      ]
+                    )}
+                    instanceId="languages"
+                    name="languages"
+                    options={selectLanguages}
+                    className="w-full md:w-[270px] h-auto text-base"
+                    onChange={(val) => {
+                      setLanguages(val?.value ?? "");
+                    }}
+                    // styles={customStyles}
+                    isSearchable={true}
+                    placeholder="Select Language"
+                  />
+                </div>
+              </div>
             </div>
-          </>
-        ) : null}
+          ) : null}
+        </div>
       </MaxWidthWrapper>
     </section>
   );
