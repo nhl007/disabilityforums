@@ -7,7 +7,7 @@ const BusinessSchema = new Schema({
   Abn: {
     type: String,
     unique: [true, "Already business registered with this Abn number!"],
-    required: [true, "The abn number is required!"],
+    // required: [true, "The abn number is required!"],
   },
   AbnStatus: {
     type: String,
@@ -87,9 +87,6 @@ const BusinessSchema = new Schema({
   deliveryOptions: {
     type: [String],
   },
-  // paymentTypes: {
-  //   type: [String],
-  // },
   agesSupported: {
     type: [String],
   },
@@ -100,12 +97,6 @@ const BusinessSchema = new Schema({
   services: {
     type: [String],
   },
-  // providerSpecialSkills: {
-  //   type: [String],
-  // },
-  // disabilitySpecialities: {
-  //   type: [String],
-  // },
   complexNeedsSupported: {
     type: [String],
   },
@@ -115,27 +106,6 @@ const BusinessSchema = new Schema({
   genderOfAttendants: {
     type: [String],
   },
-  // reviews: [
-  //   {
-  //     caption: {
-  //       type: String,
-  //     },
-  //     description: {
-  //       type: String,
-  //     },
-  //     rating: {
-  //       type: Number,
-  //     },
-  //     date: {
-  //       type: Date,
-  //       default: Date.now(),
-  //     },
-  //     user: {
-  //       type: Schema.Types.ObjectId,
-  //       ref: "User",
-  //     },
-  //   },
-  // ],
   rank: {
     type: Number,
     default: 0,

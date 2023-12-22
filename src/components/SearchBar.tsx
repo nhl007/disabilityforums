@@ -70,7 +70,7 @@ const SearchBar = () => {
     setMoreOptions(false);
     const urlObj = {
       keyword: keyword,
-      postCode: postCode,
+      postalCode: postCode,
       category: category,
       radius: radius,
       delivery: delivery,

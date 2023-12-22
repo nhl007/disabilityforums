@@ -8,7 +8,7 @@ import User from "@/models/User";
 import { BusinessDatabaseModel, BusinessReviewData } from "@/types/business";
 import { SearchParamsActions } from "@/types/common";
 import { getLatLngByPostalCode } from "@/utils/postalCodeSearch";
-import { Error } from "mongoose";
+import mongoose, { Error, MongooseError } from "mongoose";
 import { Session } from "next-auth";
 
 export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
@@ -225,9 +225,7 @@ export async function getBusinessById(id: string): Promise<string | null> {
   try {
     if (!id) return null;
     await connectToDB();
-    const doc = await Business.findById(id)
-      .populate("reviews.user", "username")
-      .lean();
+    const doc = await Business.findById(id).lean();
     if (doc) {
       return stringifyResponse(doc);
     } else return null;

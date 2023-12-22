@@ -16,7 +16,7 @@ const getUserById = async (id: number) => {
   });
 
   const data = await response.json();
-  console.log("Post Count: ", data);
+  // console.log("Post Count: ", data);
   return {
     name: data.username,
     postCount: data.post_count,
@@ -26,7 +26,10 @@ const getUserById = async (id: number) => {
 
 const searchPosts = async (username: string) => {
   // try {
-  const response = await fetch(`${apiUrl}/search.json?q=@${username}`);
+  const response = await fetch(
+    `${apiUrl}/search.json?q=@${username}&max_posts=100`
+  );
+  // const response = await fetch(`${apiUrl}/search.json?q=@${username}`);
   const data = await response.json();
   return data.posts;
   // } catch (error) {
@@ -54,12 +57,13 @@ export async function GET(req: Request) {
     const businesses = await Business.find().select("discourseId");
 
     for (const business of businesses) {
-      const data = await getUserById(1);
+      const data = await getUserById(327);
       let validPosts = 0;
       let validLikes = 0;
 
       if (data.postCount) {
         const posts = await searchPosts(data.name);
+        console.log(posts);
 
         for (const post of posts) {
           if (post.blurb && post.blurb.length > 20) {

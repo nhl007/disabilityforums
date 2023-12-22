@@ -3,7 +3,6 @@ import Image from "next/image";
 import React from "react";
 import {
   Car,
-  CreditCard,
   Heart,
   MousePointerClick,
   Phone,
@@ -72,25 +71,7 @@ const page = async ({ params }: PageProps) => {
                 <p>{data.about}</p>
               </BorderBox>
             )}
-            {data.providerSpecialSkills?.length ? (
-              <BorderBox>
-                <h1 className=" text-2xl font-medium">
-                  Provider Special Skills
-                </h1>
-                <div className="flex gap-3 flex-wrap mt-4">
-                  {data.providerSpecialSkills.map((skills) => {
-                    return (
-                      <SmallVerificationBox
-                        className="bg-bg-banner"
-                        key={skills}
-                      >
-                        {skills}
-                      </SmallVerificationBox>
-                    );
-                  })}
-                </div>
-              </BorderBox>
-            ) : null}
+
             {data.services?.length ? (
               <BorderBox>
                 <h1 className=" text-2xl font-medium">Services</h1>
@@ -133,25 +114,6 @@ const page = async ({ params }: PageProps) => {
                 </>
               ) : null}
             </BorderBox>
-            {data.disabilitySpecialities?.length ? (
-              <BorderBox>
-                <h1 className=" text-2xl font-medium">
-                  Disability Specialities
-                </h1>
-                <div className="flex gap-3 flex-wrap mt-4">
-                  {data.disabilitySpecialities?.map((specialty) => {
-                    return (
-                      <SmallVerificationBox
-                        // className="bg-bg"
-                        key={specialty}
-                      >
-                        {specialty}
-                      </SmallVerificationBox>
-                    );
-                  })}
-                </div>
-              </BorderBox>
-            ) : null}
           </div>
 
           {/* //! Right side */}
