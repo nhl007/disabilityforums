@@ -12,7 +12,7 @@ import {
   WebhookIcon,
 } from "lucide-react";
 import BorderBox from "@/components/ui/BorderBox";
-import { getBusinessById } from "@/actions/businessData";
+import { getBusinessById } from "@/actions/businessActions";
 import { BusinessDatabaseModel } from "@/types/business";
 import SmallVerificationBox from "@/components/ui/SmallVerificationBox";
 import Link from "next/link";

@@ -2,6 +2,10 @@ import { Schema, model, models } from "mongoose";
 import isEmail from "validator/lib/isEmail";
 
 const UserSchema = new Schema({
+  name: {
+    type: String,
+    required: [true, "Please enter your name!"],
+  },
   email: {
     type: String,
     unique: [true, "Email already exists!"],
@@ -10,6 +14,7 @@ const UserSchema = new Schema({
   },
   discourseId: {
     type: Number,
+    required: [true, "Discourse Account needed to create account!"],
   },
   progress: {
     type: Number,
@@ -18,7 +23,6 @@ const UserSchema = new Schema({
   avatar: {
     type: String,
   },
-
   username: {
     type: String,
     unique: [true, "Username already exists!"],

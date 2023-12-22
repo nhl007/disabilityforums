@@ -1,6 +1,6 @@
 "use server";
 
-import { stringifyResponse } from "./../utils/utils";
+import { stringifyResponse } from "../utils/utils";
 import { getAuthSession } from "@/libs/auth";
 import { connectToDB } from "@/libs/connectToDb";
 import Business from "@/models/Business";
@@ -8,6 +8,7 @@ import User from "@/models/User";
 import { BusinessDatabaseModel, BusinessReviewData } from "@/types/business";
 import { SearchParamsActions } from "@/types/common";
 import { getLatLngByPostalCode } from "@/utils/postalCodeSearch";
+import mongoose, { Error, MongooseError } from "mongoose";
 import { Session } from "next-auth";
 
 export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
@@ -36,8 +37,14 @@ export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
 
       return { success: true, message: "Saved Successfully !" };
     }
-  } catch (err) {
-    if (err instanceof Error) return { success: false, message: err.message };
+  } catch (err: any) {
+    if (err.code === 11000) {
+      return { success: false, message: "Abn Already Exists!" };
+    }
+
+    if (err instanceof Error) {
+      return { success: false, message: err.message };
+    }
     return { success: false, message: "Error Ocurred" };
   }
 }

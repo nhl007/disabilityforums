@@ -1,4 +1,4 @@
-import { getFeaturedBusiness } from "@/actions/businessData";
+import { getFeaturedBusiness } from "@/actions/businessActions";
 import FeaturedBusinessCard from "@/components/FeaturedBusiness";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import { BusinessDatabaseModel } from "@/types/business";

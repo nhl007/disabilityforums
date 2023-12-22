@@ -1,4 +1,4 @@
-import { searchBusinesses } from "@/actions/businessData";
+import { searchBusinesses } from "@/actions/businessActions";
 import BusinessCard from "@/components/BusinessCard";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import RefineResults from "@/components/RefineResults";

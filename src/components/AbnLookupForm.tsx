@@ -6,7 +6,7 @@ import { searchValidABN } from "@/actions/abrApi";
 import { AbnLookupResult } from "@/types/business";
 import CustomButton from "./ui/CustomButton";
 import { Search, X } from "lucide-react";
-import { getBusiness, postBusinessData } from "@/actions/businessData";
+import { getBusiness, postBusinessData } from "@/actions/businessActions";
 import { useFeatureContext } from "@/context/feature/FeatureContext";
 import CustomInput from "./ui/CustomInput";
 import { useRouter } from "next/navigation";

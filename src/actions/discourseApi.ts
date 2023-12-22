@@ -1,11 +1,50 @@
 "use server";
 
-const apiUrl = process.env.DISCOURSE_API_URL;
+const apiUrl = process.env.DISCOURSE_API_URL as string;
 
 const authHeaders = new Headers();
 
 authHeaders.append("api-key", process.env.DISCOURSE_API_KEY!);
 authHeaders.append("Accept", "application/json");
+
+export async function createADiscourseUser(
+  name: string,
+  email: string,
+  password: string,
+  username: string
+) {
+  try {
+    const body = {
+      name: name,
+      email: email,
+      password: password,
+      username: username,
+      active: "true",
+      approved: "true",
+    };
+
+    const formData = new URLSearchParams();
+    for (const [key, value] of Object.entries(body)) {
+      formData.append(key, value);
+    }
+    formData.append("user_fields[1]", "NDIS participant");
+
+    const response = await fetch(`${apiUrl}/users.json`, {
+      method: "POST",
+      headers: authHeaders,
+      body: formData,
+    });
+
+    const data = await response.json();
+    console.log(data);
+    if (data.success) {
+      return data.user_id;
+    } else return null;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
 
 export async function getDiscourseUserById(id: number) {
   try {

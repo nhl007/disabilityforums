@@ -16,6 +16,7 @@ const getUserById = async (id: number) => {
   });
 
   const data = await response.json();
+  console.log("Post Count: ", data);
   return {
     name: data.username,
     postCount: data.post_count,
@@ -53,7 +54,7 @@ export async function GET(req: Request) {
     const businesses = await Business.find().select("discourseId");
 
     for (const business of businesses) {
-      const data = await getUserById(business.discourseId);
+      const data = await getUserById(1);
       let validPosts = 0;
       let validLikes = 0;
 
@@ -80,8 +81,9 @@ export async function GET(req: Request) {
 
       await Business.findByIdAndUpdate(business._id, { rank: updatedRank });
 
-      // console.log("valid posts", validPosts);
-      // console.log("valid Likes", validLikes);
+      console.log("valid posts", validPosts);
+      console.log("valid Likes", validLikes);
+      console.log("Rank :", validPosts + validLikes);
     }
 
     return NextResponse.json(

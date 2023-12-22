@@ -1,6 +1,6 @@
 "use client";
 
-import { getBusiness, updateBusinessData } from "@/actions/businessData";
+import { getBusiness, updateBusinessData } from "@/actions/businessActions";
 // import DynamicInput from "@/components/DynamicInput";
 import CustomButton from "@/components/ui/CustomButton";
 import {

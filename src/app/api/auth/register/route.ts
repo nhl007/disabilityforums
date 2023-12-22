@@ -3,10 +3,14 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { connectToDB } from "@/libs/connectToDb";
 import User from "@/models/User";
-import { getDiscourseUserByEmail } from "@/actions/discourseApi";
+import {
+  createADiscourseUser,
+  getDiscourseUserByEmail,
+} from "@/actions/discourseApi";
 
 type body = {
   name: string;
+  username: string;
   email: string;
   password: string;
 };
@@ -15,10 +19,14 @@ export async function POST(request: Request) {
   try {
     const body: body = await request.json();
 
-    const { name, email, password } = body;
+    const { name, username, email, password } = body;
 
-    if (!name || !email || !password) {
+    if (!name || !username || !email || !password) {
       throw new Error("Missing fields!");
+    }
+
+    if (password.length < 10) {
+      throw new Error("Password is less than 10 characters!");
     }
 
     await connectToDB();
@@ -47,11 +55,25 @@ export async function POST(request: Request) {
         username: discourseData[0].username,
       });
     } else {
-      user = await User.create({
-        email: email,
-        password: hashedPassword,
-        username: name,
-      });
+      const discourseId = await createADiscourseUser(
+        name,
+        email,
+        password,
+        username
+      );
+      if (discourseId) {
+        user = await User.create({
+          name: name,
+          email: email,
+          password: hashedPassword,
+          username: username,
+          discourseId: discourseId,
+        });
+      } else {
+        return NextResponse.json("Could not create account! Try again", {
+          status: 400,
+        });
+      }
     }
 
     return NextResponse.json(user, {

@@ -20,31 +20,28 @@ const OnBoardingTabs = () => {
 
   const [progress, setProgress] = useState(0);
 
-  const getProgression = async () => {
-    const progress = await getListingProgression(data?.user.id as string);
-    if (!progress) {
-      setProgress(0);
-    }
-    setProgress(progress.progress);
-  };
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      return router.replace("/sign-in");
-    } else if (status === "authenticated") {
-      getProgression();
-    }
-
-    switch (url) {
-      case "/on-board/about":
-        if (progress < 1) router.back();
-
-      case "/on-board/support":
-        if (progress < 2) router.back();
-
-      case "/on-board/contacts":
-        if (progress < 3) router.back();
-    }
-  }, []);
+  // const getProgression = async () => {
+  //   const progress = await getListingProgression(data?.user.id as string);
+  //   if (!progress) {
+  //     setProgress(0);
+  //   }
+  //   setProgress(progress.progress);
+  // };
+  // useEffect(() => {
+  // if (status === "unauthenticated") {
+  //   return router.replace("/sign-in");
+  // } else if (status === "authenticated") {
+  //   getProgression();
+  // }
+  // switch (url) {
+  //   case "/on-board/about":
+  //     if (progress < 1) router.back();
+  //   case "/on-board/support":
+  //     if (progress < 2) router.back();
+  //   case "/on-board/contacts":
+  //     if (progress < 3) router.back();
+  // }
+  // }, []);
 
   return (
     <div className="border-b border-gray-200 mb-4 md:mb-6">

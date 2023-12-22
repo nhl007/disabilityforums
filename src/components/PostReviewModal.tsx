@@ -4,7 +4,7 @@ import { Star, X } from "lucide-react";
 import Link from "next/link";
 import CustomInput from "./ui/CustomInput";
 import CustomButton from "./ui/CustomButton";
-import { postBusinessReview } from "@/actions/businessData";
+import { postBusinessReview } from "@/actions/businessActions";
 import Alert from "./Alert";
 import { useFeatureContext } from "@/context/feature/FeatureContext";
 

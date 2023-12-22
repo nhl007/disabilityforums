@@ -6,12 +6,12 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useFeatureContext } from "@/context/feature/FeatureContext";
 import Alert from "./Alert";
-import validator from "validator";
 import Link from "next/link";
 
 const SignUp = () => {
   const [email, setEmail] = useState<string | null>(null);
   const [name, setName] = useState<string | null>(null);
+  const [username, setUserName] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
@@ -24,10 +24,10 @@ const SignUp = () => {
   const registerSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    if (password?.length! < 8) {
+    if (password?.length! < 10) {
       setLoading(false);
       return displayAlert(
-        "Password must be at least 6 characters long!",
+        "Password must be at least 10 characters long!",
         false
       );
     }
@@ -38,6 +38,7 @@ const SignUp = () => {
           name,
           email,
           password,
+          username,
         }),
       });
       if (response.status === 200) {
@@ -77,11 +78,19 @@ const SignUp = () => {
       {showAlert && <Alert />}
       <h1 className="text-2xl font-semibold text-center">Sign Up</h1>
       <input
-        name="username"
+        name="name"
         type="text"
         required
         className="border outline-none px-3 py-2 rounded-lg"
         onChange={(e) => setName(e.target.value)}
+        placeholder="name"
+      />
+      <input
+        name="username"
+        type="text"
+        required
+        className="border outline-none px-3 py-2 rounded-lg"
+        onChange={(e) => setUserName(e.target.value)}
         placeholder="username"
       />
       <input
