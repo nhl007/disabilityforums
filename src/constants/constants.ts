@@ -223,6 +223,20 @@ export const selectOptions = [
   },
 ];
 
+export const statesOptions = [
+  { label: "New South Wales (NSW)", value: "New South Wales (NSW)" },
+  { label: "Queensland (QLD)", value: "Queensland (QLD)" },
+  { label: "South Australia (SA)", value: "South Australia (SA)" },
+  { label: "Tasmania (TAS)", value: "Tasmania (TAS)" },
+  { label: "Victoria (VIC)", value: "Victoria (VIC)" },
+  { label: "Western Australia (WA)", value: "Western Australia (WA)" },
+  {
+    label: "Australian Capital Territory (ACT)",
+    value: "Australian Capital Territory (ACT)",
+  },
+  { label: "Northern Territory (NT)", value: "Northern Territory (NT)" },
+];
+
 export const selectLanguages = [
   { label: "AusLan", value: "AusLan" },
   { label: "English", value: "English" },
@@ -264,9 +278,9 @@ export const selectLanguages = [
 ];
 
 export const selectDeliveryOptions = [
+  { label: "In Person", value: "In Person" },
   { label: "Mobile", value: "Mobile" },
-  { label: "Online", value: "Online" },
-  { label: "In Clinic", value: "In Clinic" },
+  { label: "Online/Telehealth", value: "Online/Telehealth" },
 ];
 
 export const genderOfAttendanceOptions = [

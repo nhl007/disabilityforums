@@ -8,7 +8,7 @@ import User from "@/models/User";
 import { BusinessDatabaseModel, BusinessReviewData } from "@/types/business";
 import { SearchParamsActions } from "@/types/common";
 import { getLatLngByPostalCode } from "@/utils/postalCodeSearch";
-import mongoose, { Error, MongooseError } from "mongoose";
+import { Error } from "mongoose";
 import { Session } from "next-auth";
 
 export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
@@ -69,7 +69,11 @@ export async function updateBusinessData(
       new: true,
     }).select("_id");
     await User.findByIdAndUpdate(id, { progress: progress });
-    return { success: true, message: "Saved Successfully !" };
+    return {
+      success: true,
+      message:
+        progress === 4 ? "Business Listing Complete" : "Saved Successfully !",
+    };
   } catch (err) {
     if (err instanceof Error) return { success: false, message: err.message };
     return { success: false, message: "Error Ocurred" };
@@ -113,21 +117,21 @@ export async function searchBusinesses(searchParams: SearchParamsActions) {
             $in: [new RegExp(value, "i")],
           };
         }
-        if (key === "disabilityExp") {
-          query.disabilitySpecialities = {
-            $in: value.split(","),
-          };
-        }
+        // if (key === "disabilityExp") {
+        //   query.disabilitySpecialities = {
+        //     $in: value.split(","),
+        //   };
+        // }
         if (key === "delivery") {
           query.deliveryOptions = {
             $in: value.split(","),
           };
         }
-        if (key === "payment") {
-          query.paymentTypes = {
-            $in: value.split(","),
-          };
-        }
+        // if (key === "payment") {
+        //   query.paymentTypes = {
+        //     $in: value.split(","),
+        //   };
+        // }
         if (key === "age") {
           query.agesSupported = {
             $in: value.split(","),
@@ -149,6 +153,17 @@ export async function searchBusinesses(searchParams: SearchParamsActions) {
           };
         }
 
+        if (key === "company" && value === "true") {
+          query.EntityTypeCode = {
+            $in: [new RegExp("PRV", "i")],
+          };
+        }
+
+        if (key === "trader" && value === "true") {
+          query.EntityTypeCode = {
+            $in: [new RegExp("IND", "i")],
+          };
+        }
         //ndis
         // autism: string;
       }

@@ -44,7 +44,7 @@ const SearchBar = () => {
   const [delivery, setDelivery] = useState<string[]>([]);
   const [age, setAge] = useState<string[]>([]);
   const [gender, setGender] = useState<string[]>([]);
-  const [languages, setLanguages] = useState("AusLan");
+  const [languages, setLanguages] = useState("");
   const [complexNeeds, setComplexNeeds] = useState("");
 
   const [ndis, setNdis] = useState(false);
@@ -78,6 +78,8 @@ const SearchBar = () => {
       age: age,
       languages: languages,
       complexNeeds: complexNeeds,
+      company: companiesOnly,
+      trader: tradersOnly,
     };
 
     let url = "/directory/s?";

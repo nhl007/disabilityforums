@@ -27,12 +27,12 @@ export type BusinessPersonalInfo = {
   about: string;
   services: string[];
   deliveryOptions: string[];
-  paymentTypes: string[];
+  // paymentTypes: string[];
   languages: string[];
   genderOfAttendants: string[];
   agesSupported: Array<serviceAgeNames>;
-  disabilitySpecialities: string[];
-  providerSpecialSkills: string[];
+  // disabilitySpecialities: string[];
+  // providerSpecialSkills: string[];
   complexNeedsSupported: string[];
   contact: {
     email: string;

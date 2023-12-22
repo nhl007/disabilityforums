@@ -6,9 +6,9 @@ import CustomButton from "@/components/ui/CustomButton";
 import {
   agesSupportedOptions,
   complexNeedsSupportedOptions,
-  disabilitiesExperienceOptions,
+  // disabilitiesExperienceOptions,
   genderOfAttendanceOptions,
-  otherProviderSkillsOptions,
+  // otherProviderSkillsOptions,
   selectLanguages,
 } from "@/constants/constants";
 import { useFeatureContext } from "@/context/feature/FeatureContext";
@@ -23,12 +23,12 @@ const Support = () => {
   const { displayAlert } = useFeatureContext();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [disabilitySpecialities, setDisabilitySpecialities] = useState<
-    string[]
-  >([]);
-  const [providerSpecialSkills, setProviderSpecialSkills] = useState<string[]>(
-    []
-  );
+  // const [disabilitySpecialities, setDisabilitySpecialities] = useState<
+  //   string[]
+  // >([]);
+  // const [providerSpecialSkills, setProviderSpecialSkills] = useState<string[]>(
+  //   []
+  // );
 
   const [complexNeedsSupported, setComplexNeedsSupported] = useState<string[]>(
     []
@@ -44,8 +44,8 @@ const Support = () => {
       languages,
       agesSupported,
       genderOfAttendants,
-      providerSpecialSkills,
-      disabilitySpecialities,
+      // providerSpecialSkills,
+      // disabilitySpecialities,
       complexNeedsSupported,
     };
     const data = await updateBusinessData(infos!, 3);
@@ -63,8 +63,8 @@ const Support = () => {
       "languages",
       "agesSupported",
       "genderOfAttendants",
-      "providerSpecialSkills",
-      "disabilitySpecialities",
+      // "providerSpecialSkills",
+      // "disabilitySpecialities",
       "complexNeedsSupported",
     ]);
 
@@ -83,8 +83,8 @@ const Support = () => {
       setAgesSupported(data.data.agesSupported);
       setLanguages(data.data.languages);
       setGenderOfAttendants(data.data.genderOfAttendants);
-      setProviderSpecialSkills(data.data.providerSpecialSkills);
-      setDisabilitySpecialities(data.data.disabilitySpecialities);
+      // setProviderSpecialSkills(data.data.providerSpecialSkills);
+      // setDisabilitySpecialities(data.data.disabilitySpecialities);
       setComplexNeedsSupported(data.data.complexNeedsSupported);
     }
   };
@@ -174,11 +174,11 @@ const Support = () => {
                 setAgesSupported(data);
               }}
               isSearchable={true}
-              placeholder="The the supported ages!"
+              placeholder=""
               classNamePrefix="select"
             />
           </div>
-          <div className="col-span-3 md:col-span-full">
+          {/* <div className="col-span-3 md:col-span-full">
             <label
               htmlFor="disability_specialities"
               className="block text-sm font-medium leading-6 mb-2 text-gray-900"
@@ -201,8 +201,8 @@ const Support = () => {
               placeholder=""
               classNamePrefix="select"
             />
-          </div>
-          <div className="col-span-3 md:col-span-full">
+          </div> */}
+          {/* <div className="col-span-3 md:col-span-full">
             <label
               htmlFor="special_skills"
               className="block text-sm font-medium leading-6 mb-2 text-gray-900"
@@ -225,7 +225,7 @@ const Support = () => {
               placeholder=""
               classNamePrefix="select"
             />
-          </div>
+          </div> */}
           <div className="col-span-3 md:col-span-full">
             <label
               htmlFor="complex_needs"

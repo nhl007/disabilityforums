@@ -206,7 +206,7 @@ const page = async ({ params }: PageProps) => {
                 </div>
               </BorderBox>
             ) : null}
-            {data.paymentTypes?.length ? (
+            {/* {data.paymentTypes?.length ? (
               <BorderBox>
                 <h1 className=" text-2xl font-medium">Payment Types</h1>
                 <div className="flex flex-col">
@@ -221,7 +221,7 @@ const page = async ({ params }: PageProps) => {
                   })}
                 </div>
               </BorderBox>
-            ) : null}
+            ) : null} */}
             {data.serviceLocations?.length ? (
               <BorderBox>
                 <h1 className=" text-2xl font-medium">Service Locations</h1>

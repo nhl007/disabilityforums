@@ -5,6 +5,13 @@ import DynamicInput from "./DynamicInput";
 import LocationDropdown from "./LocationDropdown";
 import CustomInput from "./ui/CustomInput";
 import { useFeatureContext } from "@/context/feature/FeatureContext";
+import Select from "react-select";
+import { generateSelectDefault } from "@/utils/utils";
+import { statesOptions } from "@/constants/constants";
+import {
+  getLatLngByPostalCode,
+  getSuburbsByState,
+} from "@/utils/postalCodeSearch";
 
 interface LocationProps {
   data: serviceLocationsType;
@@ -36,6 +43,26 @@ const ServiceLocationInput = ({ data, setData }: LocationProps) => {
     setData(updatedData);
   };
 
+  const [suburbsOptions, setSuburbsOptions] = useState([]);
+
+  const getSuburbsOption = async (state: string) => {
+    if (!state) {
+      displayAlert("Please select the state first!", false);
+    }
+    setCurr(state ?? "");
+
+    const regex = /\(([^)]+)\)/;
+    const match = state.match(regex);
+
+    const word = match ? match[1] : "";
+    setSuburbs([]);
+    const suburbs = await getSuburbsByState(word);
+
+    if (suburbs) {
+      setSuburbsOptions(suburbs);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-col mt-2 col-span-2 gap-2">
@@ -46,21 +73,50 @@ const ServiceLocationInput = ({ data, setData }: LocationProps) => {
           >
             State
           </label>
-          <CustomInput
+
+          <Select
             id="state"
-            type="text"
-            value={curr}
-            onChange={(e) => setCurr(e.target.value)}
-            className="w-[200px]"
+            instanceId="state"
+            name="state"
+            options={statesOptions}
+            className="w-full md:w-[270px] h-auto text-base"
+            onChange={(val) => {
+              getSuburbsOption(val?.value as string);
+            }}
+            isSearchable={true}
+            placeholder="Select State"
           />
         </div>
-        <DynamicInput name="Suburbs" data={suburbs} setData={setSuburbs} />
+        <div className="col-span-3 md:col-span-full">
+          <label
+            htmlFor="suburbs"
+            className="block text-sm font-medium leading-6 mb-2 text-gray-900"
+          >
+            select suburbs
+          </label>
+          <Select
+            id="suburbs"
+            value={generateSelectDefault(suburbs)}
+            isMulti
+            instanceId="suburbs"
+            name="suburbs"
+            options={suburbsOptions}
+            className="basic-multi-select"
+            onChange={(val) => {
+              const data = val.map((d: any) => d.value);
+              setSuburbs(data);
+            }}
+            isSearchable={true}
+            placeholder="The the supported ages!"
+            classNamePrefix="select"
+          />
+        </div>
         <button
-          className=" w-fit bg-green-600 text-white px-5 py-2 rounded-md mb-4 flex mt-2"
+          className=" w-fit bg-green-600 text-white px-3 py-2 rounded-md mb-4 flex gap-1 mt-2 items-center"
           onClick={addToList}
         >
-          Confirm Location Details
-          <Check />
+          Add
+          <Check size={18} />
         </button>
       </div>
       <h2 className=" text-xl font-bold my-2">

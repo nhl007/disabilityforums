@@ -58,9 +58,11 @@ const OnBoardingTabs = () => {
         </li>
 
         <li
-          className={`${url === "/on-board/about" && "text-blue-800"} ${
-            progress < 1 && "pointer-events-none"
-          } me-2`}
+          className={`me-2 ${url === "/on-board/about" && "text-blue-800"} 
+          `}
+          // ${
+          //   progress < 1 && "pointer-events-none"
+          // }
         >
           <Link
             href="/on-board/about"
@@ -73,9 +75,10 @@ const OnBoardingTabs = () => {
           </Link>
         </li>
         <li
-          className={`${url === "/on-board/support" && "text-blue-800"} ${
-            progress < 2 && "pointer-events-none"
-          } me-2`}
+          className={`me-2 ${url === "/on-board/support" && "text-blue-800"}  `}
+          // ${
+          //   progress < 2 && "pointer-events-none"
+          // }
         >
           <Link
             href="/on-board/support"
@@ -88,9 +91,13 @@ const OnBoardingTabs = () => {
           </Link>
         </li>
         <li
-          className={`${url === "/on-board/contacts" && "text-blue-800"}  ${
-            progress < 3 && "pointer-events-none"
-          } me-2`}
+          className={`me-2 ${
+            url === "/on-board/contacts" && "text-blue-800"
+          }   `}
+
+          // ${
+          //   progress < 3 && "pointer-events-none"
+          // }
         >
           <Link
             href="/on-board/contacts"

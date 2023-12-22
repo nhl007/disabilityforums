@@ -24,11 +24,16 @@ const AbnLookupForm = () => {
   const searchAbn = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setIsLoading(true);
+
     const data = await searchValidABN(abn);
     if (data) {
-      setAbnDetails(() => data);
+      if (data.AbnStatus === "Active") {
+        setAbnDetails(() => data);
+      } else {
+        displayAlert("The Abn is not Active!", false);
+      }
     } else {
-      displayAlert("Please enter a valid ABN!", false);
+      displayAlert("No Active ABN Found!", false);
     }
     setIsLoading(false);
   };
@@ -62,8 +67,6 @@ const AbnLookupForm = () => {
     ]);
 
     const data = JSON.parse(resp);
-
-    console.log(data);
 
     if (data.data) {
       setAbn(data.data.Abn);
@@ -143,7 +146,7 @@ const AbnLookupForm = () => {
                   disabled
                   type="text"
                   name="status"
-                  value={abnDetails.Acn}
+                  value={abnDetails.AbnStatus}
                 />
               </div>
             </div>

@@ -5,7 +5,7 @@ import CustomButton from "@/components/ui/CustomButton";
 import {
   selectDeliveryOptions,
   selectOptions,
-  selectPaymentOptions,
+  // selectPaymentOptions,
 } from "@/constants/constants";
 import { useFeatureContext } from "@/context/feature/FeatureContext";
 import { generateSelectDefault } from "@/utils/utils";
@@ -17,7 +17,7 @@ const About = () => {
   const router = useRouter();
   const [about, setAbout] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [paymentTypes, setPaymentTypes] = useState<string[]>([]);
+  // const [paymentTypes, setPaymentTypes] = useState<string[]>([]);
   const [services, setServices] = useState<string[]>([]);
   const [deliveryOptions, setDeliveryOptions] = useState<string[]>([]);
 
@@ -26,7 +26,7 @@ const About = () => {
   const setInitialData = async () => {
     const resp = await getBusiness([
       "about",
-      "paymentTypes",
+      // "paymentTypes",
       "services",
       "deliveryOptions",
     ]);
@@ -35,7 +35,7 @@ const About = () => {
 
     if (data.data) {
       setAbout(data.data.about);
-      setPaymentTypes(data.data.paymentTypes);
+      // setPaymentTypes(data.data.paymentTypes);
       setServices(data.data.services);
       setDeliveryOptions(data.data.deliveryOptions);
     }
@@ -49,7 +49,7 @@ const About = () => {
     setLoading(true);
     const infos = {
       about,
-      paymentTypes,
+      // paymentTypes,
       services,
       deliveryOptions,
     };
@@ -123,7 +123,7 @@ const About = () => {
               classNamePrefix="select"
             />
           </div>
-          <div className="col-span-3">
+          {/* <div className="col-span-3">
             <label
               htmlFor="payment_types"
               className="block text-sm font-medium leading-6 mb-2 text-gray-900"
@@ -146,7 +146,7 @@ const About = () => {
               placeholder="Select Payment Methods"
               classNamePrefix="select"
             />
-          </div>
+          </div> */}
           <div className="md:col-span-full col-span-3">
             <label
               htmlFor="about"
