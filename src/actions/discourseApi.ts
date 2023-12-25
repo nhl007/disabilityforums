@@ -11,7 +11,8 @@ export async function createADiscourseUser(
   name: string,
   email: string,
   password: string,
-  username: string
+  username: string,
+  type: string
 ) {
   try {
     const body = {
@@ -27,7 +28,7 @@ export async function createADiscourseUser(
     for (const [key, value] of Object.entries(body)) {
       formData.append(key, value);
     }
-    formData.append("user_fields[1]", "NDIS participant");
+    formData.append("user_fields[1]", type);
 
     const response = await fetch(`${apiUrl}/users.json`, {
       method: "POST",

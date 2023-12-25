@@ -12,14 +12,14 @@ const NavBar = () => {
   return (
     <MaxWidthWrapper>
       <nav className="flex flex-col relative font-semibold">
-        <div className="flex justify-between items-center py-2 h-[40px]">
-          <Link
+        <div className=" self-end flex items-center py-2 h-[40px]">
+          {/* <Link
             href="tel:09999999"
             className="flex gap-1 items-center hover:text-btn-orange"
           >
             <Phone size={18} />
             1300 2888 93
-          </Link>
+          </Link> */}
           {status === "authenticated" ? (
             <ProfileMenu />
           ) : (
@@ -42,18 +42,16 @@ const NavBar = () => {
         <div className=" divide-solid border" />
         <div className="flex gap-7 h-[48px] md:h-[84px] justify-between md:justify-start items-center">
           <Link className=" hover:text-btn-orange" href="/">
-            Logo
+            Home
           </Link>
           <div className=" hidden md:flex items-center gap-7">
-            <Link
+            {/* <Link
               className=" hover:text- px-6 py-3 bg-btn-orange hover:bg-txt-blue hover:text-white rounded-lg"
               href="/"
             >
               Get Started
-            </Link>
-            <Link className=" hover:text-btn-orange" href="/on-board">
-              List Business
-            </Link>
+            </Link> */}
+
             <Link className=" hover:text-btn-orange" href="/directory">
               Directory
             </Link>

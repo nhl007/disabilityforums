@@ -23,13 +23,6 @@ const Support = () => {
   const { displayAlert } = useFeatureContext();
   const [loading, setLoading] = useState<boolean>(false);
 
-  // const [disabilitySpecialities, setDisabilitySpecialities] = useState<
-  //   string[]
-  // >([]);
-  // const [providerSpecialSkills, setProviderSpecialSkills] = useState<string[]>(
-  //   []
-  // );
-
   const [complexNeedsSupported, setComplexNeedsSupported] = useState<string[]>(
     []
   );
@@ -63,8 +56,6 @@ const Support = () => {
       "languages",
       "agesSupported",
       "genderOfAttendants",
-      // "providerSpecialSkills",
-      // "disabilitySpecialities",
       "complexNeedsSupported",
     ]);
 
@@ -83,8 +74,6 @@ const Support = () => {
       setAgesSupported(data.data.agesSupported);
       setLanguages(data.data.languages);
       setGenderOfAttendants(data.data.genderOfAttendants);
-      // setProviderSpecialSkills(data.data.providerSpecialSkills);
-      // setDisabilitySpecialities(data.data.disabilitySpecialities);
       setComplexNeedsSupported(data.data.complexNeedsSupported);
     }
   };

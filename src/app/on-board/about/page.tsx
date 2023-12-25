@@ -15,27 +15,22 @@ import Select from "react-select";
 
 const About = () => {
   const router = useRouter();
+  // const [paymentTypes, setPaymentTypes] = useState<string[]>([]);
+
   const [about, setAbout] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  // const [paymentTypes, setPaymentTypes] = useState<string[]>([]);
   const [services, setServices] = useState<string[]>([]);
   const [deliveryOptions, setDeliveryOptions] = useState<string[]>([]);
 
   const { displayAlert } = useFeatureContext();
 
   const setInitialData = async () => {
-    const resp = await getBusiness([
-      "about",
-      // "paymentTypes",
-      "services",
-      "deliveryOptions",
-    ]);
+    const resp = await getBusiness(["about", "services", "deliveryOptions"]);
 
     const data = JSON.parse(resp);
 
     if (data.data) {
       setAbout(data.data.about);
-      // setPaymentTypes(data.data.paymentTypes);
       setServices(data.data.services);
       setDeliveryOptions(data.data.deliveryOptions);
     }

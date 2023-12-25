@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 
 const ProfileMenu = () => {
   const { data } = useSession();
@@ -40,25 +41,23 @@ const ProfileMenu = () => {
             aria-labelledby="avatarButton"
           >
             <li>
-              <a href="#" className="block px-4 py-2 hover:bg-gray-100">
+              <Link href="/" className="block px-4 py-2 hover:bg-btn-orange">
                 Dashboard
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="block px-4 py-2 hover:bg-gray-100">
-                Settings
-              </a>
-            </li>
-            <li>
-              <a href="#" className="block px-4 py-2 hover:bg-gray-100">
-                Earnings
-              </a>
+              <Link
+                className=" block px-4 py-2 hover:bg-btn-orange"
+                href="/on-board"
+              >
+                List Business
+              </Link>
             </li>
           </ul>
           <div className="py-1">
             <button
               onClick={() => signOut({ redirect: false })}
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 "
+              className="block px-4 py-2 text-sm text-gray-700 w-full text-start hover:bg-btn-orange "
             >
               Sign out
             </button>

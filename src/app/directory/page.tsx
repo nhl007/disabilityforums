@@ -5,13 +5,17 @@ import { BusinessDatabaseModel } from "@/types/business";
 import Link from "next/link";
 
 const page = async () => {
-  const topStates = ["WA", "QLD", "VIC", "NSW", "SA", "NT", "ACT"];
   const resp = await getFeaturedBusiness();
   if (!resp) return null;
 
   const data: Pick<
     BusinessDatabaseModel,
-    "BusinessName" | "about" | "services" | "_id"
+    | "BusinessName"
+    | "about"
+    | "serviceLocations"
+    | "EntityTypeCode"
+    | "_id"
+    | "rank"
   >[] = await JSON.parse(resp);
 
   return (
@@ -24,7 +28,9 @@ const page = async () => {
                 <FeaturedBusinessCard
                   about={b.about}
                   name={b.BusinessName.join(" ")}
-                  services={b.services}
+                  businessType={b.EntityTypeCode}
+                  rank={b.rank}
+                  serviceLocations={b.serviceLocations}
                 />
               </Link>
             );

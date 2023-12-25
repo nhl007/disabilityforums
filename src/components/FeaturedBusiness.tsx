@@ -1,18 +1,22 @@
 import Image from "next/image";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, MapPin } from "lucide-react";
 import SmallVerificationBox from "./ui/SmallVerificationBox";
 import { BusinessDatabaseModel } from "@/types/business";
 
 interface FeaturedBusinessCardProps {
   name: string;
-  services: BusinessDatabaseModel["services"];
+  serviceLocations: BusinessDatabaseModel["serviceLocations"];
+  businessType: string;
   about: string;
+  rank: number;
 }
 
 const FeaturedBusinessCard = ({
   name,
   about,
-  services,
+  serviceLocations,
+  rank,
+  businessType,
 }: FeaturedBusinessCardProps) => {
   return (
     <div className="w-[281px] h-[326px] flex flex-col gap-3 items-start">
@@ -31,16 +35,29 @@ const FeaturedBusinessCard = ({
       </p>
       <div className="flex gap-2">
         <SmallVerificationBox className="py-1.5 px-3 text-sm font-semibold">
-          <CheckCircle size={16} /> Verified
+          <CheckCircle size={16} /> {businessType}
         </SmallVerificationBox>
       </div>
       <p className="w-full h-[55px] line-clamp-3 text-[12px] break-words font-medium leading-4">
         {about}
       </p>
 
-      <p className="w-full h-[20px] tracking-tighter line-clamp-1 text-[10px] break-words font-medium">
-        {services.join(" | ")}
-      </p>
+      <div className="flex justify-between w-full items-center">
+        <div className="flex items-center">
+          <MapPin className="mr-1" size={18} strokeWidth={2} />
+          {serviceLocations.map((l, i) => {
+            const regex = /\(([^)]+)\)/;
+            const match = l.state.match(regex);
+            return (
+              <span className="text-sm font-semibold" key={i}>
+                {match?.[1]}
+                {i + 1 < serviceLocations.length ? ", " : ""}
+              </span>
+            );
+          })}
+        </div>
+        <span className="font-semibold text-sm">Overall Rank {rank}</span>
+      </div>
     </div>
   );
 };

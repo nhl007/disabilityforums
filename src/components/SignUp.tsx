@@ -7,8 +7,11 @@ import { signIn } from "next-auth/react";
 import { useFeatureContext } from "@/context/feature/FeatureContext";
 import Alert from "./Alert";
 import Link from "next/link";
+import Select from "react-select";
+import { accountTypeOptions } from "@/constants/constants";
 
 const SignUp = () => {
+  const [type, setType] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [name, setName] = useState<string | null>(null);
   const [username, setUserName] = useState<string | null>(null);
@@ -24,6 +27,7 @@ const SignUp = () => {
   const registerSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    console.log(type);
     if (password?.length! < 10) {
       setLoading(false);
       return displayAlert(
@@ -39,6 +43,7 @@ const SignUp = () => {
           email,
           password,
           username,
+          type,
         }),
       });
       if (response.status === 200) {
@@ -77,6 +82,19 @@ const SignUp = () => {
     >
       {showAlert && <Alert />}
       <h1 className="text-2xl font-semibold text-center">Sign Up</h1>
+      <Select
+        id="accountType"
+        required
+        instanceId="accountType"
+        name="accountType"
+        options={accountTypeOptions}
+        className="w-full h-auto text-base"
+        onChange={(val) => {
+          setType(val?.value!);
+        }}
+        isSearchable={true}
+        placeholder="Choose Account Type"
+      />
       <input
         name="name"
         type="text"

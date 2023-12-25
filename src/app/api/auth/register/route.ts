@@ -13,15 +13,16 @@ type body = {
   username: string;
   email: string;
   password: string;
+  type: string;
 };
 
 export async function POST(request: Request) {
   try {
     const body: body = await request.json();
 
-    const { name, username, email, password } = body;
+    const { name, username, email, password, type } = body;
 
-    if (!name || !username || !email || !password) {
+    if (!name || !username || !email || !password || !type) {
       throw new Error("Missing fields!");
     }
 
@@ -53,13 +54,15 @@ export async function POST(request: Request) {
           discourseData[0].avatar_template.replace("{size}", "96"),
         name: discourseData[0].name,
         username: discourseData[0].username,
+        userType: type,
       });
     } else {
       const discourseId = await createADiscourseUser(
         name,
         email,
         password,
-        username
+        username,
+        type
       );
       if (discourseId) {
         user = await User.create({
@@ -68,6 +71,7 @@ export async function POST(request: Request) {
           password: hashedPassword,
           username: username,
           discourseId: discourseId,
+          userType: type,
         });
       } else {
         return NextResponse.json("Could not create account! Try again", {

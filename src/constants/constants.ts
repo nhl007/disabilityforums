@@ -1,3 +1,16 @@
+export const accountTypeOptions = [
+  // { label: "NDIS Participant", value: "NDIS Participant" },
+  // {
+  //   label: "Participant Support Person (Family, Friends, Others)",
+  //   value: "Participant Support Person (Family, Friends, Others)",
+  // },
+  { label: "NDIS Provider", value: "NDIS Provider" },
+  {
+    label: "B2B Provider (Services for NDIS Providers)",
+    value: "B2B Provider (Services for NDIS Providers)",
+  },
+];
+
 export const selectOptions = [
   {
     label: "Support",

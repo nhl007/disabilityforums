@@ -171,7 +171,7 @@ export async function searchBusinesses(searchParams: SearchParamsActions) {
 
     await connectToDB();
     const doc = await Business.find(query)
-      .select("_id services about BusinessName rating")
+      .select("_id BusinessName about rank serviceLocations EntityTypeCode")
       .limit(10)
       .sort({ rank: "desc" });
     if (doc.length > 0) return stringifyResponse(doc);
@@ -209,9 +209,10 @@ export async function getFeaturedBusiness() {
   try {
     await connectToDB();
     const doc = await Business.find({})
-      .select("_id BusinessName about services")
+      .select("_id BusinessName about rank serviceLocations EntityTypeCode")
       .limit(10)
       .sort({ rank: "desc" });
+
     if (doc.length > 0) {
       return stringifyResponse(doc);
     } else return null;

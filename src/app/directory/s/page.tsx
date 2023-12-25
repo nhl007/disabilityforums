@@ -1,7 +1,6 @@
 import { searchBusinesses } from "@/actions/businessActions";
-import BusinessCard from "@/components/BusinessCard";
+import FeaturedBusinessCard from "@/components/FeaturedBusiness";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
-import RefineResults from "@/components/RefineResults";
 import { BusinessDatabaseModel } from "@/types/business";
 import { BusinessSearchParams } from "@/types/common";
 import Link from "next/link";
@@ -9,7 +8,12 @@ import Link from "next/link";
 const page = async ({ searchParams }: BusinessSearchParams) => {
   let data: Pick<
     BusinessDatabaseModel,
-    "BusinessName" | "about" | "services" | "_id" | "rating"
+    | "BusinessName"
+    | "about"
+    | "serviceLocations"
+    | "EntityTypeCode"
+    | "_id"
+    | "rank"
   >[] = [];
 
   const resp = await searchBusinesses(searchParams);
@@ -32,22 +36,30 @@ const page = async ({ searchParams }: BusinessSearchParams) => {
             </div>
           </div> */}
           {data.length ? (
-            <div className="col-span-3">
-              <p className=" mt-4 md:mt-0 mb-4">Total 290 results</p>
-              <div className="flex flex-col space-y-2 md:space-y-4">
-                {data.map((data, i) => (
-                  <Link href={`/business/${data._id}`} key={i}>
-                    <BusinessCard
-                      name={data.BusinessName.join(" ")}
-                      description={data.about}
-                      services={data.services}
-                      verification="verified"
-                      rating={data.rating}
-                    />
-                  </Link>
-                ))}
+            <>
+              <p className="font-medium mb-4">
+                Total {data.length} results found{" "}
+              </p>
+              <div className=" grid grid-flow-row grid-cols-4 place-items-center gap-x-7 gap-y-7">
+                {data.map((b, i) => {
+                  return (
+                    <Link
+                      className="col-span-1"
+                      key={i}
+                      href={`/business/${b._id}`}
+                    >
+                      <FeaturedBusinessCard
+                        about={b.about}
+                        name={b.BusinessName.join(" ")}
+                        businessType={b.EntityTypeCode}
+                        rank={b.rank}
+                        serviceLocations={b.serviceLocations}
+                      />
+                    </Link>
+                  );
+                })}
               </div>
-            </div>
+            </>
           ) : (
             <div className="col-span-3">
               <p className=" text-3xl">

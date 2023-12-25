@@ -52,11 +52,10 @@ const SignIn = () => {
       <h1 className=" text-2xl font-semibold text-center">Sign In</h1>
       <input
         name="email"
-        type="email"
         required
         className="border outline-none px-3 py-2 rounded-lg"
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="email"
+        placeholder="email/username"
       />
       <input
         name="password"

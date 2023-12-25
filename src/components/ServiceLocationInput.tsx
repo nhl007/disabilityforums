@@ -71,7 +71,7 @@ const ServiceLocationInput = ({ data, setData }: LocationProps) => {
             htmlFor="state"
             className="block text-sm font-medium leading-6 text-gray-900"
           >
-            State
+            Select State first, Then choose suburbs
           </label>
 
           <Select
@@ -88,12 +88,6 @@ const ServiceLocationInput = ({ data, setData }: LocationProps) => {
           />
         </div>
         <div className="col-span-3 md:col-span-full">
-          <label
-            htmlFor="suburbs"
-            className="block text-sm font-medium leading-6 mb-2 text-gray-900"
-          >
-            select suburbs
-          </label>
           <Select
             id="suburbs"
             value={generateSelectDefault(suburbs)}
@@ -107,7 +101,7 @@ const ServiceLocationInput = ({ data, setData }: LocationProps) => {
               setSuburbs(data);
             }}
             isSearchable={true}
-            placeholder="The the supported ages!"
+            placeholder="Select Suburbs"
             classNamePrefix="select"
           />
         </div>
@@ -126,8 +120,12 @@ const ServiceLocationInput = ({ data, setData }: LocationProps) => {
         {data && data.length
           ? data.map((loc, i) => {
               return (
-                <div className="relative" key={loc.state + i}>
-                  <LocationDropdown state={loc.state} suburbs={loc.suburbs} />
+                <div className="relative w-full" key={loc.state + i}>
+                  <LocationDropdown
+                    classNames="w-full"
+                    state={loc.state}
+                    suburbs={loc.suburbs}
+                  />
                   <X
                     size={16}
                     className=" absolute top-[2px] right-[2px] text-red-400 cursor-pointer"

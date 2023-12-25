@@ -108,6 +108,15 @@ const OnBoardingTabs = () => {
             <Contact />
             Contacts
           </Link>
+          <Link
+            href="/on-board/new"
+            aria-disabled={progress < 3}
+            tabIndex={progress < 3 ? -1 : undefined}
+            className="inline-flex gap-2 items-center justify-center md:pr-4 py-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 ay-300 group"
+          >
+            <Contact />
+            New
+          </Link>
         </li>
       </ul>
     </div>

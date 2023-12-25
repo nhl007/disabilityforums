@@ -51,11 +51,7 @@ export type BusinessReviews = {
 }[];
 
 export type BusinessDatabaseModel = AbnLookupResult &
-  BusinessPersonalInfo & { _id: string } & {
-    reviews: BusinessReviewData[];
-    rating: number;
-    totalReviews: number;
-  };
+  BusinessPersonalInfo & { _id: string; rank: number };
 
 type BusinessReviewData = {
   caption: string;
