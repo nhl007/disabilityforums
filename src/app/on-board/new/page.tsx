@@ -124,14 +124,15 @@ const CreateList = () => {
   const saveImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileData = e.target.files?.[0];
     const fileReader = new FileReader();
+    // const name = e.target.files?.[0].name;
     if (fileData) {
       fileReader.readAsDataURL(fileData);
       fileReader.onloadend = async () => {
-        const imageData = await saveBase64Image(
-          fileReader.result as string,
-          "Nihal101.png"
-        );
-        setImage(imageData);
+        // const imageData = await saveBase64Image(
+        //   fileReader.result as string,
+        //   "name"
+        // );
+        // setImage(imageData);
         setImagePreview(fileReader.result as string);
       };
     }
