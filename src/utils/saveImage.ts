@@ -6,6 +6,8 @@ export async function saveBase64Image(base64String: string, fileName: string) {
 
   const imageBuffer = Buffer.from(base64Data, "base64");
 
-  fs.writeFileSync(fileName, imageBuffer, "binary");
-  return "nihal";
+  const filePath = "./public/banners/" + fileName;
+
+  fs.writeFileSync(filePath, imageBuffer, "binary");
+  return `/banner/${fileName}`;
 }

@@ -32,10 +32,15 @@ export async function POST(request: Request) {
 
     await connectToDB();
 
-    const userExists = await User.findOne({ email: email });
+    const emailExists = await User.findOne({ email: email });
+    if (emailExists) {
+      throw new Error("Email already exists!");
+    }
 
-    if (userExists) {
-      throw new Error("Email already exists");
+    const userNameExists = await User.findOne({ username: name });
+
+    if (userNameExists) {
+      throw new Error("Username already exists!");
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -52,7 +57,7 @@ export async function POST(request: Request) {
         avatar:
           process.env.DISCOURSE_API_URL +
           discourseData[0].avatar_template.replace("{size}", "96"),
-        name: discourseData[0].name,
+        name: name,
         username: discourseData[0].username,
         userType: type,
       });
@@ -64,17 +69,17 @@ export async function POST(request: Request) {
         username,
         type
       );
-      if (discourseId) {
+      if (discourseId.success) {
         user = await User.create({
           name: name,
           email: email,
           password: hashedPassword,
           username: username,
-          discourseId: discourseId,
+          discourseId: discourseId.user_id,
           userType: type,
         });
       } else {
-        return NextResponse.json("Could not create account! Try again", {
+        return NextResponse.json(discourseId.message, {
           status: 400,
         });
       }

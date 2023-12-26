@@ -1,7 +1,13 @@
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import OnBoardingTabs from "@/components/OnBoardingTabs";
+import { getAuthSession } from "@/libs/auth";
+import { redirect, RedirectType } from "next/navigation";
 
 const layout = async ({ children }: { children: React.ReactNode }) => {
+  const session = await getAuthSession();
+  if (!session) {
+    return redirect("/", RedirectType.replace);
+  }
   return (
     <MaxWidthWrapper>
       <div className="border-b border-gray-900/10 pb-4 md:pb-6">

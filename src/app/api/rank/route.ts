@@ -57,13 +57,13 @@ export async function GET(req: Request) {
     const businesses = await Business.find().select("discourseId");
 
     for (const business of businesses) {
-      const data = await getUserById(327);
+      const data = await getUserById(business.discourseId);
       let validPosts = 0;
       let validLikes = 0;
 
       if (data.postCount) {
         const posts = await searchPosts(data.name);
-        console.log(posts);
+        // console.log(posts);
 
         for (const post of posts) {
           if (post.blurb && post.blurb.length > 20) {
@@ -85,9 +85,9 @@ export async function GET(req: Request) {
 
       await Business.findByIdAndUpdate(business._id, { rank: updatedRank });
 
-      console.log("valid posts", validPosts);
-      console.log("valid Likes", validLikes);
-      console.log("Rank :", validPosts + validLikes);
+      // console.log("valid posts", validPosts);
+      // console.log("valid Likes", validLikes);
+      // console.log("Rank :", validPosts + validLikes);
     }
 
     return NextResponse.json(

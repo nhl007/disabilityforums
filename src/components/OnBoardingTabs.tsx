@@ -7,7 +7,8 @@ import Alert from "./Alert";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getListingProgression } from "@/actions/userActions";
+// import { getListingProgression } from "@/actions/userActions";
+import { checkIfBusinessExists } from "@/actions/businessActions";
 
 const OnBoardingTabs = () => {
   const {
@@ -16,9 +17,9 @@ const OnBoardingTabs = () => {
 
   const router = useRouter();
   const url = usePathname();
-  const { data, status } = useSession();
+  const { status } = useSession();
 
-  const [progress, setProgress] = useState(0);
+  const [exists, setExists] = useState(false);
 
   // const getProgression = async () => {
   //   const progress = await getListingProgression(data?.user.id as string);
@@ -43,20 +44,46 @@ const OnBoardingTabs = () => {
   // }
   // }, []);
 
+  const checkBusiness = async () => {
+    const resp = await checkIfBusinessExists();
+    if (resp) {
+      setExists(true);
+    } else {
+      if (url === "/on-board/new") {
+        router.back();
+      }
+      setExists(false);
+    }
+  };
+
+  useEffect(() => {
+    checkBusiness();
+  }, []);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      return router.back();
+    }
+  }, [status]);
+
   return (
     <div className="border-b border-gray-200 mb-4 md:mb-6">
       {showAlert && <Alert />}
       <ul className="flex flex-wrap -mb-px md:text-md text-sm font-semibold text-center text-gray-500 gap-2 md:gap-6 ">
-        <li className={`${url === "/on-board" && "text-btn-orange"} me-2`}>
+        <li
+          className={`${
+            url === "/on-board" && "text-btn-orange"
+          } me-2 hover:text-btn-orange`}
+        >
           <Link
             href="/on-board"
-            className="me-2 inline-flex gap-2 items-center justify-center md:pr-4 py-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 group"
+            className="me-2 inline-flex gap-2 items-center justify-center md:pr-4 py-4 border-b-2 border-transparent rounded-t-lg"
           >
             <Briefcase />
             Abn LookUp
           </Link>
         </li>
-
+        {/* 
         <li
           className={`me-2 ${url === "/on-board/about" && "text-blue-800"} 
           `}
@@ -89,17 +116,13 @@ const OnBoardingTabs = () => {
             <UserCog />
             Support
           </Link>
-        </li>
+        </li> */}
         <li
-          className={`me-2 ${
-            url === "/on-board/contacts" && "text-blue-800"
-          }   `}
-
-          // ${
-          //   progress < 3 && "pointer-events-none"
-          // }
+          className={`me-2 ${url === "/on-board/new" && "text-btn-orange"} ${
+            !exists && "pointer-events-none"
+          }   hover:text-btn-orange`}
         >
-          <Link
+          {/* <Link
             href="/on-board/contacts"
             aria-disabled={progress < 3}
             tabIndex={progress < 3 ? -1 : undefined}
@@ -107,15 +130,15 @@ const OnBoardingTabs = () => {
           >
             <Contact />
             Contacts
-          </Link>
+          </Link> */}
           <Link
             href="/on-board/new"
-            aria-disabled={progress < 3}
-            tabIndex={progress < 3 ? -1 : undefined}
-            className="inline-flex gap-2 items-center justify-center md:pr-4 py-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 ay-300 group"
+            aria-disabled={exists}
+            tabIndex={!exists ? -1 : undefined}
+            className="inline-flex gap-2 items-center justify-center md:pr-4 py-4 border-b-2 border-transparent rounded-t-lg "
           >
             <Contact />
-            New
+            Business Page
           </Link>
         </li>
       </ul>

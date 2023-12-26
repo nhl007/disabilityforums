@@ -17,3 +17,14 @@ export async function getListingProgression(id: string) {
     };
   }
 }
+
+export async function checkForExistingUser(email: string) {
+  try {
+    const emailExists = await User.findOne({ email: email });
+    if (emailExists) {
+      return true;
+    } else return false;
+  } catch (err) {
+    return true;
+  }
+}

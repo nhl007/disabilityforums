@@ -41,7 +41,7 @@ const Support = () => {
       // disabilitySpecialities,
       complexNeedsSupported,
     };
-    const data = await updateBusinessData(infos!, 3);
+    const data = await updateBusinessData(infos!);
     if (data.success) {
       displayAlert(data.message, true);
       router.push("/on-board/contacts");

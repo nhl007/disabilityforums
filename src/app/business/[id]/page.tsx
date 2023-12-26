@@ -1,14 +1,15 @@
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import Image from "next/image";
-import React from "react";
 import {
-  Car,
+  CarFront,
+  Globe,
   Heart,
+  MailIcon,
   MousePointerClick,
+  PersonStanding,
   Phone,
   Printer,
   Share2,
-  WebhookIcon,
 } from "lucide-react";
 import BorderBox from "@/components/ui/BorderBox";
 import { getBusinessById } from "@/actions/businessActions";
@@ -28,7 +29,6 @@ const page = async ({ params }: PageProps) => {
   const resp = await getBusinessById(params.id);
   if (resp === null) return <p>not found</p>;
   const data = JSON.parse(resp) as Partial<BusinessDatabaseModel>;
-  // console.log(data);
 
   return (
     <div>
@@ -60,9 +60,23 @@ const page = async ({ params }: PageProps) => {
       </div>
       <MaxWidthWrapper>
         <SmallVerificationBox className="w-fit my-4 bg-green-300">
-          Verified
+          {data.EntityTypeCode === "PRV"
+            ? "Private Company"
+            : data.EntityTypeCode === "IND"
+            ? "Sole Trader"
+            : data.EntityTypeCode === "PTY"
+            ? "Company"
+            : data.EntityTypeCode === "PRT"
+            ? "Partnership "
+            : data.EntityTypeCode === "GOV"
+            ? "Government Entity"
+            : data.EntityTypeCode === "SFND"
+            ? "Superannuation Fund"
+            : data.EntityTypeCode === "NPF"
+            ? "Non-Profit Subtype"
+            : "Trust "}
         </SmallVerificationBox>
-        <div className="grid md:grid-flow-col md:gap-x-6">
+        <div className="grid md:grid-flow-col grid-cols-9 md:gap-x-6">
           {/* //! left side */}
           <div className="col-span-full md:col-span-6 flex flex-col gap-4 md:gap-6">
             {data.about && (
@@ -117,10 +131,10 @@ const page = async ({ params }: PageProps) => {
           </div>
 
           {/* //! Right side */}
-          <div className="mt-4 md:mt-0 col-span-full md:col-span-1 flex flex-col gap-4 md:gap-6">
+          <div className="mt-4 md:mt-0 col-span-full md:col-span-3 flex flex-col gap-4 md:gap-6">
             <BorderBox>
               <h1 className=" text-2xl font-medium">Contacts</h1>
-              <div className="flex gap-2 mt-2 items-center">
+              <div className="flex gap-2 mt-2 items-center flex-wrap">
                 {data.contact?.website ? (
                   <>
                     <MousePointerClick size={16} />
@@ -145,6 +159,14 @@ const page = async ({ params }: PageProps) => {
                     </Link>
                   </>
                 ) : null}
+                {data.contact?.email ? (
+                  <div className="flex gap-1 items-center">
+                    <MailIcon size={16} />
+                    <Link href={`mailto:${data.contact?.email}`}>
+                      {data.contact?.email}
+                    </Link>
+                  </div>
+                ) : null}
               </div>
             </BorderBox>
             {data.deliveryOptions?.length ? (
@@ -155,10 +177,12 @@ const page = async ({ params }: PageProps) => {
                     return (
                       <div key={option}>
                         <div className="flex gap-2 items-center">
-                          {option === "Online" ? (
-                            <WebhookIcon size={16} />
+                          {option === "Online/Telehealth" ? (
+                            <Globe size={16} />
+                          ) : option === "Mobile" ? (
+                            <CarFront size={16} />
                           ) : (
-                            <Car size={16} />
+                            <PersonStanding size={16} />
                           )}
                           {option}
                         </div>

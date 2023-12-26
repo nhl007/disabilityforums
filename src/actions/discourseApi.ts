@@ -37,10 +37,11 @@ export async function createADiscourseUser(
     });
 
     const data = await response.json();
-    console.log(data);
-    if (data.success) {
-      return data.user_id;
-    } else return null;
+    // console.log(data);
+    // if (data.success) {
+    //   return data.user_id;
+    // } else return null;
+    return data;
   } catch (error) {
     console.log(error);
     return null;

@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useContext, useReducer } from "react";
 
 import { DISPLAY_ALERT, CLEAR_ALERT, SET_IS_LOADING } from "../actions";

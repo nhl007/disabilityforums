@@ -8,8 +8,20 @@ import User from "@/models/User";
 import { BusinessDatabaseModel, BusinessReviewData } from "@/types/business";
 import { SearchParamsActions } from "@/types/common";
 import { getLatLngByPostalCode } from "@/utils/postalCodeSearch";
-import mongoose, { Error, MongooseError } from "mongoose";
+import { Error } from "mongoose";
 import { Session } from "next-auth";
+
+export async function checkIfBusinessExists() {
+  const session: Session | null = await getAuthSession();
+  const id = session?.user.id;
+
+  if (!id) return null;
+  await connectToDB();
+  const doc = await Business.findOne({ user: id }).select("_id");
+  if (doc && doc._id) {
+    return stringifyResponse(doc._id);
+  } else return null;
+}
 
 export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
   const session: Session | null = await getAuthSession();
@@ -50,8 +62,8 @@ export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
 }
 
 export async function updateBusinessData(
-  data: Partial<BusinessDatabaseModel>,
-  progress: number
+  data: Partial<BusinessDatabaseModel>
+  // progress: number
 ) {
   const session: Session | null = await getAuthSession();
   const id = session?.user.id;
@@ -63,16 +75,17 @@ export async function updateBusinessData(
     const docId = await Business.findOne({ user: id }).select("_id");
 
     if (!docId || !docId._id) {
-      return { success: false, message: "Permission denied" };
+      return { success: false, message: "No Business Found" };
     }
     await Business.findByIdAndUpdate(docId._id, data, {
       new: true,
     }).select("_id");
-    await User.findByIdAndUpdate(id, { progress: progress });
+    // await User.findByIdAndUpdate(id, { progress: progress });
     return {
       success: true,
-      message:
-        progress === 4 ? "Business Listing Complete" : "Saved Successfully !",
+      message: "Listing Page Updated Successfully!",
+      // message:
+      //   progress === 4 ? "Business Listing Complete" : "Saved Successfully !",
     };
   } catch (err) {
     if (err instanceof Error) return { success: false, message: err.message };
@@ -143,7 +156,7 @@ export async function searchBusinesses(searchParams: SearchParamsActions) {
           };
         }
         if (key === "gender") {
-          query.genderOfAttendance = {
+          query.genderOfAttendants = {
             $in: value.split(","),
           };
         }

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { CheckCircle, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import SmallVerificationBox from "./ui/SmallVerificationBox";
 import { BusinessDatabaseModel } from "@/types/business";
 
@@ -35,7 +35,21 @@ const FeaturedBusinessCard = ({
       </p>
       <div className="flex gap-2">
         <SmallVerificationBox className="py-1.5 px-3 text-sm font-semibold">
-          <CheckCircle size={16} /> {businessType}
+          {businessType === "PRV"
+            ? "Private Company"
+            : businessType === "IND"
+            ? "Sole Trader"
+            : businessType === "PTY"
+            ? "Company"
+            : businessType === "PRT"
+            ? "Partnership "
+            : businessType === "GOV"
+            ? "Government Entity"
+            : businessType === "SFND"
+            ? "Superannuation Fund"
+            : businessType === "NPF"
+            ? "Non-Profit Subtype"
+            : "Trust "}
         </SmallVerificationBox>
       </div>
       <p className="w-full h-[55px] line-clamp-3 text-[12px] break-words font-medium leading-4">

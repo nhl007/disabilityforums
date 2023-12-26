@@ -41,7 +41,11 @@ const ProfileMenu = () => {
             aria-labelledby="avatarButton"
           >
             <li>
-              <Link href="/" className="block px-4 py-2 hover:bg-btn-orange">
+              <Link
+                href="/"
+                className="block px-4 py-2 hover:bg-btn-orange"
+                onClick={() => setMenu(false)}
+              >
                 Dashboard
               </Link>
             </li>
@@ -49,6 +53,7 @@ const ProfileMenu = () => {
               <Link
                 className=" block px-4 py-2 hover:bg-btn-orange"
                 href="/on-board"
+                onClick={() => setMenu(false)}
               >
                 List Business
               </Link>
@@ -56,7 +61,10 @@ const ProfileMenu = () => {
           </ul>
           <div className="py-1">
             <button
-              onClick={() => signOut({ redirect: false })}
+              onClick={() => {
+                setMenu(false);
+                signOut({ redirect: false });
+              }}
               className="block px-4 py-2 text-sm text-gray-700 w-full text-start hover:bg-btn-orange "
             >
               Sign out

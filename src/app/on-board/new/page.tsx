@@ -3,14 +3,15 @@ import Select from "react-select";
 
 import Image from "next/image";
 import {
-  Car,
+  CarFront,
+  Globe,
   Heart,
   Mail,
   MousePointerClick,
+  PersonStanding,
   Phone,
   Printer,
   Share2,
-  WebhookIcon,
   X,
 } from "lucide-react";
 import BorderBox from "@/components/ui/BorderBox";
@@ -73,7 +74,7 @@ const CreateList = () => {
         website,
       },
     };
-    const data = await updateBusinessData(infos!, 3);
+    const data = await updateBusinessData(infos!);
     if (data.success) {
       displayAlert(data.message, true);
       // router.push("/on-board/contacts");
@@ -126,11 +127,11 @@ const CreateList = () => {
     if (fileData) {
       fileReader.readAsDataURL(fileData);
       fileReader.onloadend = async () => {
-        // const imageData = await saveBase64Image(
-        //   fileReader.result as string,
-        //   "Nihal101.png"
-        // );
-        // setImage(imageData);
+        const imageData = await saveBase64Image(
+          fileReader.result as string,
+          "Nihal101.png"
+        );
+        setImage(imageData);
         setImagePreview(fileReader.result as string);
       };
     }
@@ -139,21 +140,22 @@ const CreateList = () => {
   return (
     <div>
       <div>
-        <h1 className="text-4xl font-bold">Banner Section</h1>
         <div className="my-6">
-          <span className="text-2xl font-semibold my-6">Edit</span>
+          <span className="text-3xl font-medium my-6">Upload a banner :</span>
           <div className="">
             <div className=" flex gap-2 items-center mt-2">
               <div className="w-[300px] flex items-center justify-start">
                 <input
-                  className=" py-1 px-2 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                  className=" py-2 px-4 block w-full text-sm text-white rounded-md cursor-pointer bg-btn-orange focus:outline-none"
                   id="file_input"
                   type="file"
+                  accept=".svg,.png,.jpg"
                   onChange={saveImage}
                 />
               </div>
               <button
-                className=" text-red-600 flex items-center"
+                title="clear"
+                className=" text-red-500 flex items-center bg-gray-400 rounded-md px-4 py-2 hover:bg-red-500 hover:text-white"
                 onClick={() => setImagePreview("")}
               >
                 <X />
@@ -161,13 +163,13 @@ const CreateList = () => {
             </div>
 
             <p className="text-xs font-medium mt-1 ">
-              Ideal resolution (1280 x 300)
+              SVG, PNG, JPG (MAX. 1200x300px).
             </p>
           </div>
         </div>
-        <span className="text-2xl font-semibold my-6">Preview</span>
+        <span className="text-2xl font-medium">Preview</span>
         {imagePreview ? (
-          <div className="w-full h-[300px] overflow-hidden object-contain">
+          <div className="w-full h-[300px] overflow-hidden object-contain mt-4">
             <Image
               src={imagePreview}
               alt="banner"
@@ -177,8 +179,11 @@ const CreateList = () => {
             />
           </div>
         ) : (
-          <div className="bg-bg-banner py-5 md:py-8 px-4">
-            <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-center">
+          <div className="bg-bg-banner py-5 md:py-8 px-4 mt-4">
+            <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-center relative">
+              <span className=" text-red-400 absolute top-2 right-2">
+                *Default Banner
+              </span>
               <Image width={220} height={120} src="/image.jpg" alt="name" />
               <div className="flex flex-col gap-2 md:gap-10">
                 <h1 className="text-2xl md:text-4xl font-semibold w-fit truncate">
@@ -399,7 +404,7 @@ const CreateList = () => {
               {email ? (
                 <div className="flex gap-1 items-center">
                   <Mail size={16} />
-                  <Link href={`tel:${email}`}>{email}</Link>
+                  <Link href={`mailto:${email}`}>{email}</Link>
                 </div>
               ) : null}
             </div>
@@ -427,10 +432,12 @@ const CreateList = () => {
                 return (
                   <div key={option}>
                     <div className="flex gap-2 items-center">
-                      {option === "Online" ? (
-                        <WebhookIcon size={16} />
+                      {option === "Online/Telehealth" ? (
+                        <Globe size={16} />
+                      ) : option === "Mobile" ? (
+                        <CarFront size={16} />
                       ) : (
-                        <Car size={16} />
+                        <PersonStanding size={16} />
                       )}
                       {option}
                     </div>

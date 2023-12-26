@@ -48,7 +48,7 @@ const Contact = () => {
         website,
       },
     };
-    const data = await updateBusinessData(infos!, 4);
+    const data = await updateBusinessData(infos!);
     if (data.success) {
       displayAlert(data.message, true);
       // router.push("/on-board/support");

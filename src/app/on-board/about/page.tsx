@@ -49,7 +49,7 @@ const About = () => {
       deliveryOptions,
     };
 
-    const data = await updateBusinessData(infos!, 2);
+    const data = await updateBusinessData(infos!);
     if (data.success) {
       displayAlert(data.message, true);
       router.push("/on-board/support");
