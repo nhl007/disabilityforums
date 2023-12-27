@@ -21,12 +21,8 @@ const MobileNav = () => {
             aria-labelledby="avatarButton"
           >
             <li>
-              <Link href="/" className="block pl-4 py-2 hover:bg-gray-100">
-                Get Started
-              </Link>
-            </li>
-            <li>
               <Link
+                onClick={() => setMenu(false)}
                 href="/directory"
                 className="block pl-4 py-2 hover:bg-gray-100"
               >
@@ -35,6 +31,7 @@ const MobileNav = () => {
             </li>
             <li>
               <Link
+                onClick={() => setMenu(false)}
                 href="/on-board"
                 className="block pl-4 py-2 hover:bg-gray-100"
               >
