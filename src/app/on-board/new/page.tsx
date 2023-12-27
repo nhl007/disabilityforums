@@ -36,11 +36,12 @@ import { saveBase64Image } from "@/utils/saveImage";
 
 const CreateList = () => {
   const { displayAlert } = useFeatureContext();
+  const [BusinessName, setBusinessName] = useState("Business Name");
   const [loading, setLoading] = useState<boolean>(false);
   const [about, setAbout] = useState<string>("");
   const [services, setServices] = useState<string[]>([]);
   const [deliveryOptions, setDeliveryOptions] = useState<string[]>([]);
-  const [image, setImage] = useState("");
+  // const [image, setImage] = useState("");
   const [imagePreview, setImagePreview] = useState("");
 
   const [complexNeedsSupported, setComplexNeedsSupported] = useState<string[]>(
@@ -95,6 +96,7 @@ const CreateList = () => {
       "agesSupported",
       "genderOfAttendants",
       "complexNeedsSupported",
+      "BusinessName",
     ]);
 
     const data = JSON.parse(resp);
@@ -103,6 +105,7 @@ const CreateList = () => {
       data.data?.serviceLocations.length ? data.data.serviceLocations : []
     );
 
+    setBusinessName(data.data.BusinessName);
     setAbout(data.data.about);
     setServices(data.data.services);
     setDeliveryOptions(data.data.deliveryOptions);
@@ -182,13 +185,13 @@ const CreateList = () => {
         ) : (
           <div className="bg-bg-banner py-5 md:py-8 px-4 mt-4">
             <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-center relative">
-              <span className=" text-red-400 absolute top-2 right-2">
+              <span className=" text-red-400 absolute bottom-0 right-0 md:top-2 md:right-2">
                 *Default Banner
               </span>
               <Image width={220} height={120} src="/image.jpg" alt="name" />
               <div className="flex flex-col gap-2 md:gap-10">
                 <h1 className="text-2xl md:text-4xl font-semibold w-fit truncate">
-                  Business name
+                  {BusinessName}
                 </h1>
                 <div className="flex flex-wrap gap-3 md:gap-4 items-center">
                   <span className="flex gap-2">

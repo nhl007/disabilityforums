@@ -215,8 +215,8 @@ const SearchBar = () => {
             </button>
           </div>
           {moreOptions ? (
-            <div className="flex flex-col md:gap-6">
-              <div className="flex md:gap-20 md:py-6">
+            <div className="flex flex-col gap-4 md:gap-6 mt-4 md:mt-0">
+              <div className="flex flex-col md:flex-row gap-3 md:gap-20 md:py-6">
                 <div className="">
                   <h2 className="font-semibold text-lg">Service Delivery</h2>
                   {selectDeliveryOptions.map((value, index) => {
@@ -291,7 +291,7 @@ const SearchBar = () => {
                   })}
                 </div>
               </div>
-              <div className="flex md:gap-20">
+              <div className="flex flex-col md:flex-row gap-3 md:gap-20">
                 <div className="flex flex-col gap-1">
                   <label className="font font-semibold" htmlFor="languages">
                     Complex Needs Supported

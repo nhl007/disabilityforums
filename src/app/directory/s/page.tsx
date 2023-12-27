@@ -23,7 +23,7 @@ const page = async ({ searchParams }: BusinessSearchParams) => {
   }
 
   return (
-    <div className="py-10">
+    <div className=" my-6 md:my-10">
       <MaxWidthWrapper>
         <div>
           {/* <div className="grid grid-flow-row md:grid-flow-col md:gap-x-2"> */}
@@ -38,9 +38,9 @@ const page = async ({ searchParams }: BusinessSearchParams) => {
           {data.length ? (
             <>
               <p className="font-medium mb-4">
-                Total {data.length} results found{" "}
+                Total {data.length} results found
               </p>
-              <div className=" grid grid-flow-row grid-cols-4 place-items-center gap-x-7 gap-y-7">
+              <div className="grid grid-flow-row grid-cols-1 md:grid-cols-4 place-items-center md:gap-x-7 gap-y-4 md:gap-y-7">
                 {data.map((b, i) => {
                   return (
                     <Link
