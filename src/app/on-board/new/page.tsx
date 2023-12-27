@@ -340,6 +340,17 @@ const CreateList = () => {
             <div className="">
               <div className="mt-2">
                 <CustomInput
+                  onChange={(e) => setWebsite(e.target.value)}
+                  value={website}
+                  type="text"
+                  name="website"
+                  id="website"
+                  autoComplete="website"
+                  placeholder="Business Website"
+                />
+              </div>
+              <div className="mt-2">
+                <CustomInput
                   onChange={(e) => setPhone(e.target.value)}
                   value={phone}
                   type="text"
@@ -350,33 +361,17 @@ const CreateList = () => {
                 />
               </div>
 
-              <div className="">
-                <div className="mt-2">
-                  <CustomInput
-                    onChange={(e) => setEmail(e.target.value)}
-                    value={email}
-                    type="text"
-                    name="email"
-                    id="email"
-                    autoComplete="email"
-                    placeholder="Contact email"
-                    // autoComplete="address-level1"
-                  />
-                </div>
-              </div>
-
-              <div className="">
-                <div className="mt-2">
-                  <CustomInput
-                    onChange={(e) => setWebsite(e.target.value)}
-                    value={website}
-                    type="text"
-                    name="website"
-                    id="website"
-                    autoComplete="website"
-                    placeholder="Business Website"
-                  />
-                </div>
+              <div className="mt-2">
+                <CustomInput
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
+                  type="text"
+                  name="email"
+                  id="email"
+                  autoComplete="email"
+                  placeholder="Contact email"
+                  // autoComplete="address-level1"
+                />
               </div>
             </div>
             <div className="flex gap-2 mt-2 items-center flex-wrap">

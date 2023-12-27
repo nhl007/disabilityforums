@@ -50,7 +50,7 @@ const OnBoardingTabs = () => {
       setExists(true);
     } else {
       if (url === "/on-board/new") {
-        router.back();
+        router.replace("/on-board");
       }
       setExists(false);
     }
@@ -62,7 +62,7 @@ const OnBoardingTabs = () => {
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      return router.back();
+      return router.replace("/");
     }
   }, [status]);
 
