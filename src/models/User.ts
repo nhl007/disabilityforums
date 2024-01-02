@@ -2,10 +2,10 @@ import { Schema, model, models } from "mongoose";
 import isEmail from "validator/lib/isEmail";
 
 const UserSchema = new Schema({
-  userType: {
-    type: String,
-    required: [true, "Please select account type!"],
-  },
+  // userType: {
+  //   type: String,
+  //   required: [true, "Please select account type!"],
+  // },
   name: {
     type: String,
     required: [true, "Please enter your name!"],

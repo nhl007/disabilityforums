@@ -1,34 +1,65 @@
 "use server";
 
-const auPostUrl = "https://v0.postcodeapi.com.au/suburbs.json";
+import fs from "fs";
+import csv from "csv-parser";
+
+type postCodeResult = {
+  postcode: string;
+  place_name: string;
+  state_name: string;
+  state_code: string;
+  latitude: string;
+  longitude: string;
+  accuracy: string;
+};
+
+async function getAuPostCodeDetails(
+  searchBy: string,
+  value: string
+): Promise<postCodeResult[] | null> {
+  const filePath = "./src/assets/au_postcodes.csv";
+
+  return new Promise((resolve, reject) => {
+    const results: postCodeResult[] = [];
+
+    fs.createReadStream(filePath)
+      .pipe(csv())
+      .on("data", (data) => {
+        if (data[searchBy] === value) {
+          results.push(data);
+        }
+      })
+      .on("end", () => {
+        console.log("end");
+        resolve(results);
+      })
+      .on("error", (error) => {
+        console.log(error);
+        reject(null);
+      });
+  });
+}
 
 export const getLatLngByPostalCode = async (postCode: string | number) => {
-  try {
-    const resp = await fetch(`${auPostUrl}?postcode=${postCode}`);
-    const data = await resp.json();
+  const data = await getAuPostCodeDetails("postcode", String(postCode));
+
+  if (data) {
     return [Number(data[0].longitude), Number(data[0].latitude)];
-  } catch (err) {
-    if (err instanceof Error) console.log(err);
-    return null;
-  }
+  } else return null;
 };
 
 export const getSuburbsByState = async (state: string) => {
-  try {
-    const resp = await fetch(`${auPostUrl}?state=${state}`);
-    const data = await resp.json();
+  const data = await getAuPostCodeDetails("state_code", state);
+
+  if (data) {
     if (data && data.length) {
-      const suburbs = data.map((data: any) => {
+      const suburbs = data.map((data) => {
         return {
-          label: data.name + " " + data.postcode,
-          value: data.name + " " + data.postcode,
+          label: data.place_name + " " + data.postcode,
+          value: data.place_name + " " + data.postcode,
         };
       });
       return suburbs;
     }
-    return null;
-  } catch (err) {
-    if (err instanceof Error) console.log(err);
-    return null;
-  }
+  } else return null;
 };

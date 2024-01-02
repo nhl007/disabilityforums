@@ -42,14 +42,14 @@ const ProfileMenu = () => {
           >
             <li>
               <Link
-                href="/"
+                href="/dashboard"
                 className="block px-4 py-2 hover:bg-btn-orange"
                 onClick={() => setMenu(false)}
               >
                 Dashboard
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 className=" block px-4 py-2 hover:bg-btn-orange"
                 href="/on-board"
@@ -57,7 +57,7 @@ const ProfileMenu = () => {
               >
                 List Business
               </Link>
-            </li>
+            </li> */}
           </ul>
           <div className="py-1">
             <button

@@ -13,6 +13,6 @@ const layout = ({ children }: BusinessLayout) => {
   );
 };
 
-export const revalidate = 0;
+// export const revalidate = 0;
 
 export default layout;

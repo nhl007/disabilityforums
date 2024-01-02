@@ -13,16 +13,15 @@ type body = {
   username: string;
   email: string;
   password: string;
-  type: string;
 };
 
 export async function POST(request: Request) {
   try {
     const body: body = await request.json();
 
-    const { name, username, email, password, type } = body;
+    const { name, username, email, password } = body;
 
-    if (!name || !username || !email || !password || !type) {
+    if (!name || !username || !email || !password) {
       throw new Error("Missing fields!");
     }
 
@@ -59,7 +58,6 @@ export async function POST(request: Request) {
           discourseData[0].avatar_template.replace("{size}", "96"),
         name: name,
         username: discourseData[0].username,
-        userType: type,
       });
     } else {
       const discourseId = await createADiscourseUser(
@@ -67,7 +65,7 @@ export async function POST(request: Request) {
         email,
         password,
         username,
-        type
+        "NDIS Provider"
       );
       if (discourseId.success) {
         user = await User.create({
@@ -76,7 +74,6 @@ export async function POST(request: Request) {
           password: hashedPassword,
           username: username,
           discourseId: discourseId.user_id,
-          userType: type,
         });
       } else {
         return NextResponse.json(discourseId.message, {

@@ -1,0 +1,59 @@
+"use server";
+
+import fs from "fs";
+import csv from "csv-parser";
+
+type NdisProviderDetails = {
+  name: string;
+  email: string;
+};
+
+export async function getAuNdisProviderDetails(
+  name: string
+): Promise<NdisProviderDetails[] | null> {
+  const filePath = "./src/assets/au_ndis.csv";
+
+  return new Promise((resolve, reject) => {
+    const results: NdisProviderDetails[] = [];
+
+    const headers = [
+      "Registered Provider Name",
+      "Outlet Name",
+      "Address",
+      "Phone",
+      "Email",
+      "Website",
+      "ABN",
+      "Open Hours",
+      "Profession",
+      "Registration Group",
+      "Head Office / Outlet",
+      "Active Provider (payment received last 3 months)",
+    ];
+
+    fs.createReadStream(filePath)
+      .pipe(csv({ headers }))
+      .on("data", (data) => {
+        // console.log(data["Registered Provider Name"]);
+
+        if (
+          String(data["Registered Provider Name"])
+            .toLocaleLowerCase()
+            .includes(name)
+        ) {
+          results.push({
+            name: data["Registered Provider Name"],
+            email: data["Email"],
+          });
+        }
+      })
+      .on("end", () => {
+        console.log("end");
+        resolve(results);
+      })
+      .on("error", (error) => {
+        console.log(error);
+        reject(null);
+      });
+  });
+}

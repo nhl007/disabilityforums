@@ -68,6 +68,8 @@ export async function updateBusinessData(
   const session: Session | null = await getAuthSession();
   const id = session?.user.id;
 
+  // console.log(data);
+
   if (!id) return { success: false, message: "Permission denied" };
 
   try {
@@ -184,7 +186,9 @@ export async function searchBusinesses(searchParams: SearchParamsActions) {
 
     await connectToDB();
     const doc = await Business.find(query)
-      .select("_id BusinessName about rank serviceLocations EntityTypeCode")
+      .select(
+        "_id BusinessName blurb rank serviceLocations EntityTypeCode ndis_registered"
+      )
       .limit(10)
       .sort({ rank: "desc" });
     if (doc.length > 0) return stringifyResponse(doc);
@@ -207,9 +211,7 @@ export async function getBusiness(fields: Partial<DBKeys>[]) {
   try {
     await connectToDB();
 
-    const doc = await Business.findOne({ user: id }).select(
-      "-_id " + fields.join(" ")
-    );
+    const doc = await Business.findOne({ user: id }).select(fields.join(" "));
 
     return stringifyResponse({ data: doc, message: "success" });
   } catch (err) {
@@ -222,7 +224,9 @@ export async function getFeaturedBusiness() {
   try {
     await connectToDB();
     const doc = await Business.find({})
-      .select("_id BusinessName about rank serviceLocations EntityTypeCode")
+      .select(
+        "_id BusinessName blurb rank serviceLocations EntityTypeCode image ndis_registered"
+      )
       .limit(10)
       .sort({ rank: "desc" });
 
@@ -245,6 +249,24 @@ export async function getBusinessById(id: string): Promise<string | null> {
     } else return null;
   } catch (error) {
     console.log(error);
+    return null;
+  }
+}
+
+export async function updateNdisVerification(id: string) {
+  try {
+    const buss = await Business.findByIdAndUpdate(
+      id,
+      {
+        ndis_registered: true,
+      },
+      {
+        new: true,
+      }
+    ).select("_id BusinessName");
+
+    return stringifyResponse(buss);
+  } catch (error) {
     return null;
   }
 }

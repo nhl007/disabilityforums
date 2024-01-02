@@ -7,27 +7,41 @@ interface FeaturedBusinessCardProps {
   name: string;
   serviceLocations: BusinessDatabaseModel["serviceLocations"];
   businessType: string;
-  about: string;
+  blurb: string;
   rank: number;
+  image?: string;
+  ndisRegistered: boolean;
 }
 
 const FeaturedBusinessCard = ({
   name,
-  about,
+  blurb,
   serviceLocations,
   rank,
   businessType,
+  image,
+  ndisRegistered,
 }: FeaturedBusinessCardProps) => {
   return (
     <div className="w-[281px] h-[326px] flex flex-col gap-3 items-start">
       <div className="w-[281px] h-[200px] overflow-hidden">
-        <Image
-          className="rounded-md w-[281px] h-[200px]"
-          src="/image.jpg"
-          alt="business"
-          width={281}
-          height={200}
-        />
+        {image ? (
+          <Image
+            className="rounded-md w-[281px] h-[200px]"
+            src={image}
+            alt="business"
+            width={281}
+            height={200}
+          />
+        ) : (
+          <Image
+            className="rounded-md w-[281px] h-[200px]"
+            src="/image.jpg"
+            alt="business"
+            width={281}
+            height={200}
+          />
+        )}
       </div>
 
       <p className=" text-sm h-5 font-semibold line-clamp-1 overflow-ellipsis">
@@ -36,7 +50,7 @@ const FeaturedBusinessCard = ({
       <div className="flex gap-2">
         <SmallVerificationBox className="py-1.5 px-3 text-sm font-semibold">
           {businessType === "PRV"
-            ? "Private Company"
+            ? "Company"
             : businessType === "IND"
             ? "Sole Trader"
             : businessType === "PTY"
@@ -51,9 +65,12 @@ const FeaturedBusinessCard = ({
             ? "Non-Profit Subtype"
             : "Trust "}
         </SmallVerificationBox>
+        {ndisRegistered && (
+          <SmallVerificationBox>Ndis-Registered</SmallVerificationBox>
+        )}
       </div>
       <p className="w-full h-[55px] line-clamp-3 text-[12px] break-words font-medium leading-4">
-        {about}
+        {blurb}
       </p>
 
       <div className="flex justify-between w-full items-center">

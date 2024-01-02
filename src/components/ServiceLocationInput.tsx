@@ -1,17 +1,15 @@
 import { serviceLocationsType } from "@/types/business";
 import { Check, X } from "lucide-react";
 import { SetStateAction, useState } from "react";
-import DynamicInput from "./DynamicInput";
+// import DynamicInput from "./DynamicInput";
 import LocationDropdown from "./LocationDropdown";
-import CustomInput from "./ui/CustomInput";
+// import CustomInput from "./ui/CustomInput";
 import { useFeatureContext } from "@/context/feature/FeatureContext";
 import Select from "react-select";
-import { generateSelectDefault } from "@/utils/utils";
 import { statesOptions } from "@/constants/constants";
-import {
-  getLatLngByPostalCode,
-  getSuburbsByState,
-} from "@/utils/postalCodeSearch";
+import { getSuburbsByState } from "@/utils/postalCodeSearch";
+import LargeDropdown from "./SuburbsOptions";
+import { generateSelectDefault } from "@/utils/utils";
 
 interface LocationProps {
   data: serviceLocationsType;
@@ -43,7 +41,9 @@ const ServiceLocationInput = ({ data, setData }: LocationProps) => {
     setData(updatedData);
   };
 
-  const [suburbsOptions, setSuburbsOptions] = useState([]);
+  const [suburbsOptions, setSuburbsOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
 
   const getSuburbsOption = async (state: string) => {
     if (!state) {
@@ -80,6 +80,7 @@ const ServiceLocationInput = ({ data, setData }: LocationProps) => {
             name="state"
             options={statesOptions}
             className="w-full md:w-[270px] h-auto text-base"
+            value={generateSelectDefault([curr])}
             onChange={(val) => {
               getSuburbsOption(val?.value as string);
             }}
@@ -88,21 +89,10 @@ const ServiceLocationInput = ({ data, setData }: LocationProps) => {
           />
         </div>
         <div className="col-span-3 md:col-span-full">
-          <Select
-            id="suburbs"
-            value={generateSelectDefault(suburbs)}
-            isMulti
-            instanceId="suburbs"
-            name="suburbs"
-            options={suburbsOptions}
-            className="basic-multi-select"
-            onChange={(val) => {
-              const data = val.map((d: any) => d.value);
-              setSuburbs(data);
-            }}
-            isSearchable={true}
-            placeholder="Select Suburbs"
-            classNamePrefix="select"
+          <LargeDropdown
+            setSuburbs={setSuburbs}
+            suburbs={suburbs}
+            suburbsOptions={suburbsOptions}
           />
         </div>
         <button

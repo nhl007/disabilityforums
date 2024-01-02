@@ -13,8 +13,8 @@ import { getDiscourseUserByEmail } from "@/actions/discourseApi";
 import { checkForExistingUser } from "@/actions/userActions";
 
 const SignUp = () => {
-  const [step, setStep] = useState(0);
-  const [type, setType] = useState<string>("");
+  // const [step, setStep] = useState(0);
+  // const [type, setType] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [username, setUserName] = useState<string>("");
@@ -46,7 +46,7 @@ const SignUp = () => {
           email,
           password,
           username,
-          type,
+          // type,
         }),
       });
       if (response.status === 200) {
@@ -78,38 +78,39 @@ const SignUp = () => {
     setLoading(false);
   };
 
-  const checkForExistingAcc = async (e: FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    if (!email) {
-      setLoading(false);
-      return displayAlert("Please Provide email", false);
-    }
-    const exists = await checkForExistingUser(email);
+  // const checkForExistingAcc = async (e: FormEvent) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   if (!email) {
+  //     setLoading(false);
+  //     return displayAlert("Please Provide email", false);
+  //   }
+  //   const exists = await checkForExistingUser(email);
 
-    if (exists) {
-      setLoading(false);
-      return displayAlert("Account already exists! Please Log In", false);
-    }
-    const discourseData = await getDiscourseUserByEmail(email);
-    // console.log(discourseData);
-    if (discourseData.length) {
-      setUserName(discourseData[0].username);
-    }
-    setLoading(false);
-    setStep(1);
-  };
+  //   if (exists) {
+  //     setLoading(false);
+  //     return displayAlert("Account already exists! Please Log In", false);
+  //   }
+  //   const discourseData = await getDiscourseUserByEmail(email);
+
+  //   if (discourseData.length) {
+  //     setUserName(discourseData[0].username);
+  //   }
+  //   setLoading(false);
+  //   setStep(1);
+  // };
 
   return (
     <form
-      onSubmit={step === 1 ? registerSubmit : checkForExistingAcc}
+      // onSubmit={step === 1 ? registerSubmit : checkForExistingAcc}
+      onSubmit={registerSubmit}
       className="flex flex-col gap-4 max-w-md mx-auto"
     >
       {showAlert && <Alert />}
       <h1 className="text-2xl font-semibold text-center">Sign Up</h1>
-      {step === 1 && (
-        <>
-          <Select
+      {/* {step === 1 && (
+        <> */}
+      {/* <Select
             id="accountType"
             required
             instanceId="accountType"
@@ -121,27 +122,27 @@ const SignUp = () => {
             }}
             isSearchable={true}
             placeholder="Choose Account Type"
-          />
-          <input
-            name="name"
-            type="text"
-            value={name}
-            required
-            className="border outline-none px-3 py-2 rounded-lg"
-            onChange={(e) => setName(e.target.value)}
-            placeholder="name"
-          />
-          <input
-            name="username"
-            type="text"
-            value={username}
-            required
-            className="border outline-none px-3 py-2 rounded-lg"
-            onChange={(e) => setUserName(e.target.value)}
-            placeholder="username"
-          />
-        </>
-      )}
+          /> */}
+      <input
+        name="name"
+        type="text"
+        value={name}
+        required
+        className="border outline-none px-3 py-2 rounded-lg"
+        onChange={(e) => setName(e.target.value)}
+        placeholder="name"
+      />
+      <input
+        name="username"
+        type="text"
+        value={username}
+        required
+        className="border outline-none px-3 py-2 rounded-lg"
+        onChange={(e) => setUserName(e.target.value)}
+        placeholder="username"
+      />
+      {/* </>
+      )} */}
       <input
         name="email"
         type="email"
@@ -152,19 +153,20 @@ const SignUp = () => {
         placeholder="email"
       />
 
-      {step === 1 && (
-        <input
-          value={password}
-          name="password"
-          type="password"
-          required
-          className="border outline-none px-3 py-2 rounded-lg"
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="password"
-        />
-      )}
+      {/* {step === 1 && ( */}
+      <input
+        value={password}
+        name="password"
+        type="password"
+        required
+        className="border outline-none px-3 py-2 rounded-lg"
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="password"
+      />
+      {/* )} */}
       <CustomButton className=" py-2" type="submit" isLoading={loading}>
-        {step === 1 ? "Register" : "Next"}
+        {/* {step === 1 ? "Register" : "Next"} */}
+        Register
       </CustomButton>
       <p className="mt-2 ">
         Already have an account?

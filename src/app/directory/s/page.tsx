@@ -9,11 +9,13 @@ const page = async ({ searchParams }: BusinessSearchParams) => {
   let data: Pick<
     BusinessDatabaseModel,
     | "BusinessName"
-    | "about"
+    | "blurb"
     | "serviceLocations"
     | "EntityTypeCode"
     | "_id"
     | "rank"
+    | "image"
+    | "ndis_registered"
   >[] = [];
 
   const resp = await searchBusinesses(searchParams);
@@ -49,11 +51,13 @@ const page = async ({ searchParams }: BusinessSearchParams) => {
                       href={`/business/${b._id}`}
                     >
                       <FeaturedBusinessCard
-                        about={b.about}
+                        blurb={b.blurb}
                         name={b.BusinessName.join(" ")}
                         businessType={b.EntityTypeCode}
                         rank={b.rank}
                         serviceLocations={b.serviceLocations}
+                        image={b.image?.card}
+                        ndisRegistered={b.ndis_registered}
                       />
                     </Link>
                   );

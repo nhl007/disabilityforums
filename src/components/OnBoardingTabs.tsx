@@ -1,6 +1,6 @@
 "use client";
 import { useFeatureContext } from "@/context/feature/FeatureContext";
-import { BookOpenCheck, Briefcase, Contact, UserCog } from "lucide-react";
+import { BookUserIcon, Briefcase, Contact, LandmarkIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Alert from "./Alert";
@@ -122,23 +122,29 @@ const OnBoardingTabs = () => {
             !exists && "pointer-events-none"
           }   hover:text-btn-orange`}
         >
-          {/* <Link
-            href="/on-board/contacts"
-            aria-disabled={progress < 3}
-            tabIndex={progress < 3 ? -1 : undefined}
-            className="inline-flex gap-2 items-center justify-center md:pr-4 py-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 ay-300 group"
-          >
-            <Contact />
-            Contacts
-          </Link> */}
           <Link
             href="/on-board/new"
             aria-disabled={exists}
             tabIndex={!exists ? -1 : undefined}
             className="inline-flex gap-2 items-center justify-center md:pr-4 py-4 border-b-2 border-transparent rounded-t-lg "
           >
-            <Contact />
+            <LandmarkIcon />
             Business Page
+          </Link>
+        </li>
+        <li
+          className={`me-2 ${url === "/on-board/card" && "text-btn-orange"} ${
+            !exists && "pointer-events-none"
+          }   hover:text-btn-orange`}
+        >
+          <Link
+            href="/on-board/card"
+            aria-disabled={exists}
+            tabIndex={!exists ? -1 : undefined}
+            className="inline-flex gap-2 items-center justify-center md:pr-4 py-4 border-b-2 border-transparent rounded-t-lg "
+          >
+            <BookUserIcon />
+            Listing Card
           </Link>
         </li>
       </ul>

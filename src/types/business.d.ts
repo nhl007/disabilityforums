@@ -24,6 +24,8 @@ export type serviceAgeNames =
 export type serviceLocationsType = { state: string; suburbs: string[] }[];
 
 export type BusinessPersonalInfo = {
+  ndis_registered: boolean;
+  blurb: string;
   about: string;
   services: string[];
   deliveryOptions: string[];
@@ -40,6 +42,11 @@ export type BusinessPersonalInfo = {
     phone: string;
   };
   serviceLocations: serviceLocationsType;
+  image: {
+    banner?: string;
+    card?: string;
+    avatar?: string;
+  };
 };
 
 export type BusinessReviews = {

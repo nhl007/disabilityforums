@@ -83,6 +83,7 @@ export const authOptions: AuthOptions = {
         session.user.discourse_id = sessionUser.discourseId;
         session.user.name = sessionUser.username;
         session.user.image = sessionUser.avatar;
+        session.user.fullName = sessionUser.name;
       }
       return session;
     },

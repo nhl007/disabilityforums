@@ -3,13 +3,10 @@ import Image from "next/image";
 import {
   CarFront,
   Globe,
-  Heart,
   MailIcon,
   MousePointerClick,
   PersonStanding,
   Phone,
-  Printer,
-  Share2,
 } from "lucide-react";
 import BorderBox from "@/components/ui/BorderBox";
 import { getBusinessById } from "@/actions/businessActions";
@@ -32,33 +29,30 @@ const page = async ({ params }: PageProps) => {
 
   return (
     <div>
-      <div className="bg-bg-banner py-5 md:py-8">
+      <div
+        className="flex w-full h-[300px] bg-cover py-5 md:py-8 relative"
+        style={{
+          backgroundImage: `url('${
+            data?.image?.banner ? data?.image?.banner : "/image.webp"
+          }')`,
+        }}
+      >
         <MaxWidthWrapper>
-          <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-center">
-            <Image width={220} height={120} src="/image.jpg" alt="name" />
-            <div className="flex flex-col gap-2 md:gap-10">
-              <h1 className="text-2xl md:text-4xl font-semibold w-fit truncate">
-                {data.BusinessName?.length ? data.BusinessName.join(" ") : ""}
-              </h1>
-              <div className="flex flex-wrap gap-3 md:gap-4 items-center">
-                <span className="flex gap-2">
-                  <Heart /> Save Provider
-                </span>
-                <span className="flex gap-2">
-                  <Share2 /> Share
-                </span>
-                <span className="flex gap-2">
-                  <Printer /> Print Page
-                </span>
-                {/* <span className="px-3 py-2 md:py-3 md:px-4 border-2 rounded-md border-blue-600">
-                  Write a Review
-                </span> */}
-              </div>
-            </div>
+          <div className="relative w-full h-full">
+            <Image
+              className="rounded-full w-[150px] h-[150px]  object-cover absolute bottom-[-70px] left-0"
+              width={120}
+              height={120}
+              src={data.image?.card ? data.image.card : "/image.jpg"}
+              alt="name"
+            />
           </div>
         </MaxWidthWrapper>
       </div>
       <MaxWidthWrapper>
+        <h1 className="text-2xl md:text-4xl font-semibold w-fit truncate mt-16 mb-6">
+          {data.BusinessName?.length ? data.BusinessName.join(" ") : ""}
+        </h1>
         <SmallVerificationBox className="w-fit my-4 bg-green-300">
           {data.EntityTypeCode === "PRV"
             ? "Private Company"

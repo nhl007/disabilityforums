@@ -11,11 +11,13 @@ const page = async () => {
   const data: Pick<
     BusinessDatabaseModel,
     | "BusinessName"
-    | "about"
+    | "blurb"
     | "serviceLocations"
     | "EntityTypeCode"
     | "_id"
     | "rank"
+    | "image"
+    | "ndis_registered"
   >[] = await JSON.parse(resp);
 
   return (
@@ -26,11 +28,13 @@ const page = async () => {
             return (
               <Link className="col-span-1" key={i} href={`/business/${b._id}`}>
                 <FeaturedBusinessCard
-                  about={b.about}
+                  blurb={b.blurb}
+                  image={b.image?.card}
                   name={b.BusinessName.join(" ")}
                   businessType={b.EntityTypeCode}
                   rank={b.rank}
                   serviceLocations={b.serviceLocations}
+                  ndisRegistered={b.ndis_registered}
                 />
               </Link>
             );

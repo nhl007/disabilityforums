@@ -1,6 +1,10 @@
 import { Schema, model, models } from "mongoose";
 
 const BusinessSchema = new Schema({
+  ndis_registered: {
+    type: Boolean,
+    default: false,
+  },
   discourseId: {
     type: Number,
   },
@@ -117,6 +121,20 @@ const BusinessSchema = new Schema({
   rating: {
     type: Number,
     default: 0,
+  },
+  image: {
+    banner: {
+      type: String,
+    },
+    avatar: {
+      type: String,
+    },
+    card: {
+      type: String,
+    },
+  },
+  blurb: {
+    type: String,
   },
 });
 
