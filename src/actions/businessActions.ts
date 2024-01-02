@@ -187,7 +187,7 @@ export async function searchBusinesses(searchParams: SearchParamsActions) {
     await connectToDB();
     const doc = await Business.find(query)
       .select(
-        "_id BusinessName blurb rank serviceLocations EntityTypeCode ndis_registered"
+        "_id BusinessName blurb rank serviceLocations EntityTypeCode ndis_registered image"
       )
       .limit(10)
       .sort({ rank: "desc" });

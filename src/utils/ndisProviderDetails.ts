@@ -14,8 +14,6 @@ export async function getAuNdisProviderDetails(
 ): Promise<NdisProviderDetails[] | null> {
   const filePath = path.join(process.cwd(), "src", "assets", "au_ndis.csv");
 
-  // console.log(filePath);
-
   return new Promise((resolve, reject) => {
     const results: NdisProviderDetails[] = [];
 
