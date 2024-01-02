@@ -2,6 +2,7 @@
 
 import fs from "fs";
 import csv from "csv-parser";
+import path from "path";
 
 type NdisProviderDetails = {
   name: string;
@@ -11,7 +12,9 @@ type NdisProviderDetails = {
 export async function getAuNdisProviderDetails(
   name: string
 ): Promise<NdisProviderDetails[] | null> {
-  const filePath = "./src/assets/au_ndis.csv";
+  const filePath = path.join(process.cwd(), "src", "assets", "au_ndis.csv");
+
+  // console.log(filePath);
 
   return new Promise((resolve, reject) => {
     const results: NdisProviderDetails[] = [];

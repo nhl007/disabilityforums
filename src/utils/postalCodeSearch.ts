@@ -2,6 +2,7 @@
 
 import fs from "fs";
 import csv from "csv-parser";
+import path from "path";
 
 type postCodeResult = {
   postcode: string;
@@ -17,7 +18,12 @@ async function getAuPostCodeDetails(
   searchBy: string,
   value: string
 ): Promise<postCodeResult[] | null> {
-  const filePath = "./src/assets/au_postcodes.csv";
+  const filePath = path.join(
+    process.cwd(),
+    "src",
+    "assets",
+    "au_postcodes.csv"
+  );
 
   return new Promise((resolve, reject) => {
     const results: postCodeResult[] = [];
