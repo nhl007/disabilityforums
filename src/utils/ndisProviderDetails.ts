@@ -35,8 +35,6 @@ export async function getAuNdisProviderDetails(
     fs.createReadStream(filePath)
       .pipe(csv({ headers }))
       .on("data", (data) => {
-        // console.log(data["Registered Provider Name"]);
-
         if (
           String(data["Registered Provider Name"])
             .toLocaleLowerCase()

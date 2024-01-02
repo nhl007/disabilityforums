@@ -11,7 +11,8 @@ export async function getStripeCheckoutSession() {
         },
       ],
       mode: "subscription",
-      success_url: "http://localhost:3000/dashboard/payments?success=true",
+      success_url:
+        "https://disabilityforums.vercel.app/dashboard/payments?success=true",
     });
     return {
       id: session.id,
