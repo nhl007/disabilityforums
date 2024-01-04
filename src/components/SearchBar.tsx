@@ -14,7 +14,9 @@ import { useRouter } from "next/navigation";
 
 import { FormEvent, SetStateAction, useState } from "react";
 import Select from "react-select";
-import { generateSelectDefault } from "@/utils/utils";
+import { extractPostcode, generateSelectDefault } from "@/utils/utils";
+import { getPostalCodeSuggestion } from "@/utils/postalCodeSearch";
+import { useDebouncedCallback } from "use-debounce";
 
 const SearchBar = () => {
   // const params = useSearchParams();
@@ -37,7 +39,10 @@ const SearchBar = () => {
   const [moreOptions, setMoreOptions] = useState(false);
 
   const [keyword, setKeyword] = useState("");
+
   const [postCode, setPostCode] = useState("");
+  const [postCodeList, setPostCodeList] = useState<string[] | null>(null);
+
   const [category, setCategory] = useState("");
   const [radius, setRadius] = useState("15");
 
@@ -68,11 +73,18 @@ const SearchBar = () => {
   const onSearchSubmit = (e: FormEvent) => {
     e.preventDefault();
     setMoreOptions(false);
+
+    let extractedPostCode = "";
+    if (postCode) {
+      extractedPostCode = extractPostcode(postCode);
+    }
+
     const urlObj = {
       keyword: keyword,
-      postalCode: postCode,
+      postalCode: extractedPostCode,
       category: category,
       radius: radius,
+      ndis: ndis,
       delivery: delivery,
       gender: gender,
       age: age,
@@ -88,6 +100,18 @@ const SearchBar = () => {
       url = url + key + "=" + value + "&";
     }
     router.replace(url);
+  };
+
+  const handlePostCodeChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setPostCode(e.target.value);
+    if (e.target.value.length > 2) {
+      const postCodes = await getPostalCodeSuggestion(e.target.value);
+      if (postCodes) setPostCodeList(postCodes);
+      return;
+    }
+    setPostCodeList(null);
   };
 
   return (
@@ -137,12 +161,30 @@ const SearchBar = () => {
               <MapPin className=" absolute left-2 h-full flex justify-center items-center" />
               <input
                 placeholder="Suburb or Post Code"
-                onChange={(e) => setPostCode(e.target.value)}
+                onChange={handlePostCodeChange}
                 value={postCode}
                 name="postalCode"
                 type="text"
                 className=" py-3 text-base pl-[44px] pr-[16px] border w-full md:w-[270px] h-[71px] focus:outline-none"
               />
+              {postCodeList && (
+                <div className=" max-h-[150px] border-b-2 absolute top-[70px] pl-3 bg-white py-2 pb-2 left-0 w-full overflow-y-scroll flex flex-col gap-2">
+                  {postCodeList.map((p, i) => {
+                    return (
+                      <span
+                        className="cursor-pointer"
+                        onClick={() => {
+                          setPostCode(p);
+                          setPostCodeList(null);
+                        }}
+                        key={i}
+                      >
+                        {p}
+                      </span>
+                    );
+                  })}
+                </div>
+              )}
             </div>
             <div className="relative">
               <select

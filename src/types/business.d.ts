@@ -45,7 +45,6 @@ export type BusinessPersonalInfo = {
   image: {
     banner?: string;
     card?: string;
-    avatar?: string;
   };
 };
 

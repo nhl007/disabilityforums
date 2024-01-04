@@ -16,6 +16,7 @@ const LargeDropdown: React.FC<SuburbsOptions & SelectProps> = ({
   suburbsOptions,
   setSuburbs,
   suburbs,
+  isDisabled,
 }) => {
   const handleChange = (selectedOption: any) => {
     const data = selectedOption.map((d: any) => d.value);
@@ -24,7 +25,7 @@ const LargeDropdown: React.FC<SuburbsOptions & SelectProps> = ({
 
   const debouncedHandleChange = useDebouncedCallback(
     (selectedOption: any) => handleChange(selectedOption),
-    300
+    500
   );
 
   // @ts-ignore
@@ -34,7 +35,7 @@ const LargeDropdown: React.FC<SuburbsOptions & SelectProps> = ({
 
     return (
       <List
-        height={maxHeight}
+        height={maxHeight ?? "35"}
         itemCount={children.length}
         itemSize={35}
         width="100%"
@@ -46,6 +47,7 @@ const LargeDropdown: React.FC<SuburbsOptions & SelectProps> = ({
   };
   return (
     <Select
+      isDisabled={isDisabled}
       id="suburbs_options"
       instanceId="suburbs_options"
       isMulti
@@ -54,6 +56,7 @@ const LargeDropdown: React.FC<SuburbsOptions & SelectProps> = ({
       isSearchable
       onChange={debouncedHandleChange}
       value={generateSelectDefault(suburbs)}
+      placeholder="Select Suburbs"
     />
   );
 };

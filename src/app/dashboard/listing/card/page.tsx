@@ -2,34 +2,20 @@
 
 import { getBusiness, updateBusinessData } from "@/actions/businessActions";
 import CustomButton from "@/components/ui/CustomButton";
-import CustomInput from "@/components/ui/CustomInput";
 import SmallVerificationBox from "@/components/ui/SmallVerificationBox";
 import { useFeatureContext } from "@/context/feature/FeatureContext";
 import { uploadImage } from "@/libs/cloudinary";
-import { decodeToken, encodeToken } from "@/libs/customJWTToken";
-import { sendConfirmationEmail } from "@/libs/nodeMailer";
 import { serviceLocationsType } from "@/types/business";
-import { getAuNdisProviderDetails } from "@/utils/ndisProviderDetails";
 import { MapPin, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-type NdisProviderDetails = {
-  name?: string;
-  email?: string;
-};
-
 const Card = () => {
   const router = useRouter();
   const { displayAlert } = useFeatureContext();
   const [loading, setLoading] = useState<boolean>(false);
-  const [ndisProviderList, setNdisProviderList] = useState<
-    NdisProviderDetails[] | null
-  >(null);
-  const [provider, setProvider] = useState<NdisProviderDetails>({});
 
-  const [docId, setDocId] = useState<string>("");
   const [BusinessName, setBusinessName] = useState("Business Name");
   const [BusType, setBusType] = useState("Business Name");
   const [imagePreview, setImagePreview] = useState("");
@@ -71,7 +57,6 @@ const Card = () => {
       "serviceLocations",
       "BusinessName",
       "image",
-      "_id",
       "rank",
       "EntityTypeCode",
       "ndis_registered",
@@ -83,7 +68,6 @@ const Card = () => {
       data.data?.serviceLocations.length ? data.data.serviceLocations : []
     );
 
-    setDocId(data.data?._id);
     setBlurb(data.data.blurb ? data.data.blurb : "");
     setBusinessName(data.data.BusinessName.join(" "));
     setImage(data.data?.image);
@@ -110,27 +94,6 @@ const Card = () => {
       displayAlert(data.message, false);
     }
     setLoading(false);
-  };
-
-  const sendVerificationEmail = async () => {
-    setLoading(true);
-    const token = await encodeToken({ id: docId });
-    const res = await sendConfirmationEmail("apar.asif.an@gmail.com", token);
-    if (res) {
-      displayAlert("Email Sent! Please Check your inbox.", true);
-    } else {
-      displayAlert("Error Sending Email!.", true);
-    }
-    setLoading(false);
-  };
-
-  const searchNdisProvider = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.length > 2) {
-      const ndisDetails = await getAuNdisProviderDetails(e.target.value);
-      setNdisProviderList(ndisDetails);
-      return;
-    }
-    setNdisProviderList(null);
   };
 
   return (
@@ -171,7 +134,7 @@ const Card = () => {
               Blurb (Maximum 143 Characters)
             </label>
 
-            <div className="mt-2">
+            <div className="mt-2 relative">
               <textarea
                 id="blurb"
                 name="blurb"
@@ -181,6 +144,9 @@ const Card = () => {
                 value={blurb}
                 onChange={(e) => setBlurb(e.target.value)}
               />
+              <span className="absolute text-red-400 right-32 bottom-2 text-xs">
+                {blurb.length}/143
+              </span>
             </div>
           </div>
         </div>
@@ -274,65 +240,6 @@ const Card = () => {
           Save
         </CustomButton>
       </div>
-      {!ndisRegistered ? (
-        <div>
-          <h1 className=" text-3xl font-semibold my-6">
-            NDIS Provider Verification
-          </h1>
-          <div>
-            <p className="text-xs mb-1">
-              *Write the provider name (At least 3 characters)
-            </p>
-
-            <CustomInput
-              name="ndis_provider"
-              className=" md:w-[400px]"
-              onChange={searchNdisProvider}
-            />
-            {ndisProviderList && (
-              <div className=" w-[400px] h-[150px] overflow-y-scroll mt-2 flex flex-col gap-2">
-                {ndisProviderList.map((p, i) => {
-                  return (
-                    <span
-                      className="cursor-pointer"
-                      onClick={() => {
-                        setProvider(p);
-                        setNdisProviderList(null);
-                      }}
-                      key={i}
-                    >
-                      {p.name}
-                    </span>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-          <div className=" mt-4">
-            <h1 className=" text-2xl font-semibold">
-              Selected Provider Details:
-            </h1>
-            {provider.name ? (
-              <>
-                <span className="text-lg">Name: {provider.name}</span> <br></br>
-                <span className="text-lg">Email: {provider.email}</span>
-                <CustomButton
-                  disabled={loading}
-                  className=" my-4"
-                  isLoading={loading}
-                  onClick={sendVerificationEmail}
-                >
-                  Send Verification Email
-                </CustomButton>
-              </>
-            ) : (
-              <span>No Provider selected </span>
-            )}
-          </div>
-        </div>
-      ) : (
-        <p>Already verified1</p>
-      )}
     </div>
   );
 };

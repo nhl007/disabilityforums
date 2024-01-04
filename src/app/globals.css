@@ -24,6 +24,13 @@ body {
 }
 
 
+ol {
+  @apply ml-8 list-decimal
+}
+
+ul {
+  @apply ml-8 list-disc
+}
 
 ::-webkit-scrollbar {
   width: 10px;

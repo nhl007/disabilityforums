@@ -36,7 +36,6 @@ async function getAuPostCodeDetails(
         }
       })
       .on("end", () => {
-        console.log("end");
         resolve(results);
       })
       .on("error", (error) => {
@@ -66,6 +65,56 @@ export const getSuburbsByState = async (state: string) => {
         };
       });
       return suburbs;
+    }
+  } else return null;
+};
+
+async function getAuPostCodeSuggestions(
+  value: string
+): Promise<postCodeResult[] | null> {
+  const filePath = path.join(
+    process.cwd(),
+    "src",
+    "assets",
+    "au_postcodes.csv"
+  );
+
+  return new Promise((resolve, reject) => {
+    const results: postCodeResult[] = [];
+
+    fs.createReadStream(filePath)
+      .pipe(csv())
+      .on("data", (data) => {
+        const condition = String(data["postcode"] + data["place_name"])
+          .toLocaleLowerCase()
+          .includes(value);
+        if (condition) {
+          results.push(data);
+        }
+      })
+      .on("end", () => {
+        resolve(results);
+      })
+      .on("error", (error) => {
+        console.log(error);
+        reject(null);
+      });
+  });
+}
+
+export const getPostalCodeSuggestion = async (postcode: string) => {
+  if (postcode.length < 2) {
+    return null;
+  }
+  const data = await getAuPostCodeSuggestions(postcode.toLocaleLowerCase());
+
+  if (data) {
+    if (data && data.length) {
+      const codes = data.map((data) => {
+        // return {label:data.postcode + " | " + data.place_name}
+        return data.postcode + " | " + data.place_name;
+      });
+      return codes;
     }
   } else return null;
 };

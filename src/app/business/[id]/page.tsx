@@ -43,7 +43,7 @@ const page = async ({ params }: PageProps) => {
               className="rounded-full w-[150px] h-[150px]  object-cover absolute bottom-[-70px] left-0"
               width={120}
               height={120}
-              src={data.image?.avatar ? data.image.avatar : "/image.jpg"}
+              src={data.image?.card ? data.image.card : "/image.jpg"}
               alt="name"
             />
           </div>
@@ -76,7 +76,11 @@ const page = async ({ params }: PageProps) => {
             {data.about && (
               <BorderBox>
                 <h1 className=" text-2xl font-medium">About</h1>
-                <p>{data.about}</p>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: data.about ?? "<p>No description available</p>",
+                  }}
+                />
               </BorderBox>
             )}
 

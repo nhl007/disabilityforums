@@ -32,6 +32,7 @@ import { useFeatureContext } from "@/context/feature/FeatureContext";
 import { saveBase64Image } from "@/utils/saveImage";
 import { uploadImage } from "@/libs/cloudinary";
 import { useRouter } from "next/navigation";
+import TextEditor from "@/components/TextEditor";
 
 const CreateList = () => {
   const router = useRouter();
@@ -43,7 +44,7 @@ const CreateList = () => {
   const [deliveryOptions, setDeliveryOptions] = useState<string[]>([]);
   const [image, setImage] = useState({
     banner: "",
-    avatar: "",
+    card: "",
   });
   const [imagePreview, setImagePreview] = useState("");
   const [imagePreviewAvatar, setImagePreviewAvatar] = useState("");
@@ -85,7 +86,7 @@ const CreateList = () => {
     const data = await updateBusinessData(infos!);
     if (data.success) {
       displayAlert(data.message, true);
-      router.push("/on-board/card");
+      router.push("/dashboard/listing/card");
     } else {
       displayAlert(data.message, false);
     }
@@ -132,11 +133,6 @@ const CreateList = () => {
 
   useEffect(() => {
     setInitialData();
-    // setImage({
-    //   ...image,
-    //   banner:
-    //     "https://res.cloudinary.com/dmuvbmfaa/image/upload/v1704173116/notes/sxbm1jjecjqqcz2ugs2t.png",
-    // });
   }, []);
 
   const saveImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -173,13 +169,12 @@ const CreateList = () => {
         //   fileReader.result as string,
         //   "name"
         // );
-        // setImage(imageData);
         setImagePreviewAvatar(fileReader.result as string);
 
-        const avatar = await uploadImage(fileReader.result as string);
+        const card = await uploadImage(fileReader.result as string);
 
-        if (avatar) {
-          setImage({ ...image, avatar: avatar });
+        if (card) {
+          setImage({ ...image, card: card });
         }
       };
     }
@@ -250,8 +245,8 @@ const CreateList = () => {
               src={
                 imagePreviewAvatar
                   ? imagePreviewAvatar
-                  : image?.avatar
-                  ? image.avatar
+                  : image?.card
+                  ? image.card
                   : "/image.jpg"
               }
               alt="name"
@@ -273,7 +268,7 @@ const CreateList = () => {
                 Write a few sentences about your business.
               </p>
 
-              <div className="mt-2">
+              {/* <div className="mt-2">
                 <textarea
                   id="about"
                   name="about"
@@ -282,10 +277,11 @@ const CreateList = () => {
                   value={about}
                   onChange={(e) => setAbout(e.target.value)}
                 />
-              </div>
+              </div> */}
+              <TextEditor html={about} setHtml={setAbout} />
             </div>
             <h1 className=" text-2xl font-medium">About</h1>
-            <p>{about}</p>
+            <div dangerouslySetInnerHTML={{ __html: about }} />
           </BorderBox>
 
           <BorderBox>
@@ -504,19 +500,7 @@ const CreateList = () => {
               data={serviceLocations}
               setData={setServiceLocations}
             />
-            {/* <h1 className=" text-2xl font-medium">Service Locations</h1>
-            {serviceLocations.map((loc) => {
-              return (
-                <LocationDropdown
-                  key={loc.state}
-                  state={loc.state}
-                  suburbs={loc.suburbs}
-                  classNames="w-full mt-2"
-                />
-              );
-            })} */}
           </BorderBox>
-
           <BorderBox>
             <Select
               id="ages_supported"

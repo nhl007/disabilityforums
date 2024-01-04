@@ -93,6 +93,7 @@ const ServiceLocationInput = ({ data, setData }: LocationProps) => {
             setSuburbs={setSuburbs}
             suburbs={suburbs}
             suburbsOptions={suburbsOptions}
+            isDisabled={curr === "" ? true : false}
           />
         </div>
         <button

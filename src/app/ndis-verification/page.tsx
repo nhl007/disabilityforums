@@ -1,6 +1,6 @@
 import { updateNdisVerification } from "@/actions/businessActions";
 import { decodeToken } from "@/libs/customJWTToken";
-import { CheckCircleIcon } from "lucide-react";
+import { CheckCircleIcon, ChevronLeft, XCircle } from "lucide-react";
 import Link from "next/link";
 
 export interface ConfirmationSearchParams {
@@ -10,13 +10,39 @@ export interface ConfirmationSearchParams {
 }
 const page = async ({ searchParams }: ConfirmationSearchParams) => {
   if (!searchParams.token) {
-    return <div>No token Found!</div>;
+    return (
+      <div className="flex justify-center items-center">
+        <div className="  flex justify-center items-center flex-col rounded-lg shadow-lg py-10 px-20">
+          <XCircle color="red" size={150} />
+          <h1 className=" text-2xl"> Invalid Token</h1>
+          <Link
+            className=" mt-6 text-blue-400 flex items-center gap-1"
+            href="/"
+          >
+            <ChevronLeft /> Home
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   const decoded = await decodeToken(searchParams.token);
 
   if (!decoded) {
-    return <div>Invalid Token!</div>;
+    return (
+      <div className="flex justify-center items-center">
+        <div className="  flex justify-center items-center flex-col rounded-lg shadow-lg py-10 px-20">
+          <XCircle color="red" size={150} />
+          <h1 className=" text-2xl"> Invalid Token</h1>
+          <Link
+            className=" mt-6 text-blue-400 flex items-center gap-1"
+            href="/"
+          >
+            <ChevronLeft /> Home
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   const currentTimestamp = Math.floor(Date.now() / 1000);
@@ -24,8 +50,17 @@ const page = async ({ searchParams }: ConfirmationSearchParams) => {
   //! Token  expiration check
   if (decoded.exp && Number(decoded.exp) < currentTimestamp) {
     return (
-      <div>
-        <p>Token has expired!</p>
+      <div className="flex justify-center items-center">
+        <div className="  flex justify-center items-center flex-col rounded-lg shadow-lg py-10 px-20">
+          <XCircle color="red" size={150} />
+          <h1 className=" text-2xl"> Token Expired</h1>
+          <Link
+            className=" mt-6 text-blue-400 flex items-center gap-1"
+            href="/"
+          >
+            <ChevronLeft /> Home
+          </Link>
+        </div>
       </div>
     );
   }
@@ -37,11 +72,14 @@ const page = async ({ searchParams }: ConfirmationSearchParams) => {
       return (
         <div className="flex justify-center items-center">
           <div className="  flex justify-center items-center flex-col rounded-lg shadow-lg py-10 px-20">
-            <CheckCircleIcon size={150} />
+            <CheckCircleIcon color="green" size={150} />
             <h1 className=" text-2xl"> Congratulations</h1>
             <h1 className=" text-2xl">NDIS Verification Complete</h1>
-            <Link className=" mt-6" href="/">
-              Home
+            <Link
+              className=" mt-6 text-blue-400 flex items-center gap-1"
+              href="/"
+            >
+              <ChevronLeft /> Home
             </Link>
           </div>
         </div>

@@ -43,7 +43,7 @@ const AbnLookupForm = () => {
     const data = await postBusinessData(abnDetails!);
     if (data.success) {
       displayAlert(data.message, true);
-      router.push("/on-board/new");
+      router.push("/dashboard/listing/page");
     } else {
       displayAlert(data.message, false);
     }

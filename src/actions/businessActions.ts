@@ -168,6 +168,9 @@ export async function searchBusinesses(searchParams: SearchParamsActions) {
           };
         }
 
+        if (key === "ndis" && value === "true") {
+          query.ndis_registered = true;
+        }
         if (key === "company" && value === "true") {
           query.EntityTypeCode = {
             $in: [new RegExp("PRV", "i")],
@@ -179,8 +182,6 @@ export async function searchBusinesses(searchParams: SearchParamsActions) {
             $in: [new RegExp("IND", "i")],
           };
         }
-        //ndis
-        // autism: string;
       }
     }
 
