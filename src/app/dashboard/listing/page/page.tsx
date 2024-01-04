@@ -33,6 +33,7 @@ import { saveBase64Image } from "@/utils/saveImage";
 import { uploadImage } from "@/libs/cloudinary";
 import { useRouter } from "next/navigation";
 import TextEditor from "@/components/TextEditor";
+import LoadingSpinner from "@/components/Loading";
 
 const CreateList = () => {
   const router = useRouter();
@@ -48,6 +49,7 @@ const CreateList = () => {
   });
   const [imagePreview, setImagePreview] = useState("");
   const [imagePreviewAvatar, setImagePreviewAvatar] = useState("");
+  const [loadingComplete, setLoadingComplete] = useState(false);
 
   const [complexNeedsSupported, setComplexNeedsSupported] = useState<string[]>(
     []
@@ -129,6 +131,7 @@ const CreateList = () => {
     setLanguages(data.data.languages);
     setGenderOfAttendants(data.data.genderOfAttendants);
     setComplexNeedsSupported(data.data.complexNeedsSupported);
+    setLoadingComplete(() => true);
   };
 
   useEffect(() => {
@@ -182,93 +185,100 @@ const CreateList = () => {
 
   return (
     <div>
-      <div>
-        <div className="my-6">
-          <span className="text-3xl font-medium my-6">Upload a banner :</span>
-          <div className="">
-            <div className=" flex gap-4 justify-center-center mt-2 flex-col">
-              <div className="w-[300px] flex flex-col gap-1 justify-start">
-                <p>Banner:</p>
+      {loadingComplete ? (
+        <div>
+          <div>
+            <div className="my-6">
+              <span className="text-3xl font-medium my-6">
+                Upload a banner :
+              </span>
+              <div className="">
+                <div className=" flex gap-4 justify-center-center mt-2 flex-col">
+                  <div className="w-[300px] flex flex-col gap-1 justify-start">
+                    <p>Banner:</p>
 
-                <input
-                  className=" py-2 px-4 block w-full text-sm text-white rounded-md cursor-pointer bg-btn-orange focus:outline-none"
-                  id="file_input_banner"
-                  type="file"
-                  accept=".svg,.png,.jpg"
-                  onChange={saveImagePreview}
-                />
-                <p>Avatar:</p>
-                <input
-                  className=" py-2 px-4 block w-full text-sm text-white rounded-md cursor-pointer bg-btn-orange focus:outline-none"
-                  id="file_input_avatar"
-                  type="file"
-                  accept=".svg,.png,.jpg"
-                  onChange={saveImagePreviewAvatar}
-                />
-                <p className="text-xs font-medium mt-1 ">
-                  SVG, PNG, JPG (MAX. 1200x300px).
-                </p>
+                    <input
+                      className=" py-2 px-4 block w-full text-sm text-white rounded-md cursor-pointer bg-btn-orange focus:outline-none"
+                      id="file_input_banner"
+                      type="file"
+                      accept=".svg,.png,.jpg"
+                      onChange={saveImagePreview}
+                    />
+                    <p>Avatar:</p>
+                    <input
+                      className=" py-2 px-4 block w-full text-sm text-white rounded-md cursor-pointer bg-btn-orange focus:outline-none"
+                      id="file_input_avatar"
+                      type="file"
+                      accept=".svg,.png,.jpg"
+                      onChange={saveImagePreviewAvatar}
+                    />
+                    <p className="text-xs font-medium mt-1 ">
+                      SVG, PNG, JPG (MAX. 1200x300px).
+                    </p>
+                  </div>
+                  <button
+                    title="clear"
+                    className="w-fit text-red-500 flex items-center bg-gray-400 rounded-md px-4 py-2 hover:bg-red-500 hover:text-white"
+                    onClick={() => {
+                      setImagePreview("");
+                      setImagePreviewAvatar("");
+                    }}
+                  >
+                    <X />
+                    clear
+                  </button>
+                </div>
               </div>
-              <button
-                title="clear"
-                className="w-fit text-red-500 flex items-center bg-gray-400 rounded-md px-4 py-2 hover:bg-red-500 hover:text-white"
-                onClick={() => {
-                  setImagePreview("");
-                  setImagePreviewAvatar("");
-                }}
-              >
-                <X />
-                clear
-              </button>
             </div>
+            <span className="text-2xl font-medium">Preview</span>
+
+            <div
+              className={`${
+                loadingComplete ? "flex" : "hidden"
+              } h-[300px] bg-cover py-5 md:py-8 relative`}
+              style={{
+                backgroundImage: `url('${
+                  imagePreview
+                    ? imagePreview
+                    : image?.banner
+                    ? image?.banner
+                    : "/image.webp"
+                }')`,
+              }}
+            >
+              <div className="relative w-full h-full">
+                <Image
+                  className="rounded-full w-[150px] h-[150px]  object-cover absolute bottom-[-70px] left-[50px]"
+                  width={120}
+                  height={120}
+                  priority={true}
+                  src={
+                    imagePreviewAvatar
+                      ? imagePreviewAvatar
+                      : image?.card
+                      ? image.card
+                      : "/image.jpg"
+                  }
+                  alt="name"
+                />
+              </div>
+            </div>
+
+            <h1 className="text-2xl md:text-4xl ml-6  font-semibold w-fit truncate mt-16 mb-6">
+              {BusinessName}
+            </h1>
           </div>
-        </div>
-        <span className="text-2xl font-medium">Preview</span>
 
-        <div
-          className="flex h-[300px] bg-cover py-5 md:py-8 relative"
-          style={{
-            backgroundImage: `url('${
-              imagePreview
-                ? imagePreview
-                : image?.banner
-                ? image?.banner
-                : "/image.webp"
-            }')`,
-          }}
-        >
-          <div className="relative w-full h-full">
-            <Image
-              className="rounded-full w-[150px] h-[150px]  object-cover absolute bottom-[-70px] left-[50px]"
-              width={120}
-              height={120}
-              src={
-                imagePreviewAvatar
-                  ? imagePreviewAvatar
-                  : image?.card
-                  ? image.card
-                  : "/image.jpg"
-              }
-              alt="name"
-            />
-          </div>
-        </div>
+          <div className="grid md:grid-flow-col md:grid-cols-8 md:gap-x-6 mt-8 mb-20">
+            {/* //! left side */}
+            <div className="col-span-full md:col-span-5 flex flex-col gap-4 md:gap-6">
+              <BorderBox>
+                <div className="md:col-span-full col-span-3 mb-4">
+                  <p className="mt-3 text-sm leading-6 text-gray-600">
+                    Write a few sentences about your business.
+                  </p>
 
-        <h1 className="text-2xl md:text-4xl ml-6  font-semibold w-fit truncate mt-16 mb-6">
-          {BusinessName}
-        </h1>
-      </div>
-
-      <div className="grid md:grid-flow-col md:grid-cols-8 md:gap-x-6 mt-8 mb-20">
-        {/* //! left side */}
-        <div className="col-span-full md:col-span-5 flex flex-col gap-4 md:gap-6">
-          <BorderBox>
-            <div className="md:col-span-full col-span-3 mb-4">
-              <p className="mt-3 text-sm leading-6 text-gray-600">
-                Write a few sentences about your business.
-              </p>
-
-              {/* <div className="mt-2">
+                  {/* <div className="mt-2">
                 <textarea
                   id="about"
                   name="about"
@@ -278,265 +288,273 @@ const CreateList = () => {
                   onChange={(e) => setAbout(e.target.value)}
                 />
               </div> */}
-              <TextEditor html={about} setHtml={setAbout} />
-            </div>
-            <h1 className=" text-2xl font-medium">About</h1>
-            <div dangerouslySetInnerHTML={{ __html: about }} />
-          </BorderBox>
-
-          <BorderBox>
-            <Select
-              id="services"
-              value={generateSelectDefault(services)}
-              isMulti
-              instanceId="services"
-              name="services"
-              options={selectOptions}
-              className="basic-multi-select mb-4"
-              onChange={(val) => {
-                const data = val.map((d: any) => d.value);
-                setServices(data);
-              }}
-              isSearchable={true}
-              placeholder="Select Service Options"
-            />
-            <h1 className=" text-2xl font-medium">Services</h1>
-            <ul className="list-disc mx-5">
-              {services.map((service) => {
-                return <li key={service}>{service}</li>;
-              })}
-            </ul>
-          </BorderBox>
-
-          <BorderBox>
-            <Select
-              id="complex_needs"
-              value={generateSelectDefault(complexNeedsSupported)}
-              isMulti
-              instanceId="complex_needs"
-              name="complex_needs"
-              options={complexNeedsSupportedOptions}
-              className="basic-multi-select mb-4"
-              onChange={(val) => {
-                const data = val.map((d: any) => d.value);
-                setComplexNeedsSupported(data);
-              }}
-              isSearchable={true}
-              placeholder="Select complex need options "
-            />
-            <h1 className=" text-2xl font-medium">Complex Needs Supported</h1>
-            <ul className="list-disc mx-5">
-              {complexNeedsSupported.map((cNeeds) => {
-                return <li key={cNeeds}>{cNeeds}</li>;
-              })}
-            </ul>
-          </BorderBox>
-
-          <BorderBox>
-            <h1 className=" text-2xl font-medium  mb-4">
-              Additional Information
-            </h1>
-
-            <Select
-              id="gender"
-              value={generateSelectDefault(genderOfAttendants)}
-              isMulti
-              instanceId="gender"
-              name="gender"
-              options={genderOfAttendanceOptions}
-              className="basic-multi-select mb-4"
-              onChange={(val) => {
-                const data = val.map((d: any) => d.value);
-                setGenderOfAttendants(data);
-              }}
-              isSearchable={true}
-              placeholder="Select Genders of Attendance"
-              classNamePrefix="select"
-            />
-
-            <h1 className=" text-2xl font-medium mb-2">Gender of attendants</h1>
-            <ul className="list-disc mx-5 mb-4">
-              {genderOfAttendants.map((gen) => {
-                return <li key={gen}>{gen}</li>;
-              })}
-            </ul>
-
-            <Select
-              id="Languages"
-              value={generateSelectDefault(languages)}
-              isMulti
-              instanceId="Languages"
-              name="Languages"
-              options={selectLanguages}
-              className="basic-multi-select mb-4"
-              onChange={(val) => {
-                const data = val.map((d: any) => d.value);
-                setLanguages(data);
-              }}
-              isSearchable={true}
-              placeholder="Select Languages"
-              classNamePrefix="select"
-            />
-            <h1 className=" text-2xl font-medium mb-2">Languages</h1>
-            <ul className="list-disc mx-5 mb-4">
-              {languages.map((lan) => {
-                return <li key={lan}>{lan}</li>;
-              })}
-            </ul>
-          </BorderBox>
-        </div>
-
-        {/* //! Right side */}
-        <div className="mt-4 md:mt-0 col-span-full md:col-span-3 flex flex-col gap-4 md:gap-6">
-          <BorderBox>
-            <h1 className=" text-2xl font-medium">Contacts</h1>
-            <div className="">
-              <div className="mt-2">
-                <CustomInput
-                  onChange={(e) => setWebsite(e.target.value)}
-                  value={website}
-                  type="text"
-                  name="website"
-                  id="website"
-                  autoComplete="website"
-                  placeholder="Business Website"
-                />
-              </div>
-              <div className="mt-2">
-                <CustomInput
-                  onChange={(e) => setPhone(e.target.value)}
-                  value={phone}
-                  type="text"
-                  name="phone"
-                  id="phone"
-                  autoComplete="phone"
-                  placeholder="Contact Number"
-                />
-              </div>
-
-              <div className="mt-2">
-                <CustomInput
-                  onChange={(e) => setEmail(e.target.value)}
-                  value={email}
-                  type="text"
-                  name="email"
-                  id="email"
-                  autoComplete="email"
-                  placeholder="Contact email"
-                  // autoComplete="address-level1"
-                />
-              </div>
-            </div>
-            <div className="flex gap-2 mt-2 items-center flex-wrap">
-              {website ? (
-                <>
-                  <MousePointerClick size={16} />
-                  <Link
-                    target="_blank"
-                    href={
-                      website.startsWith("https://")
-                        ? website
-                        : `https://${website}`
-                    }
-                  >
-                    Visit Website
-                  </Link>
-                </>
-              ) : null}
-
-              {phone ? (
-                <>
-                  <Phone size={16} />
-                  <Link href={`tel:${phone}`}>{phone}</Link>
-                </>
-              ) : null}
-              {email ? (
-                <div className="flex gap-1 items-center">
-                  <Mail size={16} />
-                  <Link href={`mailto:${email}`}>{email}</Link>
+                  <TextEditor html={about} setHtml={setAbout} />
                 </div>
-              ) : null}
+                <h1 className=" text-2xl font-medium">About</h1>
+                <div dangerouslySetInnerHTML={{ __html: about }} />
+              </BorderBox>
+
+              <BorderBox>
+                <Select
+                  id="services"
+                  value={generateSelectDefault(services)}
+                  isMulti
+                  instanceId="services"
+                  name="services"
+                  options={selectOptions}
+                  className="basic-multi-select mb-4"
+                  onChange={(val) => {
+                    const data = val.map((d: any) => d.value);
+                    setServices(data);
+                  }}
+                  isSearchable={true}
+                  placeholder="Select Service Options"
+                />
+                <h1 className=" text-2xl font-medium">Services</h1>
+                <ul className="list-disc mx-5">
+                  {services.map((service) => {
+                    return <li key={service}>{service}</li>;
+                  })}
+                </ul>
+              </BorderBox>
+
+              <BorderBox>
+                <Select
+                  id="complex_needs"
+                  value={generateSelectDefault(complexNeedsSupported)}
+                  isMulti
+                  instanceId="complex_needs"
+                  name="complex_needs"
+                  options={complexNeedsSupportedOptions}
+                  className="basic-multi-select mb-4"
+                  onChange={(val) => {
+                    const data = val.map((d: any) => d.value);
+                    setComplexNeedsSupported(data);
+                  }}
+                  isSearchable={true}
+                  placeholder="Select complex need options "
+                />
+                <h1 className=" text-2xl font-medium">
+                  Complex Needs Supported
+                </h1>
+                <ul className="list-disc mx-5">
+                  {complexNeedsSupported.map((cNeeds) => {
+                    return <li key={cNeeds}>{cNeeds}</li>;
+                  })}
+                </ul>
+              </BorderBox>
+
+              <BorderBox>
+                <h1 className=" text-2xl font-medium  mb-4">
+                  Additional Information
+                </h1>
+
+                <Select
+                  id="gender"
+                  value={generateSelectDefault(genderOfAttendants)}
+                  isMulti
+                  instanceId="gender"
+                  name="gender"
+                  options={genderOfAttendanceOptions}
+                  className="basic-multi-select mb-4"
+                  onChange={(val) => {
+                    const data = val.map((d: any) => d.value);
+                    setGenderOfAttendants(data);
+                  }}
+                  isSearchable={true}
+                  placeholder="Select Genders of Attendance"
+                  classNamePrefix="select"
+                />
+
+                <h1 className=" text-2xl font-medium mb-2">
+                  Gender of attendants
+                </h1>
+                <ul className="list-disc mx-5 mb-4">
+                  {genderOfAttendants.map((gen) => {
+                    return <li key={gen}>{gen}</li>;
+                  })}
+                </ul>
+
+                <Select
+                  id="Languages"
+                  value={generateSelectDefault(languages)}
+                  isMulti
+                  instanceId="Languages"
+                  name="Languages"
+                  options={selectLanguages}
+                  className="basic-multi-select mb-4"
+                  onChange={(val) => {
+                    const data = val.map((d: any) => d.value);
+                    setLanguages(data);
+                  }}
+                  isSearchable={true}
+                  placeholder="Select Languages"
+                  classNamePrefix="select"
+                />
+                <h1 className=" text-2xl font-medium mb-2">Languages</h1>
+                <ul className="list-disc mx-5 mb-4">
+                  {languages.map((lan) => {
+                    return <li key={lan}>{lan}</li>;
+                  })}
+                </ul>
+              </BorderBox>
             </div>
-          </BorderBox>
-          <BorderBox>
-            <Select
-              id="delivery_options"
-              value={generateSelectDefault(deliveryOptions)}
-              isMulti
-              instanceId="delivery"
-              name="delivery"
-              options={selectDeliveryOptions}
-              className="basic-multi-select mb-4"
-              onChange={(val) => {
-                const data = val.map((d: any) => d.value);
-                setDeliveryOptions(data);
-              }}
-              isSearchable={true}
-              placeholder="Select delivery options"
-              classNamePrefix="select"
-            />
-            <h1 className=" text-2xl font-medium">Delivery Options</h1>
-            <div className="flex flex-col">
-              {deliveryOptions.map((option) => {
-                return (
-                  <div key={option}>
-                    <div className="flex gap-2 items-center">
-                      {option === "Online/Telehealth" ? (
-                        <Globe size={16} />
-                      ) : option === "Mobile" ? (
-                        <CarFront size={16} />
-                      ) : (
-                        <PersonStanding size={16} />
-                      )}
-                      {option}
-                    </div>
+
+            {/* //! Right side */}
+            <div className="mt-4 md:mt-0 col-span-full md:col-span-3 flex flex-col gap-4 md:gap-6">
+              <BorderBox>
+                <h1 className=" text-2xl font-medium">Contacts</h1>
+                <div className="">
+                  <div className="mt-2">
+                    <CustomInput
+                      onChange={(e) => setWebsite(e.target.value)}
+                      value={website}
+                      type="text"
+                      name="website"
+                      id="website"
+                      autoComplete="website"
+                      placeholder="Business Website"
+                    />
                   </div>
-                );
-              })}
+                  <div className="mt-2">
+                    <CustomInput
+                      onChange={(e) => setPhone(e.target.value)}
+                      value={phone}
+                      type="text"
+                      name="phone"
+                      id="phone"
+                      autoComplete="phone"
+                      placeholder="Contact Number"
+                    />
+                  </div>
+
+                  <div className="mt-2">
+                    <CustomInput
+                      onChange={(e) => setEmail(e.target.value)}
+                      value={email}
+                      type="text"
+                      name="email"
+                      id="email"
+                      autoComplete="email"
+                      placeholder="Contact email"
+                      // autoComplete="address-level1"
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-2 mt-2 items-center flex-wrap">
+                  {website ? (
+                    <>
+                      <MousePointerClick size={16} />
+                      <Link
+                        target="_blank"
+                        href={
+                          website.startsWith("https://")
+                            ? website
+                            : `https://${website}`
+                        }
+                      >
+                        Visit Website
+                      </Link>
+                    </>
+                  ) : null}
+
+                  {phone ? (
+                    <>
+                      <Phone size={16} />
+                      <Link href={`tel:${phone}`}>{phone}</Link>
+                    </>
+                  ) : null}
+                  {email ? (
+                    <div className="flex gap-1 items-center">
+                      <Mail size={16} />
+                      <Link href={`mailto:${email}`}>{email}</Link>
+                    </div>
+                  ) : null}
+                </div>
+              </BorderBox>
+              <BorderBox>
+                <Select
+                  id="delivery_options"
+                  value={generateSelectDefault(deliveryOptions)}
+                  isMulti
+                  instanceId="delivery"
+                  name="delivery"
+                  options={selectDeliveryOptions}
+                  className="basic-multi-select mb-4"
+                  onChange={(val) => {
+                    const data = val.map((d: any) => d.value);
+                    setDeliveryOptions(data);
+                  }}
+                  isSearchable={true}
+                  placeholder="Select delivery options"
+                  classNamePrefix="select"
+                />
+                <h1 className=" text-2xl font-medium">Delivery Options</h1>
+                <div className="flex flex-col">
+                  {deliveryOptions.map((option) => {
+                    return (
+                      <div key={option}>
+                        <div className="flex gap-2 items-center">
+                          {option === "Online/Telehealth" ? (
+                            <Globe size={16} />
+                          ) : option === "Mobile" ? (
+                            <CarFront size={16} />
+                          ) : (
+                            <PersonStanding size={16} />
+                          )}
+                          {option}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </BorderBox>
+              <BorderBox>
+                <ServiceLocationInput
+                  data={serviceLocations}
+                  setData={setServiceLocations}
+                />
+              </BorderBox>
+              <BorderBox>
+                <Select
+                  id="ages_supported"
+                  value={generateSelectDefault(agesSupported)}
+                  isMulti
+                  instanceId="ages_supported"
+                  name="ages_supported"
+                  options={agesSupportedOptions}
+                  className="basic-multi-select mb-4"
+                  onChange={(val) => {
+                    const data = val.map((d: any) => d.value);
+                    setAgesSupported(data);
+                  }}
+                  isSearchable={true}
+                  placeholder="Select Ages Supported"
+                  classNamePrefix="select"
+                />
+                <h1 className=" text-2xl font-medium">Ages Supported</h1>
+                <ul className="list-disc ml-5 mt-2">
+                  {agesSupported.map((ages) => {
+                    return <li key={ages}>{ages}</li>;
+                  })}
+                </ul>
+              </BorderBox>
             </div>
-          </BorderBox>
-          <BorderBox>
-            <ServiceLocationInput
-              data={serviceLocations}
-              setData={setServiceLocations}
-            />
-          </BorderBox>
-          <BorderBox>
-            <Select
-              id="ages_supported"
-              value={generateSelectDefault(agesSupported)}
-              isMulti
-              instanceId="ages_supported"
-              name="ages_supported"
-              options={agesSupportedOptions}
-              className="basic-multi-select mb-4"
-              onChange={(val) => {
-                const data = val.map((d: any) => d.value);
-                setAgesSupported(data);
-              }}
-              isSearchable={true}
-              placeholder="Select Ages Supported"
-              classNamePrefix="select"
-            />
-            <h1 className=" text-2xl font-medium">Ages Supported</h1>
-            <ul className="list-disc ml-5 mt-2">
-              {agesSupported.map((ages) => {
-                return <li key={ages}>{ages}</li>;
-              })}
-            </ul>
-          </BorderBox>
+          </div>
+          <div className="my-6">
+            <CustomButton
+              isLoading={loading}
+              onClick={handleSubmit}
+              className=" w-40"
+              disabled={loading}
+            >
+              Save
+            </CustomButton>
+          </div>
         </div>
-      </div>
-      <div className="my-6">
-        <CustomButton
-          isLoading={loading}
-          onClick={handleSubmit}
-          className=" w-40"
-          disabled={loading}
-        >
-          Save
-        </CustomButton>
-      </div>
+      ) : (
+        <LoadingSpinner />
+      )}
     </div>
   );
 };

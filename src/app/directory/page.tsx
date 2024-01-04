@@ -4,8 +4,6 @@ import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import { BusinessDatabaseModel } from "@/types/business";
 import Link from "next/link";
 
-export const dynamic = "force-dynamic";
-
 const page = async () => {
   const resp = await getFeaturedBusiness();
   if (!resp) return null;
