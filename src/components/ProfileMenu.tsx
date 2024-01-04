@@ -36,29 +36,18 @@ const ProfileMenu = () => {
             </span>
             <span className="font-medium truncate">{data?.user.email}</span>
           </div>
-          <ul
+          <div
             className="py-2 text-sm text-gray-700"
             aria-labelledby="avatarButton"
           >
-            <li>
-              <Link
-                href="/dashboard"
-                className="block px-4 py-2 hover:bg-btn-orange"
-                onClick={() => setMenu(false)}
-              >
-                Dashboard
-              </Link>
-            </li>
-            {/* <li>
-              <Link
-                className=" block px-4 py-2 hover:bg-btn-orange"
-                href="/on-board"
-                onClick={() => setMenu(false)}
-              >
-                List Business
-              </Link>
-            </li> */}
-          </ul>
+            <Link
+              href="/dashboard"
+              className="block px-4 py-2 hover:bg-btn-orange"
+              onClick={() => setMenu(false)}
+            >
+              Dashboard
+            </Link>
+          </div>
           <div className="py-1">
             <button
               onClick={() => {

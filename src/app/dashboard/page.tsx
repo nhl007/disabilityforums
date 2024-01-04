@@ -58,26 +58,35 @@ const Dashboard = () => {
     <MaxWidthWrapper>
       <form onSubmit={updateUserProfile} className=" flex flex-col gap-6 mb-10">
         <p>Profile Picture:</p>
-        <Image
-          className=" w-100 h-100 rounded-full border-2 p-2"
-          src={image ? image : (data?.user.image as string)}
-          width={100}
-          height={100}
-          alt="Profile Picture"
-        />
-        <label
-          htmlFor="file_input"
-          className="block text-sm font-medium leading-6 text-gray-900"
-        >
-          Upload
-        </label>
-        <input
-          className=" py-1.5 px-4 block md:w-full text-sm text-white rounded-md cursor-pointer bg-btn-orange focus:outline-none"
-          id="file_input"
-          type="file"
-          accept=".svg,.png,.jpg"
-          onChange={setPreviewImage}
-        />
+        {data?.user.image ? (
+          <Image
+            className=" w-[100px] h-[100px] rounded-full border-2 p-2"
+            src={image ? image : (data?.user.image as string)}
+            width={100}
+            height={100}
+            alt="Profile Picture"
+          />
+        ) : (
+          <div className="w-[100px] h-[100px] text-4xl font-semibold rounded-full border-2 p-2 flex justify-center items-center bg-slate-400">
+            <span> {data?.user.name?.charAt(0).toUpperCase()}</span>
+          </div>
+        )}
+        <div>
+          <label
+            htmlFor="file_input"
+            className="block text-sm font-medium leading-6 text-gray-900"
+          >
+            Upload New
+          </label>
+          <input
+            className=" mt-2 py-1.5 px-4 block w-full text-sm text-white rounded-md cursor-pointer bg-btn-orange focus:outline-none"
+            id="file_input"
+            type="file"
+            accept=".svg,.png,.jpg"
+            onChange={setPreviewImage}
+          />
+        </div>
+
         <div className="sm:col-span-2 sm:col-start-1">
           <label
             htmlFor="Name"

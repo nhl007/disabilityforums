@@ -16,7 +16,7 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
         Please fill the following details to list your business in the
         directory.
       </p>
-      <BusinessListingTabs />
+      <BusinessListingTabs key="listing lay" />
       {children}
     </div>
   );

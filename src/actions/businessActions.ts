@@ -12,15 +12,15 @@ import { Error } from "mongoose";
 import { Session } from "next-auth";
 
 export async function checkIfBusinessExists() {
+  await connectToDB();
   const session: Session | null = await getAuthSession();
   const id = session?.user.id;
 
-  if (!id) return null;
-  await connectToDB();
+  if (!id) return false;
   const doc = await Business.findOne({ user: id }).select("_id");
   if (doc && doc._id) {
-    return stringifyResponse(doc._id);
-  } else return null;
+    return true;
+  } else return false;
 }
 
 export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {

@@ -1,6 +1,12 @@
 "use client";
 import { useFeatureContext } from "@/context/feature/FeatureContext";
-import { BookUserIcon, Briefcase, LandmarkIcon } from "lucide-react";
+import {
+  BadgeCheckIcon,
+  BookUserIcon,
+  BriefcaseIcon,
+  FileSignatureIcon,
+  LandmarkIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Alert from "./Alert";
@@ -23,17 +29,20 @@ const BusinessListingTabs = () => {
     if (resp) {
       setExists(() => true);
     } else {
-      if (url === "dashboard/listing/page") {
-        router.replace("/dashboard/listing");
-      }
       setExists(() => false);
+      if (
+        url.startsWith("/dashboard/listing") &&
+        url === "/dashboard/listing"
+      ) {
+        return;
+      }
+      router.replace("/dashboard/listing");
     }
   };
 
   useEffect(() => {
-    console.log("Exists check!");
     checkBusiness();
-  }, []);
+  }, [exists]);
 
   return (
     <div className="border-b border-gray-200 mb-4 md:mb-6">
@@ -48,7 +57,7 @@ const BusinessListingTabs = () => {
             href="/dashboard/listing"
             className="me-2 inline-flex gap-2 items-center justify-center md:pr-4 py-4 border-b-2 border-transparent rounded-t-lg"
           >
-            <Briefcase />
+            <BriefcaseIcon />
             Abn LookUp
           </Link>
         </div>
@@ -93,7 +102,7 @@ const BusinessListingTabs = () => {
             tabIndex={!exists ? -1 : undefined}
             className="inline-flex gap-2 items-center justify-center md:pr-4 py-4 border-b-2 border-transparent rounded-t-lg "
           >
-            <BookUserIcon />
+            <BadgeCheckIcon />
             Verify NDIS Registration
           </Link>
         </div>
@@ -108,7 +117,7 @@ const BusinessListingTabs = () => {
             tabIndex={!exists ? -1 : undefined}
             className="inline-flex gap-2 items-center justify-center md:pr-4 py-4 border-b-2 border-transparent rounded-t-lg "
           >
-            <BookUserIcon />
+            <FileSignatureIcon />
             Forum Signature
           </Link>
         </div>

@@ -10,7 +10,7 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
   }
   return (
     <MaxWidthWrapper>
-      <DashboardTabs />
+      <DashboardTabs key="dash lay" />
       {children}
     </MaxWidthWrapper>
   );

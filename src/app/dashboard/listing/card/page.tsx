@@ -89,7 +89,7 @@ const Card = () => {
     const data = await updateBusinessData(infos);
     if (data.success) {
       displayAlert(data.message, true);
-      // router.push("/on-board/new");
+      router.push("/dashboard/listing/verify");
     } else {
       displayAlert(data.message, false);
     }
