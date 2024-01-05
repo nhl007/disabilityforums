@@ -225,6 +225,7 @@ export async function getBusiness(fields: Partial<DBKeys>[]) {
 }
 
 export async function getFeaturedBusiness() {
+  revalidatePath("/directory");
   try {
     await connectToDB();
     const doc = await Business.find({})
