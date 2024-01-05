@@ -33,7 +33,7 @@ const NavBar = () => {
           )}
         </div>
         <div className=" divide-solid border" />
-        <div className="flex gap-7 h-[48px] md:h-[84px] justify-between md:justify-start items-center">
+        <div className="flex gap-3 md:gap-7 h-[48px] md:h-[84px] justify-start items-center">
           <Link className=" hover:text-btn-orange" href="/directory">
             Directory
           </Link>
@@ -41,7 +41,7 @@ const NavBar = () => {
           <Link className=" hover:text-btn-orange" href="/list-business">
             List Business
           </Link>
-          <MobileNav />
+          {/* <MobileNav /> */}
         </div>
       </nav>
     </MaxWidthWrapper>

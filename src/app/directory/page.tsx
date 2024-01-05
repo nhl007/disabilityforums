@@ -23,7 +23,7 @@ const page = async () => {
   return (
     <div className=" my-6 md:my-8">
       <MaxWidthWrapper>
-        <div className=" grid grid-flow-row grid-cols-1 md:grid-cols-4 place-items-center md:gap-x-7 gap-y-4 md:gap-y-7">
+        <div className=" grid grid-flow-row grid-cols-1 md:grid-cols-4 place-items-center md:gap-x-7 gap-y-6 md:gap-y-7">
           {data.map((b, i) => {
             return (
               <Link className="col-span-1" key={i} href={`/business/${b._id}`}>

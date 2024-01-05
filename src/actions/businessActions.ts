@@ -10,6 +10,7 @@ import { SearchParamsActions } from "@/types/common";
 import { getLatLngByPostalCode } from "@/utils/postalCodeSearch";
 import { Error } from "mongoose";
 import { Session } from "next-auth";
+import { revalidatePath } from "next/cache";
 
 export async function checkIfBusinessExists() {
   await connectToDB();
@@ -24,6 +25,8 @@ export async function checkIfBusinessExists() {
 }
 
 export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
+  revalidatePath("/directory");
+
   const session: Session | null = await getAuthSession();
   if (!session || !session.user)
     return { success: false, message: "Permission denied" };

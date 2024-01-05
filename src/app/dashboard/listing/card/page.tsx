@@ -104,10 +104,10 @@ const Card = () => {
     <div>
       {loadingComplete ? (
         <div>
-          <div className=" grid grid-flow-col grid-cols-3 gap-x-10">
-            <div className="col-span-2 flex flex-col ">
-              <div className=" flex gap-2 items-center mt-2">
-                <div className="w-[300px] flex items-start justify-center flex-col">
+          <div className=" grid grid-flow-row md:grid-flow-col grid-cols-1 md:grid-cols-3 gap-x-10">
+            <div className="col-span-1 md:col-span-2 flex flex-col ">
+              <div className=" flex flex-col md:flex-row gap-2 items-center mt-2">
+                <div className=" w-full md:w-[400px] flex items-start justify-center flex-col">
                   <label
                     htmlFor="file_input"
                     className="block text-sm font-medium leading-6 mb-2 text-gray-900"
@@ -115,7 +115,7 @@ const Card = () => {
                     Listing card Image
                   </label>
                   <input
-                    className=" py-2 px-4 block md:w-full text-sm text-white rounded-md cursor-pointer bg-btn-orange focus:outline-none"
+                    className=" w-full md:w-full  py-2 px-2 md:px-4 block text-sm text-white rounded-md cursor-pointer bg-btn-orange focus:outline-none"
                     id="file_input"
                     type="file"
                     accept=".svg,.png,.jpg"
@@ -124,7 +124,7 @@ const Card = () => {
                 </div>
                 <button
                   title="clear"
-                  className=" text-red-500 self-end flex items-center bg-gray-400 rounded-md px-4 py-2 hover:bg-red-500 hover:text-white"
+                  className=" text-red-500 md:self-end self-start flex items-center bg-gray-400 rounded-md px-4 py-2 hover:bg-red-500 hover:text-white"
                   onClick={() => {
                     setImagePreview("");
                   }}
@@ -146,11 +146,11 @@ const Card = () => {
                     name="blurb"
                     rows={3}
                     maxLength={143}
-                    className="block md:w-[700px] rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none outline-none placeholder:text-gray-400  text-sm md:text-base sm:leading-6"
+                    className="block w-full md:w-[700px] rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none outline-none placeholder:text-gray-400  text-sm md:text-base sm:leading-6"
                     value={blurb}
                     onChange={(e) => setBlurb(e.target.value)}
                   />
-                  <span className="absolute text-red-400 right-32 bottom-2 text-xs">
+                  <span className="absolute text-red-400 right-2 bottom-2 md:right-32 md:bottom-2 text-xs">
                     {blurb.length}/143
                   </span>
                 </div>
