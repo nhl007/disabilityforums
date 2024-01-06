@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import crypto from "crypto";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -45,3 +46,15 @@ export const rgbToHex = (rgb: string): string => {
   const hex = ((r << 16) | (g << 8) | b).toString(16).padStart(6, "0");
   return `#${hex}`;
 };
+
+export function generateHmacSha256(base64Payload: string) {
+  const secret = process.env.DISCOURSE_SSO_SECRET as string;
+
+  const secretKey = Buffer.from(secret, "utf-8");
+
+  const hmac = crypto.createHmac("sha256", secretKey);
+  hmac.update(base64Payload);
+
+  const hexSignature = hmac.digest("hex");
+  return hexSignature;
+}

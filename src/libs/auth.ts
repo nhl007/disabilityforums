@@ -3,6 +3,8 @@ import { connectToDB } from "./connectToDb";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { AuthOptions, getServerSession } from "next-auth";
+import { getDiscourseUserByEmail } from "@/actions/discourseApi";
+import { validateAndReturnPayload } from "@/actions/userActions";
 
 export const authOptions: AuthOptions = {
   pages: {
@@ -14,60 +16,95 @@ export const authOptions: AuthOptions = {
     CredentialsProvider({
       name: "credentials",
       credentials: {
-        username: {
+        sso: {
           type: "text",
         },
-        email: {
+        sig: {
           type: "text",
         },
-        password: { type: "password" },
       },
+
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error("Please enter an email and password");
+        if (!credentials?.sso && !credentials?.sig) {
+          throw new Error("Invalid Request! Try Again");
+        }
+
+        const payload = await validateAndReturnPayload(
+          credentials.sso,
+          credentials.sig
+        );
+
+        if (!payload) {
+          throw new Error("Invalid Request! Try Again");
         }
 
         await connectToDB();
 
-        const user = await User.findOne({ email: credentials.email }).select(
-          "+password"
-        );
-
-        if (!user) {
-          const username = await User.findOne({
-            username: credentials.email,
-          }).select("+password");
-
-          if (!username || !username.password) {
-            throw new Error("User not found!");
-          }
-
-          const passwordMatch = await bcrypt.compare(
-            credentials.password,
-            username.password
-          );
-
-          if (!passwordMatch) {
-            throw new Error("Incorrect password");
-          }
-
-          return username;
+        //! check if user already exists
+        let user = await User.findOne({ email: payload?.email });
+        if (user) {
+          return user;
         }
 
-        if (!user || !user.password) {
-          throw new Error("User not found!");
-        }
+        //! if not, create a new document and save user in MongoDB
 
-        const passwordMatch = await bcrypt.compare(
-          credentials.password,
-          user.password
-        );
+        // const discourseData = await getDiscourseUserByEmail(
+        //   payload?.email as string
+        // );
 
-        if (!passwordMatch) {
-          throw new Error("Incorrect password");
-        }
+        user = await User.create({
+          email: payload?.email,
+          password: "okokok",
+          discourseId: payload?.id,
+          // avatar:
+          //   process.env.DISCOURSE_API_URL +
+          //   discourseData[0].avatar_template.replace("{size}", "96"),
+          avatar: payload?.avatar,
+          name: payload?.name,
+          username: payload?.username,
+        });
 
         return user;
+
+        // const user = await User.findOne({ email: credentials.email }).select(
+        //   "+password"
+        // );
+
+        // if (!user) {
+        //   const username = await User.findOne({
+        //     username: credentials.email,
+        //   }).select("+password");
+
+        //   if (!username || !username.password) {
+        //     throw new Error("User not found!");
+        //   }
+
+        //   const passwordMatch = await bcrypt.compare(
+        //     credentials.password,
+        //     username.password
+        //   );
+
+        //   if (!passwordMatch) {
+        //     throw new Error("Incorrect password");
+        //   }
+
+        //   return username;
+        // }
+
+        // if (!user || !user.password) {
+        //   throw new Error("User not found!");
+        // }
+
+        // const passwordMatch = await bcrypt.compare(
+        //   credentials.password,
+        //   user.password
+        // );
+
+        // if (!passwordMatch) {
+        //   throw new Error("Incorrect password");
+        // }
+
+        // return user;
       },
     }),
   ],
