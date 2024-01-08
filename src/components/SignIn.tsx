@@ -43,7 +43,7 @@ const SignIn = ({ sso, sig }: { sso?: string; sig?: string }) => {
           if (res?.error) {
             return displayAlert(res.error, false);
           }
-          return displayAlert("Error Occurred !", false);
+          return;
         })
         .catch(() => {
           displayAlert("Error Occurred !", false);

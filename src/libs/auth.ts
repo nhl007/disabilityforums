@@ -1,9 +1,9 @@
 import User from "@/models/User";
 import { connectToDB } from "./connectToDb";
 import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcrypt";
+// import bcrypt from "bcrypt";
 import { AuthOptions, getServerSession } from "next-auth";
-import { getDiscourseUserByEmail } from "@/actions/discourseApi";
+// import { getDiscourseUserByEmail } from "@/actions/discourseApi";
 import { validateAndReturnPayload } from "@/actions/userActions";
 
 export const authOptions: AuthOptions = {
