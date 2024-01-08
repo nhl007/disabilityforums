@@ -12,7 +12,7 @@ interface ISearchParamsSSO {
 const Login = async ({ searchParams }: ISearchParamsSSO) => {
   const session = await getAuthSession();
   if (session && session.user) {
-    redirect("/");
+    redirect("/directory");
   }
 
   return (

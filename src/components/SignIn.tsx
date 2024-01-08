@@ -39,11 +39,14 @@ const SignIn = ({ sso, sig }: { sso?: string; sig?: string }) => {
         sig: sig,
       })
         .then((res) => {
-          if (res?.ok) return router.replace("/directory");
-          if (res?.error) {
-            return displayAlert(res.error, false);
+          if (res?.ok) {
+            return router.refresh();
+          } else {
+            if (res?.error) {
+              displayAlert(res?.error, false);
+            }
+            console.log("came upto here for no reason");
           }
-          return;
         })
         .catch(() => {
           displayAlert("Error Occurred !", false);

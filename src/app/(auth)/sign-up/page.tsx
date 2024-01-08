@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 const Register = async () => {
   const session = await getAuthSession();
   if (session && session.user) {
-    redirect("/");
+    redirect("/directory");
   }
   return (
     <div>
