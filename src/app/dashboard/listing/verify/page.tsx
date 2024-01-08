@@ -8,7 +8,7 @@ import { encodeToken } from "@/libs/customJWTToken";
 import { sendConfirmationEmail } from "@/libs/nodeMailer";
 import { getAuNdisProviderDetails } from "@/utils/ndisProviderDetails";
 import { CheckCircleIcon } from "lucide-react";
-import Link from "next/link";
+// import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type NdisProviderDetails = {
@@ -46,11 +46,15 @@ const Verify = () => {
   const sendVerificationEmail = async () => {
     setLoading(true);
     const token = await encodeToken({ id: docId });
-    const res = await sendConfirmationEmail("apar.asif.an@gmail.com", token);
-    if (res) {
-      displayAlert("Email Sent! Please Check your inbox.", true);
+    if (provider.email) {
+      const res = await sendConfirmationEmail(provider.email, token);
+      if (res) {
+        displayAlert("Email Sent! Please Check your inbox.", true);
+      } else {
+        displayAlert("Error Sending Email!.", true);
+      }
     } else {
-      displayAlert("Error Sending Email!.", true);
+      displayAlert("No Email Selected", false);
     }
     setLoading(false);
   };

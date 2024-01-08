@@ -35,6 +35,8 @@ import { useRouter } from "next/navigation";
 import TextEditor from "@/components/TextEditor";
 import LoadingSpinner from "@/components/Loading";
 
+export const dynamic = "force-dynamic";
+
 const CreateList = () => {
   const router = useRouter();
   const { displayAlert } = useFeatureContext();
@@ -141,15 +143,19 @@ const CreateList = () => {
   const saveImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileData = e.target.files?.[0];
     const fileReader = new FileReader();
-    // const name = e.target.files?.[0].name;
+    // const filename = e.target.files?.[0].name as string;
     if (fileData) {
       fileReader.readAsDataURL(fileData);
       fileReader.onloadend = async () => {
-        // const imageData = await saveBase64Image(
+        // setImagePreview(fileReader.result as string);
+        // const url = await saveBase64Image(
         //   fileReader.result as string,
-        //   "name"
+        //   `${BusinessName}/`,
+        //   filename
         // );
-        // setImage(imageData);
+        // console.log(filetype?.replace("image/", "."));
+        // setImage({ ...image, banner: url });
+
         setImagePreview(fileReader.result as string);
 
         const banner = await uploadImage(fileReader.result as string);
@@ -164,20 +170,21 @@ const CreateList = () => {
   const saveImagePreviewAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileData = e.target.files?.[0];
     const fileReader = new FileReader();
-    // const name = e.target.files?.[0].name;
+    // const filename = e.target.files?.[0].name as string;
     if (fileData) {
       fileReader.readAsDataURL(fileData);
       fileReader.onloadend = async () => {
-        // const imageData = await saveBase64Image(
+        // setImagePreviewAvatar(fileReader.result as string);
+        // const url = await saveBase64Image(
         //   fileReader.result as string,
-        //   "name"
+        //   `${BusinessName}/`,
+        //   filename
         // );
+        // setImage({ ...image, card: url });
         setImagePreviewAvatar(fileReader.result as string);
-
-        const card = await uploadImage(fileReader.result as string);
-
-        if (card) {
-          setImage({ ...image, card: card });
+        const url = await uploadImage(fileReader.result as string);
+        if (url) {
+          setImage({ ...image, card: url });
         }
       };
     }
@@ -222,6 +229,10 @@ const CreateList = () => {
                     onClick={() => {
                       setImagePreview("");
                       setImagePreviewAvatar("");
+                      setImage({
+                        banner: "",
+                        card: "",
+                      });
                     }}
                   >
                     <X />

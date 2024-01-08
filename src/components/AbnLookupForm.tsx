@@ -43,6 +43,8 @@ const AbnLookupForm = () => {
   const confirmAbnDetails = async () => {
     setIsLoading(true);
     const data = await postBusinessData(abnDetails!);
+
+    console.log(data);
     if (data.success) {
       displayAlert(data.message, true);
       router.push("/dashboard/listing/page");

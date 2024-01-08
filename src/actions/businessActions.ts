@@ -1,5 +1,8 @@
 "use server";
 
+import { unstable_noStore as noStore } from "next/cache";
+import { revalidatePath } from "next/cache";
+
 import { stringifyResponse } from "../utils/utils";
 import { getAuthSession } from "@/libs/auth";
 import { connectToDB } from "@/libs/connectToDb";
@@ -10,23 +13,20 @@ import { SearchParamsActions } from "@/types/common";
 import { getLatLngByPostalCode } from "@/utils/postalCodeSearch";
 import { Error } from "mongoose";
 import { Session } from "next-auth";
-import { revalidatePath } from "next/cache";
 
 export async function checkIfBusinessExists() {
   await connectToDB();
   const session: Session | null = await getAuthSession();
   const id = session?.user.id;
-
   if (!id) return false;
   const doc = await Business.findOne({ user: id }).select("_id");
+  noStore();
   if (doc && doc._id) {
     return true;
   } else return false;
 }
 
 export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
-  revalidatePath("/directory");
-
   const session: Session | null = await getAuthSession();
   if (!session || !session.user)
     return { success: false, message: "Permission denied" };
@@ -43,12 +43,15 @@ export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
         discourseId: session.user.discourse_id,
         ...data,
       });
-      await User.findByIdAndUpdate(id, { progress: 1 });
+      revalidatePath("/directory");
       return { success: true, message: "Created Successfully !" };
+      // return redirect("/dashboard/listing/page");
     } else {
       await Business.findByIdAndUpdate(docId._id, data, {
         new: true,
       }).select("_id");
+
+      revalidatePath("/directory");
 
       return { success: true, message: "Saved Successfully !" };
     }
@@ -86,6 +89,7 @@ export async function updateBusinessData(
       new: true,
     }).select("_id");
     // await User.findByIdAndUpdate(id, { progress: progress });
+    revalidatePath("/directory");
     return {
       success: true,
       message: "Listing Page Updated Successfully!",
@@ -225,7 +229,7 @@ export async function getBusiness(fields: Partial<DBKeys>[]) {
 }
 
 export async function getFeaturedBusiness() {
-  revalidatePath("/directory");
+  noStore();
   try {
     await connectToDB();
     const doc = await Business.find({})

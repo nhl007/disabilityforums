@@ -32,11 +32,11 @@ const UserSchema = new Schema({
     unique: [true, "Username already exists!"],
     required: [true, "Please enter your username!"],
   },
-  password: {
-    type: String,
-    required: [true, "Please enter your password"],
-    select: false,
-  },
+  // password: {
+  //   type: String,
+  //   required: [true, "Please enter your password"],
+  //   select: false,
+  // },
   created_at: {
     type: Date,
     default: Date.now,

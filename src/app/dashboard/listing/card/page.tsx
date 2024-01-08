@@ -7,10 +7,13 @@ import SmallVerificationBox from "@/components/ui/SmallVerificationBox";
 import { useFeatureContext } from "@/context/feature/FeatureContext";
 import { uploadImage } from "@/libs/cloudinary";
 import { serviceLocationsType } from "@/types/business";
+import { saveBase64Image } from "@/utils/saveImage";
 import { MapPin, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+
+export const dynamic = "force-dynamic";
 
 const Card = () => {
   const router = useRouter();
@@ -34,16 +37,21 @@ const Card = () => {
 
   const saveImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileData = e.target.files?.[0];
+    if (!fileData) {
+      return;
+    }
     const fileReader = new FileReader();
-    // const name = e.target.files?.[0].name;
+    const filename = e.target.files?.[0].name as string;
     if (fileData) {
       fileReader.readAsDataURL(fileData);
       fileReader.onloadend = async () => {
-        // const imageData = await saveBase64Image(
+        // setImagePreview(fileReader.result as string);
+        // const url = await saveBase64Image(
         //   fileReader.result as string,
-        //   "name"
+        //   `${BusinessName}/`,
+        //   filename
         // );
-        // setImage(imageData);
+        // setImage({ ...image, card: url });
         setImagePreview(fileReader.result as string);
         const url = await uploadImage(fileReader.result as string);
         if (url) {

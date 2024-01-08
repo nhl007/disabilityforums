@@ -15,12 +15,11 @@ export async function generateDiscourseAuthUrl() {
     .toString("hex")
     .slice(0, 16);
 
-  // const payload = `nonce=${nonce}&return_sso_url=${encodeURIComponent(
-  //   "http://localhost:3000/sign-in"
-  // )}`;
+  const redirect_url =
+    process.env.DISCOURSE_REDIRECT_URL ?? "http://localhost:3000/sign-in";
 
   const payload = `nonce=${nonce}&return_sso_url=${encodeURIComponent(
-    "https://disabilityforums.vercel.app/sign-in"
+    redirect_url
   )}`;
 
   const base64Payload = btoa(payload);
@@ -28,8 +27,10 @@ export async function generateDiscourseAuthUrl() {
   // Step 4: URL encode the base64-encoded payload
   const urlEncodedPayload = encodeURIComponent(base64Payload);
 
+  // const secret = "_qYR_u;F84&~9)-";
+  const secret = process.env.DISCOURSE_SSO_SECRET as string;
+
   // Step 5: Generate HMAC-SHA256 signature
-  const secret = "_qYR_u;F84&~9)-"; // Replace with your actual Discourse secret
   const hexSignature = CryptoJS.HmacSHA256(base64Payload, secret).toString(
     CryptoJS.enc.Hex
   );

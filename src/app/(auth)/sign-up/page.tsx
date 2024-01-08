@@ -1,4 +1,5 @@
-import SignUp from "@/components/SignUp";
+import SignIn from "@/components/SignIn";
+// import SignUp from "@/components/SignUp";
 import { getAuthSession } from "@/libs/auth";
 import { redirect } from "next/navigation";
 
@@ -9,7 +10,7 @@ const Register = async () => {
   }
   return (
     <div>
-      <SignUp />
+      <SignIn />
     </div>
   );
 };

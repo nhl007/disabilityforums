@@ -8,8 +8,10 @@ import { useFeatureContext } from "@/context/feature/FeatureContext";
 import Alert from "./Alert";
 import Link from "next/link";
 import { generateDiscourseAuthUrl } from "@/actions/userActions";
+import { usePathname } from "next/navigation";
 
 const SignIn = ({ sso, sig }: { sso?: string; sig?: string }) => {
+  const pathname = usePathname();
   // const [email, setEmail] = useState<string | null>(null);
   // const [password, setPassword] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -25,9 +27,6 @@ const SignIn = ({ sso, sig }: { sso?: string; sig?: string }) => {
     setLoading(true);
     const url = await generateDiscourseAuthUrl();
     setLoading(false);
-    // console.log(url);
-
-    // console.log(url);
     router.push(url);
   };
 
@@ -40,7 +39,7 @@ const SignIn = ({ sso, sig }: { sso?: string; sig?: string }) => {
         sig: sig,
       })
         .then((res) => {
-          if (res?.ok) return router.back();
+          if (res?.ok) return router.replace("/directory");
           if (res?.error) {
             return displayAlert(res.error, false);
           }
@@ -57,7 +56,6 @@ const SignIn = ({ sso, sig }: { sso?: string; sig?: string }) => {
     if (sso && sig) {
       logInUser();
     } else {
-      console.log("nothing found");
       return;
     }
   }, []);
@@ -87,7 +85,10 @@ const SignIn = ({ sso, sig }: { sso?: string; sig?: string }) => {
 
   return (
     <div className=" flex gap-6 flex-col justify-center items-center px-8">
-      <h1 className=" text-2xl font-semibold text-center">Sign In</h1>
+      {showAlert && <Alert />}
+      <h1 className=" text-4xl font-semibold text-center">
+        {pathname === "/sign-in" ? "Sign In" : "Sign Up"}
+      </h1>
       <CustomButton
         onClick={getUrlAndRedirect}
         className=" w-full md:max-w-[500px] flex gap-2"
@@ -124,14 +125,24 @@ const SignIn = ({ sso, sig }: { sso?: string; sig?: string }) => {
             d="M24.58 66.41a31.61 31.61 0 0 1 47.05-40.12 31.61 31.61 0 0 0-49 39.63l-3.76 18.9Z"
           />
         </svg>
-        Login With Discourse
+        <span>
+          {pathname === "/sign-in" ? "Login" : "Register"} With Discourse
+        </span>
       </CustomButton>
 
       <p className="mt-2">
-        Don&#8217;t have an account?
-        <Link className="text-blue-400 border-b-2 ml-1" href="/sign-up">
-          Sign-up
-        </Link>
+        {pathname === "/sign-in"
+          ? "Don't have an account?"
+          : "Already have an account?"}
+        {pathname === "/sign-in" ? (
+          <Link className="text-blue-400 border-b-2 ml-1" href="/sign-up">
+            Sign-Up
+          </Link>
+        ) : (
+          <Link className="text-blue-400 border-b-2 ml-1" href="/sign-in">
+            Sign-In
+          </Link>
+        )}
       </p>
     </div>
     // <form

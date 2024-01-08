@@ -42,7 +42,7 @@ const BusinessListingTabs = () => {
 
   useEffect(() => {
     checkBusiness();
-  }, [exists]);
+  }, []);
 
   return (
     <div className="border-b border-gray-200 mb-4 md:mb-6">
@@ -64,7 +64,8 @@ const BusinessListingTabs = () => {
         <div
           className={`me-2 ${
             url === "/dashboard/listing/page" && "text-btn-orange"
-          } ${!exists && "pointer-events-none"}   hover:text-btn-orange`}
+          } 
+          ${!exists && "pointer-events-none"}   hover:text-btn-orange`}
         >
           <Link
             href="/dashboard/listing/page"
@@ -109,7 +110,7 @@ const BusinessListingTabs = () => {
         <div
           className={`me-2 ${
             url === "/dashboard/listing/signature" && "text-btn-orange"
-          } ${!exists && "pointer-events-none"}   hover:text-btn-orange`}
+          } ${!exists && "pointer-events-none"} hover:text-btn-orange`}
         >
           <Link
             href="/dashboard/listing/signature"

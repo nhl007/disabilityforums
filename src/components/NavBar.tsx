@@ -5,7 +5,7 @@ import Link from "next/link";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import ProfileMenu from "./ProfileMenu";
 import { useSession } from "next-auth/react";
-import MobileNav from "./MobileNavMenu";
+// import MobileNav from "./MobileNavMenu";
 
 const NavBar = () => {
   const { status } = useSession();
