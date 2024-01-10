@@ -45,6 +45,11 @@ export const authOptions: AuthOptions = {
         const data = await getDiscourseUserById(Number(payload.id));
 
         // console.log(data.user_fields["1"]);
+
+        if (!data.user_fields) {
+          throw new Error("Only NDIS Providers Allowed");
+        }
+
         if (data.user_fields["1"] !== "NDIS participant") {
           throw new Error("Only NDIS Providers Allowed");
         }

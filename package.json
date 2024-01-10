@@ -23,6 +23,7 @@
     "nodemailer": "^6.9.8",
     "react": "^18",
     "react-dom": "^18",
+    "react-quill": "^2.0.0",
     "react-select": "^5.8.0",
     "react-window": "^1.8.10",
     "sharp": "^0.33.1",

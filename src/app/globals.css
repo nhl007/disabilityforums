@@ -23,6 +23,25 @@ body {
   @apply text-txt-blue bg-bg-main
 }
 
+.aboutSectionClass>h1 {
+  @apply text-4xl
+}
+
+.aboutSectionClass>h2 {
+  @apply text-2xl
+}
+
+.aboutSectionClass>h3 {
+  @apply text-lg
+}
+
+.aboutSectionClass>h4 {
+  @apply text-sm
+}
+
+.aboutSectionClass>h5 {
+  @apply text-xs
+}
 
 ol {
   @apply ml-8 list-decimal

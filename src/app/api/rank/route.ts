@@ -58,11 +58,15 @@ export async function GET(req: Request) {
 
     for (const business of businesses) {
       const data = await getUserById(business.discourseId);
+      // console.log(data);
+
       let validPosts = 0;
       let validLikes = 0;
 
       if (data.postCount) {
         const posts = await searchPosts(data.name);
+        // console.log(posts);
+
         // console.log(posts);
 
         for (const post of posts) {
@@ -83,12 +87,30 @@ export async function GET(req: Request) {
 
       const updatedRank = validLikes + validPosts;
 
-      await Business.findByIdAndUpdate(business._id, { rank: updatedRank });
+      await Business.findByIdAndUpdate(business._id, { rating: updatedRank });
 
       // console.log("valid posts", validPosts);
       // console.log("valid Likes", validLikes);
       // console.log("Rank :", validPosts + validLikes);
     }
+
+    // Fetch all documents, sort by rating, and update rank
+    await Business.find()
+      .sort({ rating: -1 })
+      .exec()
+      .then((businesses) => {
+        businesses.forEach((business, index) => {
+          business.rank = index + 1;
+          business.save();
+        });
+
+        console.log("Ranking update successful");
+        // mongoose.connection.close();
+      })
+      .catch((error) => {
+        console.error("Error updating ranking:", error);
+        // mongoose.connection.close();
+      });
 
     return NextResponse.json(
       {
@@ -98,6 +120,7 @@ export async function GET(req: Request) {
       { status: 400 }
     );
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       {
         success: false,

@@ -51,26 +51,20 @@ const page = async ({ params }: PageProps) => {
         </MaxWidthWrapper>
       </div>
       <MaxWidthWrapper>
-        <h1 className="text-2xl md:text-4xl font-semibold w-fit truncate mt-16 mb-6">
+        <h1 className="text-2xl md:text-4xl font-semibold max-w-full  line-clamp-2 mt-16 mb-6">
           {data.BusinessName?.length ? data.BusinessName.join(" ") : ""}
         </h1>
-        <SmallVerificationBox className="w-fit my-4 bg-green-300">
-          {data.EntityTypeCode === "PRV"
-            ? "Private Company"
-            : data.EntityTypeCode === "IND"
-            ? "Sole Trader"
-            : data.EntityTypeCode === "PTY"
-            ? "Company"
-            : data.EntityTypeCode === "PRT"
-            ? "Partnership "
-            : data.EntityTypeCode === "GOV"
-            ? "Government Entity"
-            : data.EntityTypeCode === "SFND"
-            ? "Superannuation Fund"
-            : data.EntityTypeCode === "NPF"
-            ? "Non-Profit Subtype"
-            : "Trust "}
-        </SmallVerificationBox>
+        <div className=" flex gap-3">
+          <SmallVerificationBox className="w-fit my-4 bg-green-500 text-white">
+            {data.EntityTypeCode === "IND" ? "Sole Trader" : "Organization"}
+          </SmallVerificationBox>
+
+          {data.ndis_registered && (
+            <SmallVerificationBox className="w-fit my-4 bg-yellow-500 text-white">
+              Ndis-Registered
+            </SmallVerificationBox>
+          )}
+        </div>
         <div className="grid md:grid-flow-col grid-cols-9 md:gap-x-6">
           {/* //! left side */}
           <div className="col-span-full md:col-span-6 flex flex-col gap-4 md:gap-6">
@@ -78,6 +72,7 @@ const page = async ({ params }: PageProps) => {
               <BorderBox>
                 <h1 className=" text-2xl font-medium">About</h1>
                 <div
+                  className="aboutSectionClass"
                   dangerouslySetInnerHTML={{
                     __html: data.about ?? "<p>No description available</p>",
                   }}

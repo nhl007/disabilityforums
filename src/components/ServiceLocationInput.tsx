@@ -25,13 +25,32 @@ const ServiceLocationInput = ({ data, setData }: LocationProps) => {
     if (!suburbs.length || curr.length < 2) {
       return displayAlert("State or suburbs missing!", false);
     }
-    setData([
-      ...data,
-      {
-        state: curr,
-        suburbs: suburbs,
-      },
-    ]);
+
+    setData((prevData) => {
+      const newStateData = prevData.map((item) => {
+        if (item.state === curr) {
+          // If the state already exists, update the suburbs
+          return {
+            ...item,
+            suburbs: suburbs,
+          };
+        } else {
+          // If the state doesn't match, keep the item unchanged
+          return item;
+        }
+      });
+
+      // If the state doesn't exist, add a new entry
+      if (!newStateData.some((item) => item.state === curr)) {
+        newStateData.push({
+          state: curr,
+          suburbs: suburbs,
+        });
+      }
+
+      return newStateData;
+    });
+
     setCurr("");
     setSuburbs([]);
   };
@@ -55,7 +74,21 @@ const ServiceLocationInput = ({ data, setData }: LocationProps) => {
     const match = state.match(regex);
 
     const word = match ? match[1] : "";
-    setSuburbs([]);
+    // console.log(data);
+    let oldSuburbs: string[] = [];
+
+    data.map((c) => {
+      if (state === c.state) {
+        oldSuburbs = c.suburbs;
+      }
+    });
+
+    if (oldSuburbs) {
+      setSuburbs(oldSuburbs);
+    } else {
+      setSuburbs([]);
+    }
+
     const suburbs = await getSuburbsByState(word);
 
     if (suburbs) {

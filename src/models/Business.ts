@@ -114,10 +114,6 @@ const BusinessSchema = new Schema({
     type: Number,
     default: 0,
   },
-  totalReviews: {
-    type: Number,
-    default: 0,
-  },
   rating: {
     type: Number,
     default: 0,

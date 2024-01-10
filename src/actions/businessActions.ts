@@ -198,7 +198,7 @@ export async function searchBusinesses(searchParams: SearchParamsActions) {
         "_id BusinessName blurb rank serviceLocations EntityTypeCode ndis_registered image"
       )
       .limit(10)
-      .sort({ rank: "desc" });
+      .sort({ rank: "asc" });
     if (doc.length > 0) return stringifyResponse(doc);
     else return null;
   } catch (error) {
@@ -237,7 +237,7 @@ export async function getFeaturedBusiness() {
         "_id BusinessName blurb rank serviceLocations EntityTypeCode image ndis_registered"
       )
       .limit(10)
-      .sort({ rank: "desc" });
+      .sort({ rank: "asc" });
 
     if (doc.length > 0) {
       return stringifyResponse(doc);

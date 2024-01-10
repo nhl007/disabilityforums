@@ -34,6 +34,7 @@ import { uploadImage } from "@/libs/cloudinary";
 import { useRouter } from "next/navigation";
 import TextEditor from "@/components/TextEditor";
 import LoadingSpinner from "@/components/Loading";
+import QuillTextEditor from "@/components/QuillTextEditor";
 
 export const dynamic = "force-dynamic";
 
@@ -279,7 +280,7 @@ const CreateList = () => {
               </div>
             </div>
 
-            <h1 className="text-2xl md:text-4xl ml-6  font-semibold w-fit truncate mt-16 mb-6">
+            <h1 className="text-2xl md:text-4xl font-semibold max-w-full  line-clamp-2 mt-16 mb-6">
               {BusinessName}
             </h1>
           </div>
@@ -303,10 +304,14 @@ const CreateList = () => {
                   onChange={(e) => setAbout(e.target.value)}
                 />
               </div> */}
-                  <TextEditor html={about} setHtml={setAbout} />
+                  {/* <TextEditor html={about} setHtml={setAbout} /> */}
+                  <QuillTextEditor html={about} setHtml={setAbout} />
                 </div>
                 <h1 className=" text-2xl font-medium">About</h1>
-                <div dangerouslySetInnerHTML={{ __html: about }} />
+                <div
+                  className="aboutSectionClass"
+                  dangerouslySetInnerHTML={{ __html: about }}
+                />
               </BorderBox>
 
               <BorderBox>
