@@ -234,7 +234,7 @@ const SearchBar = () => {
                 }}
                 checked={companiesOnly}
               />
-              <label htmlFor="edit-companies">Companies Only</label>
+              <label htmlFor="edit-companies">Organizations Only</label>
             </div>
             <div className=" flex gap-2">
               <input

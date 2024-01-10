@@ -37,15 +37,15 @@ const SignIn = ({ sso, sig }: { sso?: string; sig?: string }) => {
       await signIn("credentials", {
         sso: sso,
         sig: sig,
+        redirect: false,
       })
         .then((res) => {
           if (res?.ok) {
-            return router.refresh();
+            return router.replace("/directory");
           } else {
             if (res?.error) {
               displayAlert(res?.error, false);
             }
-            console.log("came upto here for no reason");
           }
         })
         .catch(() => {

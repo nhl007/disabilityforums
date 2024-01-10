@@ -118,6 +118,11 @@ const CreateList = () => {
       data.data?.serviceLocations.length ? data.data.serviceLocations : []
     );
 
+    if (data.data === null) {
+      setLoadingComplete(() => true);
+      return;
+    }
+
     setImage(data.data.image);
 
     setBusinessName(data.data.BusinessName);
@@ -156,12 +161,11 @@ const CreateList = () => {
         // console.log(filetype?.replace("image/", "."));
         // setImage({ ...image, banner: url });
 
-        setImagePreview(fileReader.result as string);
-
         const banner = await uploadImage(fileReader.result as string);
 
         if (banner) {
           setImage({ ...image, banner: banner });
+          setImagePreview(banner);
         }
       };
     }
@@ -181,10 +185,10 @@ const CreateList = () => {
         //   filename
         // );
         // setImage({ ...image, card: url });
-        setImagePreviewAvatar(fileReader.result as string);
         const url = await uploadImage(fileReader.result as string);
         if (url) {
           setImage({ ...image, card: url });
+          setImagePreviewAvatar(url);
         }
       };
     }

@@ -41,7 +41,7 @@ const Card = () => {
       return;
     }
     const fileReader = new FileReader();
-    const filename = e.target.files?.[0].name as string;
+    // const filename = e.target.files?.[0].name as string;
     if (fileData) {
       fileReader.readAsDataURL(fileData);
       fileReader.onloadend = async () => {
@@ -52,10 +52,10 @@ const Card = () => {
         //   filename
         // );
         // setImage({ ...image, card: url });
-        setImagePreview(fileReader.result as string);
         const url = await uploadImage(fileReader.result as string);
         if (url) {
           setImage({ ...image, card: url });
+          setImagePreview(url);
         }
       };
     }
@@ -73,6 +73,11 @@ const Card = () => {
     ]);
 
     const data = JSON.parse(resp);
+
+    if (data.data === null) {
+      setLoadingComplete(() => true);
+      return;
+    }
 
     setServiceLocations(
       data.data?.serviceLocations.length ? data.data.serviceLocations : []
@@ -202,21 +207,7 @@ const Card = () => {
                 </p>
                 <div className="flex gap-2">
                   <SmallVerificationBox className="py-1.5 px-3 text-sm font-semibold">
-                    {BusType === "PRV"
-                      ? "Company"
-                      : BusType === "IND"
-                      ? "Sole Trader"
-                      : BusType === "PTY"
-                      ? "Company"
-                      : BusType === "PRT"
-                      ? "Partnership "
-                      : BusType === "GOV"
-                      ? "Government Entity"
-                      : BusType === "SFND"
-                      ? "Superannuation Fund"
-                      : BusType === "NPF"
-                      ? "Non-Profit Subtype"
-                      : "Trust "}
+                    {BusType === "IND" ? "Sole Trader" : "Organization"}
                   </SmallVerificationBox>
                   {ndisRegistered && (
                     <SmallVerificationBox>Ndis-Registered</SmallVerificationBox>

@@ -49,21 +49,7 @@ const FeaturedBusinessCard = ({
       </p>
       <div className="flex gap-2">
         <SmallVerificationBox className="py-1.5 px-3 text-sm font-semibold">
-          {businessType === "PRV"
-            ? "Company"
-            : businessType === "IND"
-            ? "Sole Trader"
-            : businessType === "PTY"
-            ? "Company"
-            : businessType === "PRT"
-            ? "Partnership "
-            : businessType === "GOV"
-            ? "Government Entity"
-            : businessType === "SFND"
-            ? "Superannuation Fund"
-            : businessType === "NPF"
-            ? "Non-Profit Subtype"
-            : "Trust "}
+          {businessType === "IND" ? "Sole Trader" : "Organization"}
         </SmallVerificationBox>
         {ndisRegistered && (
           <SmallVerificationBox>Ndis-Registered</SmallVerificationBox>

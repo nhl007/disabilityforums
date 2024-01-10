@@ -23,8 +23,9 @@ const transporter = nodemailer.createTransport({
 // });
 
 export async function sendConfirmationEmail(email: string, token: string) {
+  const url = process.env.MAIN_DOMAIN_URL ?? "http://localhost:3000";
   try {
-    const confirmationLink = `http://localhost:3000/ndis-verification?token=${token}`;
+    const confirmationLink = `${url}/ndis-verification?token=${token}`;
 
     const mailOptions: MailOptions = {
       from: "admin@disabilityforums.com.au",

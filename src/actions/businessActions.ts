@@ -83,7 +83,7 @@ export async function updateBusinessData(
     const docId = await Business.findOne({ user: id }).select("_id");
 
     if (!docId || !docId._id) {
-      return { success: false, message: "No Business Found" };
+      return { success: false, message: "Verify Abn First !" };
     }
     await Business.findByIdAndUpdate(docId._id, data, {
       new: true,
@@ -180,7 +180,7 @@ export async function searchBusinesses(searchParams: SearchParamsActions) {
         }
         if (key === "company" && value === "true") {
           query.EntityTypeCode = {
-            $in: [new RegExp("PRV", "i")],
+            $nin: [new RegExp("IND", "i")],
           };
         }
 

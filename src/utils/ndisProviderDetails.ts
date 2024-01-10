@@ -35,11 +35,7 @@ export async function getAuNdisProviderDetails(
     fs.createReadStream(filePath)
       .pipe(csv({ headers }))
       .on("data", (data) => {
-        if (
-          String(data["Registered Provider Name"])
-            .toLocaleLowerCase()
-            .includes(name)
-        ) {
+        if (String(data["ABN"]).toLocaleLowerCase().includes(name)) {
           results.push({
             name: data["Registered Provider Name"],
             email: data["Email"],
@@ -48,7 +44,7 @@ export async function getAuNdisProviderDetails(
       })
       .on("end", () => {
         console.log("end");
-        resolve(results);
+        resolve([results[results.length - 1]]);
       })
       .on("error", (error) => {
         console.log(error);
