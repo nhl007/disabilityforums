@@ -6,12 +6,12 @@ import CustomInput from "@/components/ui/CustomInput";
 import { useFeatureContext } from "@/context/feature/FeatureContext";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Dashboard = () => {
   const { displayAlert } = useFeatureContext();
   const [loading, setLoading] = useState(false);
-  const { data } = useSession();
+  const { data, status } = useSession();
   const [name, setName] = useState(data?.user.fullName as string);
   const [email, setEmail] = useState(data?.user.email as string);
   const [image, setImage] = useState("");
@@ -54,6 +54,13 @@ const Dashboard = () => {
 
     setLoading(false);
   };
+
+  useEffect(() => {
+    setEmail(data?.user.email as string);
+    setImage(data?.user.image as string);
+    setName(data?.user.name as string);
+  }, [status]);
+
   return (
     <MaxWidthWrapper>
       <form onSubmit={updateUserProfile} className=" flex flex-col gap-6 mb-10">

@@ -67,6 +67,7 @@ export async function validateAndReturnPayload(sso: string, sig: string) {
     username: payload.username,
     id: payload.external_id,
     avatar: payload.avatar_url,
+    groups: payload.groups,
   };
 }
 

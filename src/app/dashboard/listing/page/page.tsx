@@ -289,22 +289,11 @@ const CreateList = () => {
             {/* //! left side */}
             <div className="col-span-full md:col-span-5 flex flex-col gap-4 md:gap-6">
               <BorderBox>
-                <div className="md:col-span-full col-span-3 mb-4">
+                <div className="md:col-span-full col-span-3 h-[400px]">
                   <p className="mt-3 text-sm leading-6 text-gray-600">
                     Write a few sentences about your business.
                   </p>
 
-                  {/* <div className="mt-2">
-                <textarea
-                  id="about"
-                  name="about"
-                  rows={3}
-                  className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none outline-none placeholder:text-gray-400  text-sm md:text-base sm:leading-6"
-                  value={about}
-                  onChange={(e) => setAbout(e.target.value)}
-                />
-              </div> */}
-                  {/* <TextEditor html={about} setHtml={setAbout} /> */}
                   <QuillTextEditor html={about} setHtml={setAbout} />
                 </div>
                 <h1 className=" text-2xl font-medium">About</h1>

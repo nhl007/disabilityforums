@@ -47,6 +47,8 @@ export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
       return { success: true, message: "Created Successfully !" };
       // return redirect("/dashboard/listing/page");
     } else {
+      //@ts-ignore
+      data.location.type = "Point";
       await Business.findByIdAndUpdate(docId._id, data, {
         new: true,
       }).select("_id");

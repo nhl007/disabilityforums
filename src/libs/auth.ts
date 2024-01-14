@@ -5,10 +5,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { AuthOptions, getServerSession } from "next-auth";
 // import { getDiscourseUserByEmail } from "@/actions/discourseApi";
 import { validateAndReturnPayload } from "@/actions/userActions";
-import {
-  getDiscourseUserByEmail,
-  getDiscourseUserById,
-} from "@/actions/discourseApi";
 
 export const authOptions: AuthOptions = {
   pages: {
@@ -42,15 +38,7 @@ export const authOptions: AuthOptions = {
           throw new Error("Invalid Request! Try Again");
         }
 
-        const data = await getDiscourseUserById(Number(payload.id));
-
-        // console.log(data.user_fields["1"]);
-
-        if (!data.user_fields) {
-          throw new Error("Only NDIS Providers Allowed");
-        }
-
-        if (data.user_fields["1"] !== "NDIS participant") {
+        if (!payload.groups?.includes("NDIS_Provider")) {
           throw new Error("Only NDIS Providers Allowed");
         }
 
