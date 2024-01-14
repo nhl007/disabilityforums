@@ -23,12 +23,12 @@ const NavBar = () => {
               >
                 <User size={18} /> Login
               </Link>
-              <Link
+              {/* <Link
                 href="/sign-up"
                 className="flex gap-1 items-center hover:text-btn-orange"
               >
                 <UserPlus size={18} /> Register
-              </Link>
+              </Link> */}
             </div>
           )}
         </div>

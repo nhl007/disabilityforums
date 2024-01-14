@@ -174,7 +174,7 @@ const Verify = () => {
                       Send Verification Email
                     </CustomButton>
                   </>
-                ) : (
+                ) : abn ? (
                   <ul>
                     <li>
                       The ABN provided does not match any registered NDIS
@@ -187,6 +187,8 @@ const Verify = () => {
                       official NDIS website for information on how to register.
                     </li>
                   </ul>
+                ) : (
+                  <p>Abn Verification Not Completed !</p>
                 )}
               </div>
             </div>
