@@ -40,6 +40,8 @@ export type BusinessPersonalInfo = {
     email: string;
     website: string;
     phone: string;
+    facebook: string;
+    twitter: string;
   };
   serviceLocations: serviceLocationsType;
   image: {

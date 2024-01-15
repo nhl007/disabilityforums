@@ -207,7 +207,7 @@ const Card = () => {
                 </p>
                 <div className="flex gap-2">
                   <SmallVerificationBox className="py-1.5 px-3 text-sm font-semibold">
-                    {BusType === "IND" ? "Sole Trader" : "Organization"}
+                    {BusType === "IND" ? "Sole Trader" : "Organisation"}
                   </SmallVerificationBox>
                   {ndisRegistered && (
                     <SmallVerificationBox>Ndis-Registered</SmallVerificationBox>

@@ -168,7 +168,7 @@ const SearchBar = () => {
                 className=" py-3 text-base pl-[44px] pr-[16px] border w-full md:w-[270px] h-[71px] focus:outline-none"
               />
               {postCodeList && (
-                <div className=" max-h-[150px] border-b-2 absolute top-[70px] pl-3 bg-white py-2 pb-2 left-0 w-full overflow-y-scroll flex flex-col gap-2">
+                <div className=" z-50 max-h-[150px] border-b-2 absolute top-[70px] pl-3 bg-white py-2 md:pb-2 left-0 w-full overflow-y-scroll flex flex-col gap-2">
                   {postCodeList.map((p, i) => {
                     return (
                       <span
@@ -188,6 +188,7 @@ const SearchBar = () => {
             </div>
             <div className="relative">
               <select
+                disabled={postCode === ""}
                 onChange={(e) => setRadius(e.target.value)}
                 value={radius}
                 name="radius"
@@ -234,7 +235,7 @@ const SearchBar = () => {
                 }}
                 checked={companiesOnly}
               />
-              <label htmlFor="edit-companies">Organizations Only</label>
+              <label htmlFor="edit-companies">Organisations Only</label>
             </div>
             <div className=" flex gap-2">
               <input

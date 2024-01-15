@@ -28,6 +28,7 @@ const AbnLookupForm = () => {
     setIsLoading(true);
 
     const data = await searchValidABN(abn);
+
     if (data) {
       if (data.AbnStatus === "Active") {
         setAbnDetails(() => data);

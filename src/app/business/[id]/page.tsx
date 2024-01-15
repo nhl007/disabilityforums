@@ -2,11 +2,13 @@ import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import Image from "next/image";
 import {
   CarFront,
+  FacebookIcon,
   Globe,
   MailIcon,
   MousePointerClick,
   PersonStanding,
   Phone,
+  TwitterIcon,
 } from "lucide-react";
 import BorderBox from "@/components/ui/BorderBox";
 import { getBusinessById } from "@/actions/businessActions";
@@ -56,7 +58,7 @@ const page = async ({ params }: PageProps) => {
         </h1>
         <div className=" flex gap-3">
           <SmallVerificationBox className="w-fit my-4 bg-green-500 text-white">
-            {data.EntityTypeCode === "IND" ? "Sole Trader" : "Organization"}
+            {data.EntityTypeCode === "IND" ? "Sole Trader" : "Organisation"}
           </SmallVerificationBox>
 
           {data.ndis_registered && (
@@ -161,6 +163,36 @@ const page = async ({ params }: PageProps) => {
                     </Link>
                   </div>
                 ) : null}
+                {data.contact?.facebook ? (
+                  <>
+                    <FacebookIcon size={16} />
+                    <Link
+                      target="_blank"
+                      href={
+                        data.contact.facebook.startsWith("https://")
+                          ? data.contact.facebook
+                          : `https://${data.contact.facebook}`
+                      }
+                    >
+                      Facebook
+                    </Link>
+                  </>
+                ) : null}
+                {data.contact?.twitter ? (
+                  <>
+                    <TwitterIcon size={16} />
+                    <Link
+                      target="_blank"
+                      href={
+                        data.contact.twitter.startsWith("https://")
+                          ? data.contact.twitter
+                          : `https://${data.contact.twitter}`
+                      }
+                    >
+                      Twitter
+                    </Link>
+                  </>
+                ) : null}
               </div>
             </BorderBox>
             {data.deliveryOptions?.length ? (
@@ -186,22 +218,6 @@ const page = async ({ params }: PageProps) => {
                 </div>
               </BorderBox>
             ) : null}
-            {/* {data.paymentTypes?.length ? (
-              <BorderBox>
-                <h1 className=" text-2xl font-medium">Payment Types</h1>
-                <div className="flex flex-col">
-                  {data.paymentTypes.map((payment) => {
-                    return (
-                      <div key={payment}>
-                        <div className="flex gap-2 items-center">
-                          <CreditCard size={16} /> {payment}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </BorderBox>
-            ) : null} */}
             {data.serviceLocations?.length ? (
               <BorderBox>
                 <h1 className=" text-2xl font-medium">Service Locations</h1>

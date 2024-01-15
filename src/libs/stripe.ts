@@ -2,6 +2,7 @@
 const stripe = require("stripe")(process.env.STRIPE_TEST_SECRET_KEY!);
 
 export async function getStripeCheckoutSession() {
+  const url = process.env.MAIN_DOMAIN_URL;
   try {
     const session = await stripe.checkout.sessions.create({
       line_items: [
@@ -11,8 +12,7 @@ export async function getStripeCheckoutSession() {
         },
       ],
       mode: "subscription",
-      success_url:
-        "https://disabilityforums.vercel.app/dashboard/payments?success=true",
+      success_url: `${url}/dashboard/payments?success=true`,
     });
     return {
       id: session.id,

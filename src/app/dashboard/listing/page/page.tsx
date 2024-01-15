@@ -4,11 +4,13 @@ import Select from "react-select";
 import Image from "next/image";
 import {
   CarFront,
+  FacebookIcon,
   Globe,
   Mail,
   MousePointerClick,
   PersonStanding,
   Phone,
+  TwitterIcon,
   X,
 } from "lucide-react";
 import BorderBox from "@/components/ui/BorderBox";
@@ -32,7 +34,7 @@ import { useFeatureContext } from "@/context/feature/FeatureContext";
 import { saveBase64Image } from "@/utils/saveImage";
 import { uploadImage } from "@/libs/cloudinary";
 import { useRouter } from "next/navigation";
-import TextEditor from "@/components/TextEditor";
+// import TextEditor from "@/components/TextEditor";
 import LoadingSpinner from "@/components/Loading";
 import QuillTextEditor from "@/components/QuillTextEditor";
 
@@ -67,6 +69,8 @@ const CreateList = () => {
   const [email, setEmail] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [website, setWebsite] = useState<string>("");
+  const [facebook, setFacebook] = useState<string>("");
+  const [twitter, setTwitter] = useState<string>("");
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -84,6 +88,8 @@ const CreateList = () => {
         email,
         phone,
         website,
+        facebook,
+        twitter,
       },
       image: image,
     };
@@ -134,6 +140,8 @@ const CreateList = () => {
     setEmail(data.data?.contact?.email ? data.data.contact.email : "");
     setPhone(data.data?.contact?.phone ? data.data.contact.phone : "");
     setWebsite(data.data?.contact?.website ? data.data.contact.website : "");
+    setWebsite(data.data?.contact?.facebook ? data.data.contact.facebook : "");
+    setWebsite(data.data?.contact?.twitter ? data.data.contact.twitter : "");
 
     setAgesSupported(data.data.agesSupported);
     setLanguages(data.data.languages);
@@ -446,7 +454,28 @@ const CreateList = () => {
                       id="email"
                       autoComplete="email"
                       placeholder="Contact email"
-                      // autoComplete="address-level1"
+                    />
+                  </div>
+                  <div className="mt-2">
+                    <CustomInput
+                      onChange={(e) => setFacebook(e.target.value)}
+                      value={facebook}
+                      type="text"
+                      name="facebook"
+                      id="facebook"
+                      autoComplete="facebook"
+                      placeholder="Facebook url"
+                    />
+                  </div>
+                  <div className="mt-2">
+                    <CustomInput
+                      onChange={(e) => setTwitter(e.target.value)}
+                      value={twitter}
+                      type="text"
+                      name="twitter"
+                      id="twitter"
+                      autoComplete="twitter"
+                      placeholder="Twitter url"
                     />
                   </div>
                 </div>
@@ -478,6 +507,36 @@ const CreateList = () => {
                       <Mail size={16} />
                       <Link href={`mailto:${email}`}>{email}</Link>
                     </div>
+                  ) : null}
+                  {facebook ? (
+                    <>
+                      <FacebookIcon size={16} />
+                      <Link
+                        target="_blank"
+                        href={
+                          facebook.startsWith("https://")
+                            ? facebook
+                            : `https://${facebook}`
+                        }
+                      >
+                        Facebook
+                      </Link>
+                    </>
+                  ) : null}
+                  {twitter ? (
+                    <>
+                      <TwitterIcon size={16} />
+                      <Link
+                        target="_blank"
+                        href={
+                          twitter.startsWith("https://")
+                            ? twitter
+                            : `https://${twitter}`
+                        }
+                      >
+                        Twitter
+                      </Link>
+                    </>
                   ) : null}
                 </div>
               </BorderBox>

@@ -28,6 +28,7 @@ const Dashboard = () => {
       };
     }
   };
+
   const updateUserProfile = async (e: React.FormEvent) => {
     setLoading(true);
     e.preventDefault();
@@ -65,7 +66,7 @@ const Dashboard = () => {
     <MaxWidthWrapper>
       <form onSubmit={updateUserProfile} className=" flex flex-col gap-6 mb-10">
         <p>Profile Picture:</p>
-        {data?.user.image ? (
+        {data?.user.image || image ? (
           <Image
             className=" w-[100px] h-[100px] rounded-full border-2 p-2"
             src={image ? image : (data?.user.image as string)}

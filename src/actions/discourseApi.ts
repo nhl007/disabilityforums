@@ -194,8 +194,6 @@ export async function updateUserDetails(Data: FormData) {
     );
 
     if (Data.get("file")) {
-      console.log("came to change file");
-
       const formData = new FormData();
       const id = Data.get("id");
       const file = Data.get("file");
@@ -214,7 +212,6 @@ export async function updateUserDetails(Data: FormData) {
     Data.delete("file");
 
     if (Data.get("name")) {
-      console.log("came to change name");
       const res = await updateUserName(Data, session?.user.name as string);
       if (res) {
         user.name = Data.get("name");
@@ -224,7 +221,6 @@ export async function updateUserDetails(Data: FormData) {
     Data.delete("name");
 
     if (Data.get("email")) {
-      console.log("came to change email");
       const res = await updateUserEmail(Data, session?.user.name as string);
       if (res) {
         user.email = Data.get("email");

@@ -11,7 +11,7 @@ const BusinessSchema = new Schema({
   Abn: {
     type: String,
     unique: [true, "Already business registered with this Abn number!"],
-    // required: [true, "The abn number is required!"],
+    required: [true, "The abn number is required!"],
   },
   AbnStatus: {
     type: String,
@@ -75,6 +75,12 @@ const BusinessSchema = new Schema({
       type: String,
     },
     phone: {
+      type: String,
+    },
+    facebook: {
+      type: String,
+    },
+    twitter: {
       type: String,
     },
   },

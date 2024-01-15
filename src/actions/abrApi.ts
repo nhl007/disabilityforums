@@ -11,7 +11,8 @@ export async function searchValidABN(abn: string) {
     return null;
   }
   try {
-    const response = await fetch(`${apiUrl}?abn=${abn}&guid=${guid}`);
+    let stripped = abn.replace(/\s/g, "");
+    const response = await fetch(`${apiUrl}?abn=${stripped}&guid=${guid}`);
 
     const text = await response.text();
 
