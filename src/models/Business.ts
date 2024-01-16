@@ -5,13 +5,17 @@ const BusinessSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  abnVerified: {
+    type: Boolean,
+    default: false,
+  },
   discourseId: {
     type: Number,
   },
   Abn: {
     type: String,
     unique: [true, "Already business registered with this Abn number!"],
-    required: [true, "The abn number is required!"],
+    // required: [true, "The abn number is required!"],
   },
   AbnStatus: {
     type: String,

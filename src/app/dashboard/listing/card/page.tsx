@@ -1,6 +1,6 @@
 "use client";
 
-import { getBusiness, updateBusinessData } from "@/actions/businessActions";
+import { getBusiness, postBusinessData } from "@/actions/businessActions";
 import LoadingSpinner from "@/components/Loading";
 import CustomButton from "@/components/ui/CustomButton";
 import SmallVerificationBox from "@/components/ui/SmallVerificationBox";
@@ -105,7 +105,7 @@ const Card = () => {
       blurb,
       image: image,
     };
-    const data = await updateBusinessData(infos);
+    const data = await postBusinessData(infos);
     if (data.success) {
       displayAlert(data.message, true);
       router.push("/dashboard/listing/verify");
@@ -147,7 +147,7 @@ const Card = () => {
                     setImage({ ...image, card: "" });
                   }}
                 >
-                  {loading ? "Uploading ..." : <X />}
+                  <X />
                 </CustomButton>
               </div>
               <div className=" my-4">

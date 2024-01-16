@@ -179,7 +179,7 @@ const page = async ({ params }: PageProps) => {
                 ) : null}
                 {data.contact?.twitter ? (
                   <>
-                    <Image src="/xlogo.svg" width={12} height={12} alt="X" />
+                    <Image src="/xlogo.svg" width={14} height={14} alt="X" />
                     <Link
                       target="_blank"
                       href={

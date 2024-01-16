@@ -26,6 +26,43 @@ export async function checkIfBusinessExists() {
   } else return false;
 }
 
+async function getCoordinatesFromLocations(
+  serviceLocations: BusinessDatabaseModel["serviceLocations"]
+) {
+  const postCodeSet = new Set();
+
+  if (serviceLocations?.length) {
+    serviceLocations.forEach((loc) => {
+      if (loc.suburbs.length) {
+        loc.suburbs.forEach((sub) => {
+          const match = sub.match(/\b\d{4}\b/);
+          if (match) {
+            postCodeSet.add(match[0]);
+          }
+        });
+      }
+    });
+  }
+
+  const uniquePostCodes = Array.from(postCodeSet);
+
+  const locationCoordinates = [];
+
+  if (uniquePostCodes.length) {
+    for (let index = 0; index < uniquePostCodes.length; index++) {
+      const latLang = await getLatLngByPostalCode(
+        uniquePostCodes[index] as string
+      );
+      locationCoordinates.push({
+        type: "Point",
+        coordinates: latLang,
+      });
+    }
+  }
+
+  return locationCoordinates;
+}
+
 export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
   const session: Session | null = await getAuthSession();
   if (!session || !session.user)
@@ -37,54 +74,48 @@ export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
     await connectToDB();
     const docId = await Business.findOne({ user: id }).select("_id");
 
-    const stateAU =
-      data.AddressState === "SA"
-        ? "South Australia (SA)"
-        : data.AddressState === "VIC"
-        ? "Victoria (VIC)"
-        : data.AddressState === "NSW"
-        ? "New South Wales (NSW)"
-        : data.AddressState === "QLD"
-        ? "Queensland (QLD)"
-        : data.AddressState === "WA"
-        ? "Western Australia (WA)"
-        : data.AddressState === "TAS"
-        ? "Tasmania (TAS)"
-        : data.AddressState === "NT"
-        ? "Northern Territory (NT)"
-        : data.AddressState === "ACT"
-        ? "Australian Capital Territory (ACT)"
-        : "Other State";
-
-    const serviceLocations = [
-      {
-        state: stateAU,
-        suburbs: [data.AddressPostcode],
-      },
-    ];
-
     if (!docId) {
+      if (data.serviceLocations?.length) {
+        const coordinates = await getCoordinatesFromLocations(
+          data.serviceLocations
+        );
+        await Business.create({
+          user: id,
+          discourseId: session.user.discourse_id,
+          location: coordinates,
+          ...data,
+        });
+
+        revalidatePath("/directory");
+
+        return { success: true, message: "Saved Successfully !" };
+      }
       await Business.create({
         user: id,
         discourseId: session.user.discourse_id,
-        serviceLocations: serviceLocations,
         ...data,
       });
       revalidatePath("/directory");
-      return { success: true, message: "Created Successfully !" };
-      // return redirect("/dashboard/listing/page");
+      return { success: true, message: "Saved Successfully !" };
     } else {
-      //@ts-ignore
-      await Business.findByIdAndUpdate(
-        docId._id,
-        {
-          serviceLocations: serviceLocations,
+      //! update logic
+
+      if (data.serviceLocations?.length) {
+        const coordinates = await getCoordinatesFromLocations(
+          data.serviceLocations
+        );
+        await Business.findByIdAndUpdate(docId._id, {
           ...data,
-        },
-        {
-          new: true,
-        }
-      ).select("_id");
+          location: coordinates,
+        }).select("_id");
+
+        revalidatePath("/directory");
+        return { success: true, message: "Saved Successfully !" };
+      }
+
+      await Business.findByIdAndUpdate(docId._id, {
+        ...data,
+      }).select("_id");
 
       revalidatePath("/directory");
 
@@ -102,80 +133,11 @@ export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
   }
 }
 
-export async function updateBusinessData(
-  data: Partial<BusinessDatabaseModel>
-  // progress: number
-) {
-  const session: Session | null = await getAuthSession();
-  const id = session?.user.id;
-
-  // console.log(data);
-
-  if (!id) return { success: false, message: "Permission denied" };
-
-  try {
-    await connectToDB();
-    const docId = await Business.findOne({ user: id }).select("_id");
-
-    if (!docId || !docId._id) {
-      return { success: false, message: "Verify Abn First !" };
-    }
-
-    const postCodeSet = new Set();
-
-    if (data.serviceLocations?.length) {
-      data.serviceLocations.forEach((loc) => {
-        if (loc.suburbs.length) {
-          loc.suburbs.forEach((sub) => {
-            const match = sub.match(/\b\d{4}\b/);
-            if (match) {
-              postCodeSet.add(match[0]);
-            }
-          });
-        }
-      });
-    }
-
-    const uniquePostCodes = Array.from(postCodeSet);
-
-    const locationCoordinates = [];
-
-    if (uniquePostCodes.length) {
-      for (let index = 0; index < uniquePostCodes.length; index++) {
-        const latLang = await getLatLngByPostalCode(
-          uniquePostCodes[index] as string
-        );
-        locationCoordinates.push({
-          type: "Point",
-          coordinates: latLang,
-        });
-      }
-    }
-
-    await Business.findByIdAndUpdate(
-      docId._id,
-      { location: locationCoordinates, ...data },
-      {
-        new: true,
-      }
-    ).select("_id");
-    // await User.findByIdAndUpdate(id, { progress: progress });
-    revalidatePath("/directory");
-    return {
-      success: true,
-      message: "Listing Page Updated Successfully!",
-      // message:
-      //   progress === 4 ? "Business Listing Complete" : "Saved Successfully !",
-    };
-  } catch (err) {
-    if (err instanceof Error) return { success: false, message: err.message };
-    return { success: false, message: "Error Ocurred" };
-  }
-}
-
 export async function searchBusinesses(searchParams: SearchParamsActions) {
   try {
     const query: Record<string, any> = {};
+
+    query.abnVerified = true;
 
     const radius = searchParams.radius ? searchParams.radius : 15;
 
@@ -250,6 +212,7 @@ export async function searchBusinesses(searchParams: SearchParamsActions) {
         if (key === "ndis" && value === "true") {
           query.ndis_registered = true;
         }
+
         if (key === "company" && value === "true") {
           query.EntityTypeCode = {
             $nin: [new RegExp("IND", "i")],
@@ -313,7 +276,7 @@ export async function getFeaturedBusiness() {
   noStore();
   try {
     await connectToDB();
-    const doc = await Business.find({})
+    const doc = await Business.find({ abnVerified: true })
       .select(
         "_id BusinessName blurb rank serviceLocations EntityTypeCode image ndis_registered"
       )

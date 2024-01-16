@@ -28,15 +28,15 @@ export async function searchValidABN(abn: string) {
       return null;
     }
 
-    const latLang = await getLatLngByPostalCode(data.AddressPostcode);
-    if (latLang?.length) {
-      data.location = [
-        {
-          type: "Point",
-          coordinates: latLang,
-        },
-      ];
-    } else return null;
+    // const latLang = await getLatLngByPostalCode(data.AddressPostcode);
+    // if (latLang?.length) {
+    //   data.location = [
+    //     {
+    //       type: "Point",
+    //       coordinates: latLang,
+    //     },
+    //   ];
+    // } else return null;
 
     return data;
   } catch (error) {

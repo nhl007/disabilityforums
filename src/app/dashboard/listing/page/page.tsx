@@ -13,7 +13,7 @@ import {
   X,
 } from "lucide-react";
 import BorderBox from "@/components/ui/BorderBox";
-import { getBusiness, updateBusinessData } from "@/actions/businessActions";
+import { getBusiness, postBusinessData } from "@/actions/businessActions";
 import { serviceAgeNames, serviceLocationsType } from "@/types/business";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -94,7 +94,7 @@ const CreateList = () => {
       image: image,
     };
 
-    const data = await updateBusinessData(infos!);
+    const data = await postBusinessData(infos!);
     if (data.success) {
       displayAlert(data.message, true);
       router.push("/dashboard/listing/card");
@@ -140,8 +140,8 @@ const CreateList = () => {
     setEmail(data.data?.contact?.email ? data.data.contact.email : "");
     setPhone(data.data?.contact?.phone ? data.data.contact.phone : "");
     setWebsite(data.data?.contact?.website ? data.data.contact.website : "");
-    setWebsite(data.data?.contact?.facebook ? data.data.contact.facebook : "");
-    setWebsite(data.data?.contact?.twitter ? data.data.contact.twitter : "");
+    setFacebook(data.data?.contact?.facebook ? data.data.contact.facebook : "");
+    setTwitter(data.data?.contact?.twitter ? data.data.contact.twitter : "");
 
     setAgesSupported(data.data.agesSupported);
     setLanguages(data.data.languages);
@@ -251,7 +251,7 @@ const CreateList = () => {
                       setImage({ ...image, banner: "", avatar: "" });
                     }}
                   >
-                    {loading ? "Uploading ..." : <X />}
+                    <X />
                   </CustomButton>
                 </div>
               </div>
