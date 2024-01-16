@@ -30,9 +30,12 @@ export async function searchValidABN(abn: string) {
 
     const latLang = await getLatLngByPostalCode(data.AddressPostcode);
     if (latLang?.length) {
-      data.location = {
-        coordinates: latLang,
-      };
+      data.location = [
+        {
+          type: "Point",
+          coordinates: latLang,
+        },
+      ];
     } else return null;
 
     return data;

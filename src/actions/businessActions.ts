@@ -7,7 +7,7 @@ import { stringifyResponse } from "../utils/utils";
 import { getAuthSession } from "@/libs/auth";
 import { connectToDB } from "@/libs/connectToDb";
 import Business from "@/models/Business";
-import User from "@/models/User";
+// import User from "@/models/User";
 import { BusinessDatabaseModel, BusinessReviewData } from "@/types/business";
 import { SearchParamsActions } from "@/types/common";
 import { getLatLngByPostalCode } from "@/utils/postalCodeSearch";
@@ -37,10 +37,37 @@ export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
     await connectToDB();
     const docId = await Business.findOne({ user: id }).select("_id");
 
+    const stateAU =
+      data.AddressState === "SA"
+        ? "South Australia (SA)"
+        : data.AddressState === "VIC"
+        ? "Victoria (VIC)"
+        : data.AddressState === "NSW"
+        ? "New South Wales (NSW)"
+        : data.AddressState === "QLD"
+        ? "Queensland (QLD)"
+        : data.AddressState === "WA"
+        ? "Western Australia (WA)"
+        : data.AddressState === "TAS"
+        ? "Tasmania (TAS)"
+        : data.AddressState === "NT"
+        ? "Northern Territory (NT)"
+        : data.AddressState === "ACT"
+        ? "Australian Capital Territory (ACT)"
+        : "Other State";
+
+    const serviceLocations = [
+      {
+        state: stateAU,
+        suburbs: [data.AddressPostcode],
+      },
+    ];
+
     if (!docId) {
       await Business.create({
         user: id,
         discourseId: session.user.discourse_id,
+        serviceLocations: serviceLocations,
         ...data,
       });
       revalidatePath("/directory");
@@ -48,10 +75,16 @@ export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
       // return redirect("/dashboard/listing/page");
     } else {
       //@ts-ignore
-      data.location.type = "Point";
-      await Business.findByIdAndUpdate(docId._id, data, {
-        new: true,
-      }).select("_id");
+      await Business.findByIdAndUpdate(
+        docId._id,
+        {
+          serviceLocations: serviceLocations,
+          ...data,
+        },
+        {
+          new: true,
+        }
+      ).select("_id");
 
       revalidatePath("/directory");
 
@@ -87,9 +120,45 @@ export async function updateBusinessData(
     if (!docId || !docId._id) {
       return { success: false, message: "Verify Abn First !" };
     }
-    await Business.findByIdAndUpdate(docId._id, data, {
-      new: true,
-    }).select("_id");
+
+    const postCodeSet = new Set();
+
+    if (data.serviceLocations?.length) {
+      data.serviceLocations.forEach((loc) => {
+        if (loc.suburbs.length) {
+          loc.suburbs.forEach((sub) => {
+            const match = sub.match(/\b\d{4}\b/);
+            if (match) {
+              postCodeSet.add(match[0]);
+            }
+          });
+        }
+      });
+    }
+
+    const uniquePostCodes = Array.from(postCodeSet);
+
+    const locationCoordinates = [];
+
+    if (uniquePostCodes.length) {
+      for (let index = 0; index < uniquePostCodes.length; index++) {
+        const latLang = await getLatLngByPostalCode(
+          uniquePostCodes[index] as string
+        );
+        locationCoordinates.push({
+          type: "Point",
+          coordinates: latLang,
+        });
+      }
+    }
+
+    await Business.findByIdAndUpdate(
+      docId._id,
+      { location: locationCoordinates, ...data },
+      {
+        new: true,
+      }
+    ).select("_id");
     // await User.findByIdAndUpdate(id, { progress: progress });
     revalidatePath("/directory");
     return {
@@ -116,14 +185,25 @@ export async function searchBusinesses(searchParams: SearchParamsActions) {
         if (key === "postalCode" && value.length > 2) {
           const postalCoordinates = await getLatLngByPostalCode(value);
 
+          // if (postalCoordinates) {
+          //   query.location = {
+          //     $near: {
+          //       $geometry: {
+          //         type: "Point",
+          //         coordinates: [postalCoordinates[0], postalCoordinates[1]],
+          //       },
+          //       $maxDistance: Number(radius) * 1000,
+          //     },
+          //   };
+          // }
+
           if (postalCoordinates) {
             query.location = {
-              $near: {
-                $geometry: {
-                  type: "Point",
-                  coordinates: [postalCoordinates[0], postalCoordinates[1]],
-                },
-                $maxDistance: Number(radius) * 1000,
+              $geoWithin: {
+                $centerSphere: [
+                  [postalCoordinates[0], postalCoordinates[1]],
+                  Number(radius) / 6371, // Divide by Earth's radius in kilometers
+                ],
               },
             };
           }
@@ -141,21 +221,11 @@ export async function searchBusinesses(searchParams: SearchParamsActions) {
             $in: [new RegExp(value, "i")],
           };
         }
-        // if (key === "disabilityExp") {
-        //   query.disabilitySpecialities = {
-        //     $in: value.split(","),
-        //   };
-        // }
         if (key === "delivery") {
           query.deliveryOptions = {
             $in: value.split(","),
           };
         }
-        // if (key === "payment") {
-        //   query.paymentTypes = {
-        //     $in: value.split(","),
-        //   };
-        // }
         if (key === "age") {
           query.agesSupported = {
             $in: value.split(","),
@@ -199,10 +269,19 @@ export async function searchBusinesses(searchParams: SearchParamsActions) {
       .select(
         "_id BusinessName blurb rank serviceLocations EntityTypeCode ndis_registered image"
       )
-      .limit(10)
       .sort({ rank: "asc" });
-    if (doc.length > 0) return stringifyResponse(doc);
-    else return null;
+    if (doc.length > 0) {
+      const sorted = doc.sort((a, b) => {
+        if (a.rank === 0 && b.rank !== 0) {
+          return 1;
+        } else if (a.rank !== 0 && b.rank === 0) {
+          return -1;
+        } else {
+          return a.rank - b.rank;
+        }
+      });
+      return stringifyResponse(sorted);
+    } else return null;
   } catch (error) {
     console.error("Error searching businesses:", error);
     return null;
@@ -238,11 +317,19 @@ export async function getFeaturedBusiness() {
       .select(
         "_id BusinessName blurb rank serviceLocations EntityTypeCode image ndis_registered"
       )
-      .limit(10)
       .sort({ rank: "asc" });
 
     if (doc.length > 0) {
-      return stringifyResponse(doc);
+      const sorted = doc.sort((a, b) => {
+        if (a.rank === 0 && b.rank !== 0) {
+          return 1;
+        } else if (a.rank !== 0 && b.rank === 0) {
+          return -1;
+        } else {
+          return a.rank - b.rank;
+        }
+      });
+      return stringifyResponse(sorted);
     } else return null;
   } catch (err) {
     console.log(err);

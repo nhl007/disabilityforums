@@ -10,7 +10,6 @@ import {
   MousePointerClick,
   PersonStanding,
   Phone,
-  TwitterIcon,
   X,
 } from "lucide-react";
 import BorderBox from "@/components/ui/BorderBox";
@@ -51,6 +50,7 @@ const CreateList = () => {
   const [image, setImage] = useState({
     banner: "",
     card: "",
+    avatar: "",
   });
   const [imagePreview, setImagePreview] = useState("");
   const [imagePreviewAvatar, setImagePreviewAvatar] = useState("");
@@ -155,6 +155,8 @@ const CreateList = () => {
   }, []);
 
   const saveImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLoading(true);
+
     const fileData = e.target.files?.[0];
     const fileReader = new FileReader();
     // const filename = e.target.files?.[0].name as string;
@@ -170,17 +172,18 @@ const CreateList = () => {
         // console.log(filetype?.replace("image/", "."));
         // setImage({ ...image, banner: url });
 
+        setImagePreview(fileReader.result as string);
         const banner = await uploadImage(fileReader.result as string);
-
+        setLoading(false);
         if (banner) {
           setImage({ ...image, banner: banner });
-          setImagePreview(banner);
         }
       };
     }
   };
 
   const saveImagePreviewAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLoading(true);
     const fileData = e.target.files?.[0];
     const fileReader = new FileReader();
     // const filename = e.target.files?.[0].name as string;
@@ -193,11 +196,12 @@ const CreateList = () => {
         //   `${BusinessName}/`,
         //   filename
         // );
-        // setImage({ ...image, card: url });
+        // setImage({ ...image, avatar: url });
+        setImagePreviewAvatar(fileReader.result as string);
         const url = await uploadImage(fileReader.result as string);
+        setLoading(false);
         if (url) {
-          setImage({ ...image, card: url });
-          setImagePreviewAvatar(url);
+          setImage({ ...image, avatar: url });
         }
       };
     }
@@ -236,21 +240,19 @@ const CreateList = () => {
                       SVG, PNG, JPG (MAX. 1200x300px).
                     </p>
                   </div>
-                  <button
+                  <CustomButton
+                    isLoading={loading}
+                    disabled={loading}
                     title="clear"
-                    className="w-fit text-red-500 flex items-center bg-gray-400 rounded-md px-4 py-2 hover:bg-red-500 hover:text-white"
+                    className="w-fit text-red-500 flex items-center "
                     onClick={() => {
                       setImagePreview("");
                       setImagePreviewAvatar("");
-                      setImage({
-                        banner: "",
-                        card: "",
-                      });
+                      setImage({ ...image, banner: "", avatar: "" });
                     }}
                   >
-                    <X />
-                    clear
-                  </button>
+                    {loading ? "Uploading ..." : <X />}
+                  </CustomButton>
                 </div>
               </div>
             </div>
@@ -279,8 +281,8 @@ const CreateList = () => {
                   src={
                     imagePreviewAvatar
                       ? imagePreviewAvatar
-                      : image?.card
-                      ? image.card
+                      : image?.avatar
+                      ? image.avatar
                       : "/image.jpg"
                   }
                   alt="name"
@@ -464,7 +466,7 @@ const CreateList = () => {
                       name="facebook"
                       id="facebook"
                       autoComplete="facebook"
-                      placeholder="Facebook url"
+                      placeholder="Facebook profile url"
                     />
                   </div>
                   <div className="mt-2">
@@ -475,7 +477,7 @@ const CreateList = () => {
                       name="twitter"
                       id="twitter"
                       autoComplete="twitter"
-                      placeholder="Twitter url"
+                      placeholder="X Profile url"
                     />
                   </div>
                 </div>
@@ -525,7 +527,7 @@ const CreateList = () => {
                   ) : null}
                   {twitter ? (
                     <>
-                      <TwitterIcon size={16} />
+                      <Image src="/xlogo.svg" width={12} height={12} alt="X" />
                       <Link
                         target="_blank"
                         href={
@@ -534,7 +536,7 @@ const CreateList = () => {
                             : `https://${twitter}`
                         }
                       >
-                        Twitter
+                        X Account
                       </Link>
                     </>
                   ) : null}

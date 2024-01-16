@@ -36,6 +36,7 @@ const Card = () => {
   });
 
   const saveImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLoading(true);
     const fileData = e.target.files?.[0];
     if (!fileData) {
       return;
@@ -52,10 +53,11 @@ const Card = () => {
         //   filename
         // );
         // setImage({ ...image, card: url });
+        setImagePreview(fileReader.result as string);
         const url = await uploadImage(fileReader.result as string);
+        setLoading(false);
         if (url) {
           setImage({ ...image, card: url });
-          setImagePreview(url);
         }
       };
     }
@@ -135,15 +137,18 @@ const Card = () => {
                     onChange={saveImage}
                   />
                 </div>
-                <button
+                <CustomButton
+                  isLoading={loading}
+                  disabled={loading}
                   title="clear"
-                  className=" text-red-500 md:self-end self-start flex items-center bg-gray-400 rounded-md px-4 py-2 hover:bg-red-500 hover:text-white"
+                  className="w-fit self-start md:self-end text-red-500 flex items-center "
                   onClick={() => {
                     setImagePreview("");
+                    setImage({ ...image, card: "" });
                   }}
                 >
-                  <X />
-                </button>
+                  {loading ? "Uploading ..." : <X />}
+                </CustomButton>
               </div>
               <div className=" my-4">
                 <label
@@ -243,6 +248,7 @@ const Card = () => {
               isLoading={loading}
               onClick={handleSubmit}
               className=" w-40"
+              disabled={loading}
             >
               Save
             </CustomButton>

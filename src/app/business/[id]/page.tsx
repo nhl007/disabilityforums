@@ -8,7 +8,6 @@ import {
   MousePointerClick,
   PersonStanding,
   Phone,
-  TwitterIcon,
 } from "lucide-react";
 import BorderBox from "@/components/ui/BorderBox";
 import { getBusinessById } from "@/actions/businessActions";
@@ -46,7 +45,7 @@ const page = async ({ params }: PageProps) => {
               width={120}
               height={120}
               priority={true}
-              src={data.image?.card ? data.image.card : "/image.jpg"}
+              src={data.image?.avatar ? data.image.avatar : "/image.jpg"}
               alt="name"
             />
           </div>
@@ -180,7 +179,7 @@ const page = async ({ params }: PageProps) => {
                 ) : null}
                 {data.contact?.twitter ? (
                   <>
-                    <TwitterIcon size={16} />
+                    <Image src="/xlogo.svg" width={12} height={12} alt="X" />
                     <Link
                       target="_blank"
                       href={
@@ -189,7 +188,7 @@ const page = async ({ params }: PageProps) => {
                           : `https://${data.contact.twitter}`
                       }
                     >
-                      Twitter
+                      X Account
                     </Link>
                   </>
                 ) : null}

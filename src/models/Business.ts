@@ -48,16 +48,18 @@ const BusinessSchema = new Schema({
   Gst: {
     type: String,
   },
-  location: {
-    type: {
-      type: String,
-      default: "Point",
+  location: [
+    {
+      type: {
+        type: String,
+        default: "Point",
+      },
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
     },
-    coordinates: {
-      type: [Number],
-      required: true,
-    },
-  },
+  ],
   created_at: {
     type: Date,
     default: Date.now(),
@@ -131,13 +133,18 @@ const BusinessSchema = new Schema({
     card: {
       type: String,
     },
+    avatar: {
+      type: String,
+    },
   },
   blurb: {
     type: String,
   },
 });
 
-BusinessSchema.index({ location: "2dsphere" });
+// BusinessSchema.index({ location: "2dsphere" });
+
+BusinessSchema.index({ "locations.coordinates": "2dsphere" });
 
 const Business = models.Business || model("Business", BusinessSchema);
 

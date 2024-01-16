@@ -27,11 +27,11 @@ const getUserById = async (id: number) => {
 const searchPosts = async (username: string) => {
   // try {
   const response = await fetch(
-    `${apiUrl}/search.json?q=@${username}&max_posts=100`
+    `${apiUrl}/user_actions.json?offset=0&username=${username}&filter=5`
   );
   // const response = await fetch(`${apiUrl}/search.json?q=@${username}`);
   const data = await response.json();
-  return data.posts;
+  return data.user_actions;
   // } catch (error) {
   //   console.log(error);
   //   return null;
@@ -58,34 +58,33 @@ export async function GET(req: Request) {
 
     for (const business of businesses) {
       const data = await getUserById(business.discourseId);
-      // console.log(data);
+
+      // console.log(data, "user data from id ");
 
       let validPosts = 0;
       let validLikes = 0;
 
       if (data.postCount) {
         const posts = await searchPosts(data.name);
-        // console.log(posts);
-
-        // console.log(posts);
+        // console.log(posts, "posts");
 
         for (const post of posts) {
-          if (post.blurb && post.blurb.length > 20) {
-            validPosts += 1;
-            const liked = await getUserWhoLiked(post.id);
+          validPosts += 1;
+          const liked = await getUserWhoLiked(post.post_id);
 
-            for (const user of liked) {
-              if (user && user.id) {
-                const userData = await getUserById(user.id);
-                validLikes +=
-                  userData.level === 2 ? 1 : userData.level === 3 ? 2 : 0;
-              }
+          for (const user of liked) {
+            if (user && user.id) {
+              const userData = await getUserById(user.id);
+              validLikes +=
+                userData.level === 2 ? 1 : userData.level === 3 ? 2 : 0;
             }
           }
         }
       }
 
       const updatedRank = validLikes + validPosts;
+
+      // console.log(validPosts, validLikes, updatedRank);
 
       await Business.findByIdAndUpdate(business._id, { rating: updatedRank });
 

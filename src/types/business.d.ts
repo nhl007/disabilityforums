@@ -11,7 +11,7 @@ export type AbnLookupResult = {
   EntityTypeCode: string;
   EntityTypeName: string;
   Gst: string;
-  location: { coordinates: number[] };
+  location: [{ type: "Point"; coordinates: number[] }];
 };
 
 export type serviceAgeNames =
@@ -47,6 +47,7 @@ export type BusinessPersonalInfo = {
   image: {
     banner?: string;
     card?: string;
+    avatar?: string;
   };
 };
 

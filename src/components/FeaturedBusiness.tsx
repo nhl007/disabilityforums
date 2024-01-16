@@ -43,12 +43,12 @@ const FeaturedBusinessCard = ({
           />
         )}
       </div>
-      <div className=" flex flex-col gap-2 max-w-[60%] md:max-w-full mb-1 md:mb-0">
+      <div className=" flex flex-col gap-2 w-[60%] md:w-full mb-1 md:mb-0">
         <div className=" flex flex-col gap-1 max-w-full overflow-hidden">
           <p className=" text-sm h-5 font-semibold line-clamp-1 overflow-ellipsis">
             {name}
           </p>
-          <div className="flex gap-2">
+          <div className="flex justify-between gap-2">
             <SmallVerificationBox className=" py-1 md:py-1.5 px-3  text-xs md:text-sm font-semibold">
               {businessType === "IND" ? "Sole Trader" : "Organisation"}
             </SmallVerificationBox>
@@ -58,7 +58,7 @@ const FeaturedBusinessCard = ({
               </SmallVerificationBox>
             )}
           </div>
-          <p className="w-full max-h-[55px] overflow-hidden line-clamp-3 text-[12px] break-words font-medium leading-4">
+          <p className="w-full h-[50px] overflow-hidden line-clamp-3 text-[12px] break-words font-medium leading-4">
             {blurb}
           </p>
         </div>
