@@ -133,106 +133,114 @@ export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
   }
 }
 
-export async function searchBusinesses(searchParams: SearchParamsActions) {
-  try {
-    const query: Record<string, any> = {};
+//? query to search business
+const constructQuery = async (
+  searchParams: SearchParamsActions,
+  radius: number = 20
+) => {
+  const query: Record<string, any> = {};
 
-    query.abnVerified = true;
+  query.abnVerified = true;
 
-    const radius = searchParams.radius ? searchParams.radius : 15;
+  for (const [key, value] of Object.entries(searchParams)) {
+    // console.log(key, ":", value);
+    if (value) {
+      if (key === "postalCode" && value.length > 2) {
+        const postalCoordinates = await getLatLngByPostalCode(value);
 
-    for (const [key, value] of Object.entries(searchParams)) {
-      // console.log(key, ":", value);
-      if (value) {
-        if (key === "postalCode" && value.length > 2) {
-          const postalCoordinates = await getLatLngByPostalCode(value);
-
-          // if (postalCoordinates) {
-          //   query.location = {
-          //     $near: {
-          //       $geometry: {
-          //         type: "Point",
-          //         coordinates: [postalCoordinates[0], postalCoordinates[1]],
-          //       },
-          //       $maxDistance: Number(radius) * 1000,
-          //     },
-          //   };
-          // }
-
-          if (postalCoordinates) {
-            query.location = {
-              $geoWithin: {
-                $centerSphere: [
-                  [postalCoordinates[0], postalCoordinates[1]],
-                  Number(radius) / 6371, // Divide by Earth's radius in kilometers
-                ],
-              },
-            };
-          }
-        }
-
-        if (key === "keyword") {
-          query.BusinessName = {
-            $in: [new RegExp(value, "i")],
-          };
-        }
-
-        if (key === "category") {
-          // If category is provided
-          query.services = {
-            $in: [new RegExp(value, "i")],
-          };
-        }
-        if (key === "delivery") {
-          query.deliveryOptions = {
-            $in: value.split(","),
-          };
-        }
-        if (key === "age") {
-          query.agesSupported = {
-            $in: value.split(","),
-          };
-        }
-        if (key === "languages") {
-          query.languages = {
-            $in: value.split(","),
-          };
-        }
-        if (key === "gender") {
-          query.genderOfAttendants = {
-            $in: value.split(","),
-          };
-        }
-        if (key === "complexNeeds") {
-          query.complexNeedsSupported = {
-            $in: value.split(","),
-          };
-        }
-
-        if (key === "ndis" && value === "true") {
-          query.ndis_registered = true;
-        }
-
-        if (key === "company" && value === "true") {
-          query.EntityTypeCode = {
-            $nin: [new RegExp("IND", "i")],
-          };
-        }
-
-        if (key === "trader" && value === "true") {
-          query.EntityTypeCode = {
-            $in: [new RegExp("IND", "i")],
+        if (postalCoordinates) {
+          query.location = {
+            $geoWithin: {
+              $centerSphere: [
+                [postalCoordinates[0], postalCoordinates[1]],
+                Number(radius) / 6371, // Divide by Earth's radius in kilometers
+              ],
+            },
           };
         }
       }
-    }
 
+      if (key === "keyword") {
+        query.BusinessName = {
+          $in: [new RegExp(value, "i")],
+        };
+      }
+
+      if (key === "category") {
+        // If category is provided
+        query.services = {
+          $in: [new RegExp(value, "i")],
+        };
+      }
+      if (key === "delivery") {
+        query.deliveryOptions = {
+          $in: value.split(","),
+        };
+      }
+      if (key === "age") {
+        query.agesSupported = {
+          $in: value.split(","),
+        };
+      }
+      if (key === "languages") {
+        query.languages = {
+          $in: value.split(","),
+        };
+      }
+      if (key === "gender") {
+        query.genderOfAttendants = {
+          $in: value.split(","),
+        };
+      }
+      if (key === "complexNeeds") {
+        query.complexNeedsSupported = {
+          $in: value.split(","),
+        };
+      }
+
+      if (key === "ndis" && value === "true") {
+        query.ndis_registered = true;
+      }
+
+      if (key === "company" && value === "true") {
+        query.EntityTypeCode = {
+          $nin: [new RegExp("IND", "i")],
+        };
+      }
+
+      if (key === "trader" && value === "true") {
+        query.EntityTypeCode = {
+          $in: [new RegExp("IND", "i")],
+        };
+      }
+    }
+  }
+
+  return query;
+};
+
+export async function searchBusinesses(searchParams: SearchParamsActions) {
+  try {
+    revalidatePath("/directory/s");
+
+    const query = await constructQuery(searchParams, 20);
     await connectToDB();
-    const doc = await Business.find(query)
+    let doc = await Business.find(query)
       .select(
         "_id BusinessName blurb rank serviceLocations EntityTypeCode ndis_registered image"
       )
       .sort({ rank: "asc" });
+
+    if (doc.length <= 0) {
+      const newQuery = await constructQuery(searchParams, 50);
+      // console.log("came here", newQuery);
+      doc = await Business.find(newQuery)
+        .select(
+          "_id BusinessName blurb rank serviceLocations EntityTypeCode ndis_registered image"
+        )
+        .sort({ rank: "asc" });
+    }
+
     if (doc.length > 0) {
       const sorted = doc.sort((a, b) => {
         if (a.rank === 0 && b.rank !== 0) {

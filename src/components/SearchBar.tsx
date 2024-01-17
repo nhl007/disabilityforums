@@ -16,11 +16,8 @@ import { FormEvent, SetStateAction, useState } from "react";
 import Select from "react-select";
 import { extractPostcode, generateSelectDefault } from "@/utils/utils";
 import { getPostalCodeSuggestion } from "@/utils/postalCodeSearch";
-import { useDebouncedCallback } from "use-debounce";
 
 const SearchBar = () => {
-  // const params = useSearchParams();
-
   const customStyles: any = {
     control: (base: any) => ({
       ...base,
@@ -44,7 +41,7 @@ const SearchBar = () => {
   const [postCodeList, setPostCodeList] = useState<string[] | null>(null);
 
   const [category, setCategory] = useState("");
-  const [radius, setRadius] = useState("15");
+  // const [radius, setRadius] = useState("15");
 
   const [delivery, setDelivery] = useState<string[]>([]);
   const [age, setAge] = useState<string[]>([]);
@@ -83,7 +80,6 @@ const SearchBar = () => {
       keyword: keyword,
       postalCode: extractedPostCode,
       category: category,
-      radius: radius,
       ndis: ndis,
       delivery: delivery,
       gender: gender,
@@ -130,7 +126,7 @@ const SearchBar = () => {
                 placeholder="Keyword or Business Name"
                 name="keyword"
                 type="text"
-                className="rounded-t-[6px] md:rounded-l-[6px] py-3 text-base pl-[44px] pr-[16px] border w-full md:w-[270px] h-[71px] focus:outline-none"
+                className="rounded-t-[6px] md:rounded-l-[6px] py-3 text-base pl-[44px] pr-[16px] border w-full md:w-[340px] h-[71px] focus:outline-none"
               />
             </div>
             <div>
@@ -147,7 +143,7 @@ const SearchBar = () => {
                 instanceId="gender"
                 name="category"
                 options={selectOptions}
-                className="w-full md:w-[270px] h-auto text-base"
+                className="w-full md:w-[340px] h-auto text-base"
                 onChange={(val) => {
                   setCategory(val?.value ?? "");
                 }}
@@ -165,7 +161,7 @@ const SearchBar = () => {
                 value={postCode}
                 name="postalCode"
                 type="text"
-                className=" py-3 text-base pl-[44px] pr-[16px] border w-full md:w-[270px] h-[71px] focus:outline-none"
+                className=" py-3 text-base pl-[44px] pr-[16px] border w-full md:w-[340px] h-[71px] focus:outline-none"
               />
               {postCodeList && (
                 <div className=" z-50 max-h-[150px] border-b-2 absolute top-[70px] pl-3 bg-white py-2 md:pb-2 left-0 w-full overflow-y-scroll flex flex-col gap-2">
@@ -185,26 +181,6 @@ const SearchBar = () => {
                   })}
                 </div>
               )}
-            </div>
-            <div className="relative">
-              <select
-                disabled={postCode === ""}
-                onChange={(e) => setRadius(e.target.value)}
-                value={radius}
-                name="radius"
-                className="rounded-r-[6px] py-3 text-base px-4 border w-full md:w-[270px] h-[71px] focus:outline-none"
-              >
-                <option value="1">Add radius of xx km</option>
-                <option value="2">2km</option>
-                <option value="5">5km</option>
-                <option value="10">10km</option>
-                <option value="15">15km</option>
-                <option value="30">30km</option>
-                <option value="50">50km</option>
-                <option value="100">100km</option>
-                <option value="250">250km</option>
-                <option value="500">500km</option>
-              </select>
             </div>
             <button
               type="submit"

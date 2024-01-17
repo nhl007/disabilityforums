@@ -77,7 +77,9 @@ const FeaturedBusinessCard = ({
               );
             })}
           </div>
-          <span className="font-semibold text-sm">Overall Rank {rank}</span>
+          <span className="font-semibold text-sm">
+            Overall Rank {rank ? rank : ": Pending"}
+          </span>
         </div>
       </div>
     </div>

@@ -7,7 +7,6 @@ import SmallVerificationBox from "@/components/ui/SmallVerificationBox";
 import { useFeatureContext } from "@/context/feature/FeatureContext";
 import { uploadImage } from "@/libs/cloudinary";
 import { serviceLocationsType } from "@/types/business";
-import { saveBase64Image } from "@/utils/saveImage";
 import { MapPin, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -237,7 +236,7 @@ const Card = () => {
                     })}
                   </div>
                   <span className="font-semibold text-sm">
-                    Overall Rank {rank}
+                    Overall Rank {rank ? rank : ": Pending"}
                   </span>
                 </div>
               </div>

@@ -1,7 +1,7 @@
 "use server";
 
 import { AbnLookupResult } from "@/types/business";
-import { getLatLngByPostalCode } from "@/utils/postalCodeSearch";
+// import { getLatLngByPostalCode } from "@/utils/postalCodeSearch";
 
 const apiUrl = process.env.ABR_LOOKUP_URL;
 const guid = process.env.ABR_GUID;
@@ -37,6 +37,10 @@ export async function searchValidABN(abn: string) {
     //     },
     //   ];
     // } else return null;
+
+    if (data.BusinessName.length <= 0) {
+      data.BusinessName[0] = data.EntityName;
+    }
 
     return data;
   } catch (error) {
