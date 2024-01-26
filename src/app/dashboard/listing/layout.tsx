@@ -1,11 +1,11 @@
 import { getAuthSession } from "@/libs/auth";
-import { redirect, RedirectType } from "next/navigation";
+import { redirect } from "next/navigation";
 import BusinessListingTabs from "@/components/BusinessListingTabs";
 
 const layout = async ({ children }: { children: React.ReactNode }) => {
   const session = await getAuthSession();
   if (!session) {
-    return redirect("/", RedirectType.replace);
+    return redirect("/directory");
   }
   return (
     <div className="border-b border-gray-900/10 pb-4 md:pb-6">

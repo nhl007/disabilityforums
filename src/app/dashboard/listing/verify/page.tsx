@@ -62,10 +62,10 @@ const Verify = () => {
     const token = await encodeToken({ id: docId });
     if (provider?.email) {
       const res = await sendConfirmationEmail(provider.email, token);
-      if (res) {
-        displayAlert("Email Sent! Please Check your inbox.", true);
+      if (res?.success) {
+        displayAlert(res.msg, true);
       } else {
-        displayAlert("Error Sending Email!.", true);
+        displayAlert("Error Occurred! Try again", false);
       }
     } else {
       displayAlert("No Email Selected", false);

@@ -13,15 +13,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// var transporter = nodemailer.createTransport({
-//   host: "sandbox.smtp.mailtrap.io",
-//   port: 2525,
-//   auth: {
-//     user: "5e72871fd40e34",
-//     pass: "585b570f54c334",
-//   },
-// });
-
 export async function sendConfirmationEmail(email: string, token: string) {
   const url = process.env.MAIN_DOMAIN_URL ?? "http://localhost:3000";
   try {
@@ -32,18 +23,20 @@ export async function sendConfirmationEmail(email: string, token: string) {
       to: email,
       subject: "NDIS-Verification",
       html: `Click <a href="${confirmationLink}">here</a> to verify as a NDIS Provider.`,
-      text: "Please verify by clicking ",
+      text: "Please verify by visiting this link. ",
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.log(error);
+        return { success: false, msg: "Error" };
       } else {
+        console.log(info);
         console.log(info.response);
+        return { success: true, msg: "Success" };
       }
     });
-    return true;
   } catch (error) {
-    return false;
+    return { success: false, msg: "Error" };
   }
 }

@@ -41,25 +41,14 @@ const Card = () => {
       return;
     }
     const fileReader = new FileReader();
-    // const filename = e.target.files?.[0].name as string;
     if (fileData) {
       fileReader.readAsDataURL(fileData);
       fileReader.onloadend = async () => {
-        // setImagePreview(fileReader.result as string);
-        // const url = await saveBase64Image(
-        //   fileReader.result as string,
-        //   `${BusinessName}/`,
-        //   filename
-        // );
-        // setImage({ ...image, card: url });
         setImagePreview(fileReader.result as string);
-        const url = await uploadImage(fileReader.result as string);
-        setLoading(false);
-        if (url) {
-          setImage({ ...image, card: url });
-        }
+        return setLoading(false);
       };
     }
+    setLoading(false);
   };
 
   const setInitialData = async () => {
@@ -100,10 +89,22 @@ const Card = () => {
 
   const handleSubmit = async () => {
     setLoading(true);
+
+    let updatedImage = { ...image };
+
+    if (imagePreview) {
+      const url = await uploadImage(imagePreview);
+
+      if (url) {
+        updatedImage = { ...updatedImage, card: url };
+      }
+    }
+
     const infos = {
       blurb,
-      image: image,
+      image: updatedImage,
     };
+
     const data = await postBusinessData(infos);
     if (data.success) {
       displayAlert(data.message, true);

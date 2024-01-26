@@ -45,8 +45,58 @@ async function getAuPostCodeDetails(
   });
 }
 
+async function getAuPostCodeDetailsWithStrings(
+  suburb: string,
+  postcode: string
+): Promise<postCodeResult[] | null> {
+  const filePath = path.join(
+    process.cwd(),
+    "src",
+    "assets",
+    "au_postcodes.csv"
+  );
+
+  return new Promise((resolve, reject) => {
+    const results: postCodeResult[] = [];
+
+    fs.createReadStream(filePath)
+      .pipe(csv())
+      .on("data", (data) => {
+        if (data["postcode"] === postcode && data["place_name"] === suburb) {
+          results.push(data);
+        }
+      })
+      .on("end", () => {
+        resolve(results);
+      })
+      .on("error", (error) => {
+        console.log(error);
+        reject(null);
+      });
+  });
+}
+
 export const getLatLngByPostalCode = async (postCode: string | number) => {
   const data = await getAuPostCodeDetails("postcode", String(postCode));
+
+  if (data) {
+    return [Number(data[0].longitude), Number(data[0].latitude)];
+  } else return null;
+};
+
+export const getLatLngBySuburbs = async (suburb: string) => {
+  const data = await getAuPostCodeDetails("place_name", suburb);
+
+  if (data) {
+    return [Number(data[0].longitude), Number(data[0].latitude)];
+  } else return null;
+};
+
+export const getLatLngBySuburbsAndPostCode = async (
+  suburb: string,
+  postcode: string
+) => {
+  const data = await getAuPostCodeDetailsWithStrings(suburb, postcode);
 
   if (data) {
     return [Number(data[0].longitude), Number(data[0].latitude)];

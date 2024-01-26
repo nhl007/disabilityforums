@@ -60,6 +60,8 @@ const Dashboard = () => {
     setEmail(data?.user.email as string);
     setImage(data?.user.image as string);
     setName(data?.user.name as string);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
   return (

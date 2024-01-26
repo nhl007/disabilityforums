@@ -30,28 +30,26 @@ const page = async ({ params }: PageProps) => {
 
   return (
     <div>
-      <div
-        className="flex w-full h-[300px] bg-cover py-5 md:py-8 relative"
-        style={{
-          backgroundImage: `url('${
-            data?.image?.banner ? data?.image?.banner : "/image.webp"
-          }')`,
-        }}
-      >
-        <MaxWidthWrapper>
+      <MaxWidthWrapper>
+        <div
+          className={` h-[300px] bg-cover py-5 md:py-8 relative`}
+          style={{
+            backgroundImage: `url('${
+              data?.image?.banner ? data?.image?.banner : "/image.webp"
+            }')`,
+          }}
+        >
           <div className="relative w-full h-full">
             <Image
-              className="rounded-full w-[150px] h-[150px]  object-cover absolute bottom-[-70px] left-0"
+              className="rounded-full w-[150px] h-[150px]  object-cover absolute bottom-[-70px] left-[50px]"
               width={120}
               height={120}
               priority={true}
               src={data.image?.avatar ? data.image.avatar : "/image.jpg"}
-              alt="name"
+              alt="avatar"
             />
           </div>
-        </MaxWidthWrapper>
-      </div>
-      <MaxWidthWrapper>
+        </div>
         <h1 className="text-2xl md:text-4xl font-semibold max-w-full  line-clamp-2 mt-16 mb-6">
           {data.BusinessName?.length ? data.BusinessName.join(" ") : ""}
         </h1>
@@ -66,6 +64,11 @@ const page = async ({ params }: PageProps) => {
             </SmallVerificationBox>
           )}
         </div>
+        <BorderBox className=" mb-6">
+          <h1>Test Block</h1>
+          <p>Total Points :{data.rating}</p>
+          <p>Rank :{data.rank}</p>
+        </BorderBox>
         <div className="grid md:grid-flow-col grid-cols-9 md:gap-x-6">
           {/* //! left side */}
           <div className="col-span-full md:col-span-6 flex flex-col gap-4 md:gap-6">

@@ -30,12 +30,11 @@ import CustomInput from "@/components/ui/CustomInput";
 import ServiceLocationInput from "@/components/ServiceLocationInput";
 import CustomButton from "@/components/ui/CustomButton";
 import { useFeatureContext } from "@/context/feature/FeatureContext";
-import { saveBase64Image } from "@/utils/saveImage";
 import { uploadImage } from "@/libs/cloudinary";
 import { useRouter } from "next/navigation";
-// import TextEditor from "@/components/TextEditor";
 import LoadingSpinner from "@/components/Loading";
 import QuillTextEditor from "@/components/QuillTextEditor";
+import SmallVerificationBox from "@/components/ui/SmallVerificationBox";
 
 export const dynamic = "force-dynamic";
 
@@ -44,6 +43,8 @@ const CreateList = () => {
   const { displayAlert } = useFeatureContext();
   const [loading, setLoading] = useState<boolean>(false);
   const [BusinessName, setBusinessName] = useState("Business Name");
+  const [entityCode, setEntityCode] = useState("");
+  const [ndisRegistered, setNdisRegistered] = useState(false);
   const [about, setAbout] = useState<string>("");
   const [services, setServices] = useState<string[]>([]);
   const [deliveryOptions, setDeliveryOptions] = useState<string[]>([]);
@@ -75,7 +76,7 @@ const CreateList = () => {
   const handleSubmit = async () => {
     setLoading(true);
 
-    const infos = {
+    const infos: Record<string, any> = {
       about,
       services,
       deliveryOptions,
@@ -91,8 +92,29 @@ const CreateList = () => {
         facebook,
         twitter,
       },
-      image: image,
     };
+
+    let updatedImage = { ...image };
+
+    await Promise.all([
+      (async () => {
+        if (imagePreviewAvatar) {
+          const avatarUrl = await uploadImage(imagePreviewAvatar);
+          if (avatarUrl) {
+            updatedImage = { ...updatedImage, avatar: avatarUrl };
+          }
+        }
+
+        if (imagePreview) {
+          const bannerUrl = await uploadImage(imagePreview);
+          if (bannerUrl) {
+            updatedImage = { ...updatedImage, banner: bannerUrl };
+          }
+        }
+      })(),
+    ]);
+
+    infos.image = updatedImage;
 
     const data = await postBusinessData(infos!);
     if (data.success) {
@@ -116,6 +138,8 @@ const CreateList = () => {
       "genderOfAttendants",
       "complexNeedsSupported",
       "BusinessName",
+      "EntityTypeCode",
+      "ndis_registered",
       "image",
     ]);
 
@@ -133,6 +157,8 @@ const CreateList = () => {
     setImage(data.data.image);
 
     setBusinessName(data.data.BusinessName);
+    setEntityCode(data.data.EntityTypeCode);
+    setNdisRegistered(data.data.ndis_registered);
     setAbout(data.data.about);
     setServices(data.data.services);
     setDeliveryOptions(data.data.deliveryOptions);
@@ -159,52 +185,28 @@ const CreateList = () => {
 
     const fileData = e.target.files?.[0];
     const fileReader = new FileReader();
-    // const filename = e.target.files?.[0].name as string;
     if (fileData) {
       fileReader.readAsDataURL(fileData);
       fileReader.onloadend = async () => {
-        // setImagePreview(fileReader.result as string);
-        // const url = await saveBase64Image(
-        //   fileReader.result as string,
-        //   `${BusinessName}/`,
-        //   filename
-        // );
-        // console.log(filetype?.replace("image/", "."));
-        // setImage({ ...image, banner: url });
-
         setImagePreview(fileReader.result as string);
-        const banner = await uploadImage(fileReader.result as string);
-        setLoading(false);
-        if (banner) {
-          setImage({ ...image, banner: banner });
-        }
+        return setLoading(false);
       };
     }
+    setLoading(false);
   };
 
   const saveImagePreviewAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoading(true);
     const fileData = e.target.files?.[0];
     const fileReader = new FileReader();
-    // const filename = e.target.files?.[0].name as string;
     if (fileData) {
       fileReader.readAsDataURL(fileData);
       fileReader.onloadend = async () => {
-        // setImagePreviewAvatar(fileReader.result as string);
-        // const url = await saveBase64Image(
-        //   fileReader.result as string,
-        //   `${BusinessName}/`,
-        //   filename
-        // );
-        // setImage({ ...image, avatar: url });
         setImagePreviewAvatar(fileReader.result as string);
-        const url = await uploadImage(fileReader.result as string);
-        setLoading(false);
-        if (url) {
-          setImage({ ...image, avatar: url });
-        }
+        return setLoading(false);
       };
     }
+    setLoading(false);
   };
 
   return (
@@ -293,6 +295,17 @@ const CreateList = () => {
             <h1 className="text-2xl md:text-4xl font-semibold max-w-full  line-clamp-2 mt-16 mb-6">
               {BusinessName}
             </h1>
+          </div>
+          <div className=" flex gap-3">
+            <SmallVerificationBox className="w-fit my-4 bg-green-500 text-white">
+              {entityCode === "IND" ? "Sole Trader" : "Organisation"}
+            </SmallVerificationBox>
+
+            {ndisRegistered && (
+              <SmallVerificationBox className="w-fit my-4 bg-yellow-500 text-white">
+                Ndis-Registered
+              </SmallVerificationBox>
+            )}
           </div>
 
           <div className="grid md:grid-flow-col md:grid-cols-8 md:gap-x-6 mt-8 mb-20">

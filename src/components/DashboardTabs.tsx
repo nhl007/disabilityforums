@@ -10,24 +10,13 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Alert from "./Alert";
-import { useSession } from "next-auth/react";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 
 const DashboardTabs = () => {
   const {
     state: { showAlert },
   } = useFeatureContext();
 
-  const router = useRouter();
   const url = usePathname();
-  const { status } = useSession();
-
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      return router.replace("/");
-    }
-  }, [status]);
 
   return (
     <div className="border-b border-gray-200 mb-4 md:mb-6">

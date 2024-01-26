@@ -1,20 +1,23 @@
-"use client";
-
 import { User, UserPlus } from "lucide-react";
 import Link from "next/link";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import ProfileMenu from "./ProfileMenu";
-import { useSession } from "next-auth/react";
+import { getAuthSession } from "@/libs/auth";
 // import MobileNav from "./MobileNavMenu";
 
-const NavBar = () => {
-  const { status } = useSession();
+const NavBar = async () => {
+  // const { status } = useSession();
+  const session = await getAuthSession();
   return (
     <MaxWidthWrapper>
       <nav className="flex flex-col relative font-semibold">
         <div className=" self-end flex items-center py-2 h-[40px]">
-          {status === "authenticated" ? (
-            <ProfileMenu />
+          {session?.user.id ? (
+            <ProfileMenu
+              name={session.user.name as string}
+              email={session.user.email as string}
+              image={session.user.image as string}
+            />
           ) : (
             <div className="flex gap-4 items-center">
               <Link

@@ -30,12 +30,9 @@ export type BusinessPersonalInfo = {
   about: string;
   services: string[];
   deliveryOptions: string[];
-  // paymentTypes: string[];
   languages: string[];
   genderOfAttendants: string[];
   agesSupported: Array<serviceAgeNames>;
-  // disabilitySpecialities: string[];
-  // providerSpecialSkills: string[];
   complexNeedsSupported: string[];
   contact: {
     email: string;
@@ -61,7 +58,7 @@ export type BusinessReviews = {
 }[];
 
 export type BusinessDatabaseModel = AbnLookupResult &
-  BusinessPersonalInfo & { _id: string; rank: number };
+  BusinessPersonalInfo & { _id: string; rank: number; rating: number };
 
 type BusinessReviewData = {
   caption: string;

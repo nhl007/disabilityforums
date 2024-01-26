@@ -10,13 +10,11 @@ import Business from "@/models/Business";
 // import User from "@/models/User";
 import { BusinessDatabaseModel, BusinessReviewData } from "@/types/business";
 import { SearchParamsActions } from "@/types/common";
-import { getLatLngByPostalCode } from "@/utils/postalCodeSearch";
-import { Error } from "mongoose";
-import { Session } from "next-auth";
+import { getLatLngBySuburbsAndPostCode } from "@/utils/postalCodeSearch";
 
 export async function checkIfBusinessExists() {
   await connectToDB();
-  const session: Session | null = await getAuthSession();
+  const session = await getAuthSession();
   const id = session?.user.id;
   if (!id) return false;
   const doc = await Business.findOne({ user: id }).select("_id");
@@ -29,42 +27,42 @@ export async function checkIfBusinessExists() {
 async function getCoordinatesFromLocations(
   serviceLocations: BusinessDatabaseModel["serviceLocations"]
 ) {
-  const postCodeSet = new Set();
+  const locationCoordinates: {
+    type: "Point";
+    coordinates: number[] | null;
+  }[] = [];
 
   if (serviceLocations?.length) {
-    serviceLocations.forEach((loc) => {
-      if (loc.suburbs.length) {
-        loc.suburbs.forEach((sub) => {
-          const match = sub.match(/\b\d{4}\b/);
-          if (match) {
-            postCodeSet.add(match[0]);
-          }
-        });
-      }
-    });
-  }
+    await Promise.all(
+      serviceLocations.map(async (loc) => {
+        if (loc.suburbs.length) {
+          await Promise.all(
+            loc.suburbs.map(async (sub) => {
+              // const match = sub.match(/^([a-zA-Z\s]+)\s\d+$/);
+              const match = sub.match(/^([a-zA-Z\s]+)\s(\d{4})$/);
 
-  const uniquePostCodes = Array.from(postCodeSet);
-
-  const locationCoordinates = [];
-
-  if (uniquePostCodes.length) {
-    for (let index = 0; index < uniquePostCodes.length; index++) {
-      const latLang = await getLatLngByPostalCode(
-        uniquePostCodes[index] as string
-      );
-      locationCoordinates.push({
-        type: "Point",
-        coordinates: latLang,
-      });
-    }
+              if (match) {
+                const latLang = await getLatLngBySuburbsAndPostCode(
+                  match[1],
+                  match[2]
+                );
+                locationCoordinates.push({
+                  type: "Point",
+                  coordinates: latLang,
+                });
+              }
+            })
+          );
+        }
+      })
+    );
   }
 
   return locationCoordinates;
 }
 
 export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
-  const session: Session | null = await getAuthSession();
+  const session = await getAuthSession();
   if (!session || !session.user)
     return { success: false, message: "Permission denied" };
 
@@ -104,6 +102,7 @@ export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
         const coordinates = await getCoordinatesFromLocations(
           data.serviceLocations
         );
+
         await Business.findByIdAndUpdate(docId._id, {
           ...data,
           location: coordinates,
@@ -136,8 +135,9 @@ export async function postBusinessData(data: Partial<BusinessDatabaseModel>) {
 //? query to search business
 const constructQuery = async (
   searchParams: SearchParamsActions,
-  radius: number = 20
+  radius: number
 ) => {
+  noStore();
   const query: Record<string, any> = {};
 
   query.abnVerified = true;
@@ -146,14 +146,19 @@ const constructQuery = async (
     // console.log(key, ":", value);
     if (value) {
       if (key === "postalCode" && value.length > 2) {
-        const postalCoordinates = await getLatLngByPostalCode(value);
+        const loc = value.split(" | ");
+
+        const postalCoordinates = await getLatLngBySuburbsAndPostCode(
+          loc[1],
+          loc[0]
+        );
 
         if (postalCoordinates) {
           query.location = {
             $geoWithin: {
               $centerSphere: [
                 [postalCoordinates[0], postalCoordinates[1]],
-                Number(radius) / 6371, // Divide by Earth's radius in kilometers
+                radius / 6371,
               ],
             },
           };
@@ -221,19 +226,23 @@ const constructQuery = async (
 
 export async function searchBusinesses(searchParams: SearchParamsActions) {
   try {
-    revalidatePath("/directory/s");
+    await connectToDB();
 
     const query = await constructQuery(searchParams, 20);
-    await connectToDB();
+
+    // console.log("\n --1-- Did the first search \n", query);
+
     let doc = await Business.find(query)
       .select(
         "_id BusinessName blurb rank serviceLocations EntityTypeCode ndis_registered image"
       )
       .sort({ rank: "asc" });
 
-    if (doc.length <= 0) {
+    if (doc.length <= 0 && searchParams.postalCode) {
       const newQuery = await constructQuery(searchParams, 50);
-      // console.log("came here", newQuery);
+
+      // console.log("\n --1-- did a 50 km search\n", newQuery);
+
       doc = await Business.find(newQuery)
         .select(
           "_id BusinessName blurb rank serviceLocations EntityTypeCode ndis_registered image"
@@ -251,9 +260,15 @@ export async function searchBusinesses(searchParams: SearchParamsActions) {
           return a.rank - b.rank;
         }
       });
+      revalidatePath("/directory/s");
       return stringifyResponse(sorted);
-    } else return null;
+    } else {
+      revalidatePath("/directory/s");
+
+      return null;
+    }
   } catch (error) {
+    revalidatePath("/directory/s");
     console.error("Error searching businesses:", error);
     return null;
   }

@@ -60,7 +60,7 @@ const BusinessSchema = new Schema({
       },
       coordinates: {
         type: [Number],
-        required: true,
+        index: "2dsphere",
       },
     },
   ],
@@ -148,7 +148,7 @@ const BusinessSchema = new Schema({
 
 // BusinessSchema.index({ location: "2dsphere" });
 
-BusinessSchema.index({ "locations.coordinates": "2dsphere" });
+// BusinessSchema.index({ "locations.coordinates": "2dsphere" });
 
 const Business = models.Business || model("Business", BusinessSchema);
 

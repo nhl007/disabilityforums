@@ -10,36 +10,13 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Alert from "./Alert";
-// import { useEffect, useState } from "react";
-// import { useRouter } from "next/navigation";
-// import { checkIfBusinessExists } from "@/actions/businessActions";
 
 const BusinessListingTabs = () => {
   const {
     state: { showAlert },
   } = useFeatureContext();
 
-  // const router = useRouter();
   const url = usePathname();
-
-  // const [exists, setExists] = useState(false);
-
-  // const checkBusiness = async () => {
-  // const resp = await checkIfBusinessExists();
-  // if (resp) {
-  //   setExists(() => true);
-  // } else {
-  //   setExists(() => false);
-  //   if (url.startsWith("/dashboard/listing") && url === "/dashboard/listing") {
-  //     return;
-  //   }
-  //   router.replace("/dashboard/listing");
-  // };
-  // };
-
-  // useEffect(() => {
-  //   checkBusiness();
-  // }, []);
 
   return (
     <div className="border-b border-gray-200 mb-4 md:mb-6">

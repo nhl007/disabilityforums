@@ -1,7 +1,9 @@
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
+import { getAuthSession } from "@/libs/auth";
 import Link from "next/link";
 
-const page = () => {
+const page = async () => {
+  const session = await getAuthSession();
   return (
     <MaxWidthWrapper>
       <h1 className=" text-2xl font-semibold mb-6">
@@ -43,11 +45,14 @@ const page = () => {
       </div>
 
       <Link
-        className=" text-xl font-semibold py-2 px-5 bg-black text-white rounded-md"
-        href="/sign-up"
+        className={` ${
+          session?.user && session.user.id ? " hidden" : ""
+        } text-xl font-semibold py-2 px-5 bg-black text-white rounded-md`}
+        href={session?.user && session.user.id ? "/dashboard" : "/sign-up"}
       >
         Get Started Now
       </Link>
+
       <p className=" mt-8">
         List your business today and tap into a dynamic platform where you
         control your visibility and directly engage with the NDIS community. If

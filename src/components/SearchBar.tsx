@@ -8,13 +8,13 @@ import {
   selectLanguages,
   selectOptions,
 } from "@/constants/constants";
-import { ChevronDown, MapPin, Search } from "lucide-react";
+import { ChevronDown, MapPin, Search, X } from "lucide-react";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import { useRouter } from "next/navigation";
 
 import { FormEvent, SetStateAction, useState } from "react";
 import Select from "react-select";
-import { extractPostcode, generateSelectDefault } from "@/utils/utils";
+import { generateSelectDefault } from "@/utils/utils";
 import { getPostalCodeSuggestion } from "@/utils/postalCodeSearch";
 
 const SearchBar = () => {
@@ -71,14 +71,13 @@ const SearchBar = () => {
     e.preventDefault();
     setMoreOptions(false);
 
-    let extractedPostCode = "";
-    if (postCode) {
-      extractedPostCode = extractPostcode(postCode);
+    if (postCodeList?.length) {
+      return;
     }
 
     const urlObj = {
       keyword: keyword,
-      postalCode: extractedPostCode,
+      postalCode: postCode,
       category: category,
       ndis: ndis,
       delivery: delivery,
@@ -95,7 +94,7 @@ const SearchBar = () => {
     for (const [key, value] of Object.entries(urlObj)) {
       url = url + key + "=" + value + "&";
     }
-    router.replace(url);
+    router.push(url);
   };
 
   const handlePostCodeChange = async (
@@ -131,6 +130,7 @@ const SearchBar = () => {
             </div>
             <div>
               <Select
+                isClearable={true}
                 id="category"
                 value={generateSelectDefault(
                   [category] ?? [
@@ -155,6 +155,16 @@ const SearchBar = () => {
 
             <div className="relative">
               <MapPin className=" absolute left-2 h-full flex justify-center items-center" />
+              {postCode && (
+                <X
+                  size={18}
+                  onClick={() => {
+                    setPostCode("");
+                    setPostCodeList(null);
+                  }}
+                  className=" absolute cursor-pointer right-2 h-full flex justify-center items-center"
+                />
+              )}
               <input
                 placeholder="Suburb or Post Code"
                 onChange={handlePostCodeChange}

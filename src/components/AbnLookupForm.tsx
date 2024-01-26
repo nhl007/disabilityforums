@@ -208,7 +208,7 @@ const AbnLookupForm = () => {
                       name="businessName"
                       value={
                         abnDetails.BusinessName
-                          ? abnDetails.BusinessName.join(",")
+                          ? abnDetails.BusinessName.join(", ")
                           : "No name found"
                       }
                     />
