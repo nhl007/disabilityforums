@@ -197,6 +197,7 @@ const CreateList = () => {
 
   const saveImagePreviewAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoading(true);
+
     const fileData = e.target.files?.[0];
     const fileReader = new FileReader();
     if (fileData) {
